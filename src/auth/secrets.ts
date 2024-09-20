@@ -1,0 +1,1 @@
+export const APP_SECRET = 'my_secret'
