@@ -6,6 +6,11 @@
 </head>
 <body>
 <h1>Shopping Lists</h1>
+<ul>
+    {{#each shoppingLists}}
+        <li>von: {{this.createdBy}} erstellt: {{this.createdAt}} <button data-id={{this.id}}>Edit</button></li>
+    {{/each}}
+</ul>
 <button id="createList">Create new list</button>
 </body>
 </html>
@@ -14,7 +19,7 @@
 <script>
     document.getElementById('createList').addEventListener('click', async () => {
         try {
-            const response = await fetch('/api/shopping-lists', {
+            await fetch('/api/shopping-lists', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -22,8 +27,18 @@
             });
 
             console.log('New shopping list created');
+            window.location.reload()
         } catch (error) {
             console.error('There was a problem creating the new list', error);
         }
     });
+
+
+    document.querySelectorAll('button[data-id]').forEach(button => {
+        button.addEventListener('click', () => {
+            const id = button.getAttribute('data-id');
+            window.location.href = `/shopping-lists/${id}`;
+        });
+    });
+
 </script>

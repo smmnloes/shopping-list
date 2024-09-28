@@ -5,6 +5,11 @@ export class ShoppingList {
   @PrimaryGeneratedColumn()
   id: number
 
+  constructor(createdBy: string) {
+    this.createdBy = createdBy
+    this.createdAt = new Date()
+  }
+
   @Column()
   createdAt: Date
 
@@ -14,6 +19,6 @@ export class ShoppingList {
   @Column()
   completed: boolean = false
 
-  @Column('simple-array')
+  @Column('simple-json')
   items: string[] = []
 }
