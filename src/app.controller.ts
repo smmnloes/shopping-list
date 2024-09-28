@@ -1,8 +1,4 @@
-import { Controller, Get, Render, UseGuards, Request } from '@nestjs/common'
-import { JwtAuthGuard } from './auth/guards/jwt.guard'
-import { RequirePermissions } from './auth/permissions/permissions.decorator'
-import { Permission } from './auth/permissions/permission'
-import { UserInformation } from './auth/auth.service'
+import { Controller, Get, Render } from '@nestjs/common'
 
 @Controller()
 export class AppController {
@@ -14,21 +10,8 @@ export class AppController {
   index() {
   }
 
-  @Render('register')
-  @Get('register')
-  register() {
-  }
-
   @Render('login')
   @Get('login')
   login() {
-  }
-
-  @RequirePermissions(Permission.VIEW_PROFILE)
-  @UseGuards(JwtAuthGuard)
-  @Render('profile')
-  @Get('profile')
-  userprofile(@Request() req: { user: UserInformation }) {
-    return {username: req.user.username}
   }
 }

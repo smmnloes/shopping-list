@@ -4,7 +4,6 @@ import { LoginCredentials } from './auth.controller'
 import { User } from '../data/entities/user'
 import { Repository } from 'typeorm'
 import { genSalt, hash, compare } from 'bcrypt'
-import { Permission } from './permissions/permission'
 
 @Injectable()
 export class AuthService {
@@ -16,10 +15,10 @@ export class AuthService {
     if (storedCredentials === null || storedCredentials.length !== 1) {
       throw new UnauthorizedException()
     }
-    const {password_hashed, username, permissions, id} = storedCredentials[0]
+    const {password_hashed, username, id} = storedCredentials[0]
     const compareResult = await compare(passwordInput, password_hashed)
     if (compareResult === true) {
-      return {username, permissions: permissions as Permission[], id}
+      return {username, id}
     } else {
       throw new UnauthorizedException()
     }
@@ -35,12 +34,11 @@ export class AuthService {
     }
     const salt = await genSalt(10)
     const password_hashed = await hash(password, salt)
-    await this.userCredentialsRepository.insert({username, password_hashed, permissions: [ Permission.VIEW_PROFILE ]})
+    await this.userCredentialsRepository.insert({username, password_hashed})
   }
 }
 
 export type UserInformation = {
   id: number,
   username: string,
-  permissions: Permission[]
 }
