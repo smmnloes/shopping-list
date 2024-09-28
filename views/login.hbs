@@ -42,6 +42,9 @@
                     switch (response.status) {
                         case 200:
                             setFeedback("Login successful", false);
+                            setTimeout(() => {
+                                window.location.href = "./";
+                            }, 2500);
                             break;
                         case 401:
                             setFeedback("Invalid credentials", true);

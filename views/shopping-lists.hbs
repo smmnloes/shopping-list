@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Shopping Lists</title>
+</head>
+<body>
+<h1>Shopping Lists</h1>
+<button id="createList">Create new list</button>
+</body>
+</html>
+
+
+<script>
+    document.getElementById('createList').addEventListener('click', async () => {
+        try {
+            const response = await fetch('/api/shopping-lists', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            console.log('New shopping list created');
+        } catch (error) {
+            console.error('There was a problem creating the new list', error);
+        }
+    });
+</script>

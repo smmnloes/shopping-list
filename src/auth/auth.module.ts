@@ -15,7 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
       imports: [ ConfigModule ],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('APP_SECRET'),
-        signOptions: {noTimestamp: true}
+        signOptions: {noTimestamp: true, expiresIn: `${ configService.get<string>('AUTH_EXPIRATION_PERIOD_DAYS') }d`}
       }),
       inject: [ ConfigService ]
     }),
