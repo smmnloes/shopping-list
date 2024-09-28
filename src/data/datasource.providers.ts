@@ -1,5 +1,4 @@
 import { DataSource } from 'typeorm'
-import { User } from './entities/user'
 import { Provider } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
@@ -10,7 +9,7 @@ export const datasourceProvider: Provider =
       const dataSource = new DataSource({
         type: 'sqlite',
         database: configService.get<string>('DATABASE_PATH'),
-        entities: [ User ],
+        entities: [],
         synchronize: true
       })
 
