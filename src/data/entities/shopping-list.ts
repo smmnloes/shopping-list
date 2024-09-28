@@ -15,5 +15,5 @@ export class ShoppingList {
   completed: boolean = false
 
   @Column('simple-array')
-  items: string[]
+  items: string[] = []
 }
