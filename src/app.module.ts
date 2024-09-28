@@ -8,7 +8,8 @@ import { ConfigModule } from '@nestjs/config'
     isGlobal: true,
   }), ],
   controllers: [ AppController ],
-  providers: []
+  providers: [],
+  exports: [ConfigModule]
 })
 export class AppModule {
 }

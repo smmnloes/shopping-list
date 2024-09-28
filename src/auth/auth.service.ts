@@ -1,13 +1,17 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {
+  constructor(private readonly jwtService: JwtService, private readonly configService: ConfigService) {
   }
 
-  async validateUser(password: string): Promise<void> {
-    // TODO
+  async validateUser(username: string, password: string): Promise<UserInformation> {
+    if (!(password === this.configService.get<string>('APP_SECRET'))) {
+      throw new UnauthorizedException('Invalid password')
+    }
+    return {username}
   }
 
   async login(userInformation: UserInformation) {
@@ -16,6 +20,5 @@ export class AuthService {
 }
 
 export type UserInformation = {
-  id: number,
   username: string,
 }
