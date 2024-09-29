@@ -16,7 +16,8 @@ export class AuthController {
   async login(@Request() req: any, @Response() res: ExpressResponse) {
     const jwt = await this.authService.login(req.user)
     const expirationMs = this.configService.get<number>('AUTH_EXPIRATION_PERIOD_DAYS') * 24 * 60 * 60 * 1000
-    res.cookie('jwt', jwt, {httpOnly: true, secure: true, maxAge: expirationMs})
+    // secure does not work with nginx http, fix this before deploying to production
+    res.cookie('jwt', jwt, {httpOnly: true, secure: false, maxAge: expirationMs})
     res.send({message: 'Login successful'}).status(200)
   }
 }
