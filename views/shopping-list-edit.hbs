@@ -2,19 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="manifest" href="/manifest.json">
     <title>Edit List</title>
 </head>
 <body>
-<h1>Items:</h1>
-<ul id="itemsList">
-    {{#each items}}
-        <li>{{this}}</li>
-    {{/each}}
-</ul>
-<div>
-    <label for="newItemInput">New item name</label>
-    <input type="text" id="newItemInput">
-    <button id="addItem">Add item</button>
+<div class="container"><h1>Items:</h1>
+    <ul id="itemsList">
+        {{#each items}}
+            <li>{{this}}</li>
+        {{/each}}
+    </ul>
+
+    <div>
+        <label for="newItemInput">New item name</label>
+        <input type="text" id="newItemInput">
+        <button id="addItem">Add item</button>
+    </div>
 </div>
 </body>
 </html>

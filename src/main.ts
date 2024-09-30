@@ -12,7 +12,7 @@ async function bootstrap() {
   app.setViewEngine('hbs')
   app.use(cookieParser())
   app.useGlobalFilters(new UnauthorizedRedirectFilter())
-  await app.listen(3000, '0.0.0.0')
+  await app.listen(3000, 'localhost')
 }
 
 bootstrap()
