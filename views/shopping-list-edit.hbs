@@ -17,7 +17,7 @@
     <div>
         <label for="newItemInput">New item name</label>
         <input type="text" id="newItemInput">
-        <button id="addItem">Add item</button>
+        <button id="addItemButton">Add item</button>
     </div>
 </div>
 </body>
@@ -26,9 +26,14 @@
 
 <script>
     document.getElementById('newItemInput').addEventListener('keydown', async (event) => {
-        if (!(event.key === 'Enter')) {
-            return
+        if (event.key === 'Enter') {
+            await addItem();
         }
+    });
+
+    document.getElementById('addItemButton').addEventListener('click', addItem)
+
+    async function addItem() {
         const newItem = document.getElementById('newItemInput').value;
         const currentUrl = window.location.href;
         const id = currentUrl.match(/\/shopping-lists\/(\d+)$/)[1];
@@ -56,6 +61,7 @@
         } catch (error) {
             console.error('There was a problem adding the item', error);
         }
-    });
+    }
+
 
 </script>
