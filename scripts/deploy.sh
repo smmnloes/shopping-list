@@ -9,5 +9,5 @@ cd /var/www/shopping
 git pull
 npm ci
 npm run build
-npm run start:prod
+sudo systemctl restart shopping-list
 EOF
