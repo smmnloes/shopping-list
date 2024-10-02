@@ -35,6 +35,9 @@
 
     async function addItem() {
         const newItem = document.getElementById('newItemInput').value;
+        if (!newItem) {
+            return
+        }
         const currentUrl = window.location.href;
         const id = currentUrl.match(/\/shopping-lists\/(\d+)$/)[1];
         const addItemUrl = `/api/shopping-lists/${id}/items`;

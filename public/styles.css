@@ -18,3 +18,8 @@ html, body {
     font-size: inherit;
     font-family: inherit;
 }
+
+.container input {
+    font-size: inherit;
+    font-family: inherit;
+}
