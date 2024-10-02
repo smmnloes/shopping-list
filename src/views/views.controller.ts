@@ -1,9 +1,10 @@
-import { Controller, Get, Param, Render, UseGuards } from '@nestjs/common'
+import { Controller, Get, Param, ParseIntPipe, Render, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
 import { formatDate } from '../util/date-time-format'
 import { InjectRepository } from '@nestjs/typeorm'
+
 
 @Controller()
 export class ViewsController {
@@ -33,9 +34,9 @@ export class ViewsController {
   @UseGuards(JwtAuthGuard)
   @Render('shopping-list-edit')
   @Get('shopping-lists/:id')
-  async getShoppingList(@Param('id') id: number): Promise<{ items: string[] }> {
+  async getShoppingList(@Param('id', ParseIntPipe) id: number): Promise<{ items: ItemFrontend[], listId: number }> {
     const {items} = await this.shoppingListsRepository.findOneOrFail({where: {id}})
-    return {items: items?.map(item => item.name) || []}
+    return {listId: id, items: items.map(item => ({name: item.name, id: item.id}))}
   }
 }
 
@@ -45,3 +46,5 @@ export type ShoppingListFrontend = {
   createdAt: string,
   createdBy: string,
 }
+
+type ItemFrontend = { name: string, id: number }

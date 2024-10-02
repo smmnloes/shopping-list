@@ -1,4 +1,4 @@
-import { Controller, Delete, Param, Post, Request, UseGuards } from '@nestjs/common'
+import { Controller, Delete, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
@@ -21,17 +21,17 @@ export class ApiController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('shopping-lists/:id/items')
-  async addItemToList(@Param('id') id: number, @Request() req: ExtendedRequest<{ item: { name: string } }>) {
-    const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id}})
+  @Post('shopping-lists/:listId/items')
+  async addItemToList(@Param('listId', ParseIntPipe) listId: number, @Request() req: ExtendedRequest<{ item: { name: string } }>) {
+    const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
     shoppingList.items.push(new ListItem(req.user.username, req.body.item.name))
     await this.shoppingListRepository.save(shoppingList)
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('shopping-lists/:id/items/:item')
-  async deleteItemFromList(@Param('id') id: number, @Param('item') itemId: number) {
-    const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id}})
+  @Delete('shopping-lists/:listId/items/:itemId')
+  async deleteItemFromList(@Param('listId', ParseIntPipe) listId: number, @Param('itemId', ParseIntPipe) itemId: number) {
+    const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
     shoppingList.items = shoppingList.items.filter(item => item.id !== itemId)
     await this.shoppingListRepository.save(shoppingList)
   }

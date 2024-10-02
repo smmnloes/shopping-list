@@ -8,10 +8,10 @@
 </head>
 <body>
 <div class="container"><h1>Items:</h1>
-    <ul id="itemsList">
+    <ul data-listId={{listId}} id="itemsList">
         {{#each items}}
             <li>
-                <div><span>{{this}}</span>
+                <div><span>{{this.name}}</span>
                     <button class="deleteButton" data-id="{{this.id}}"> - </button>
                 </div>
             </li>
@@ -44,14 +44,15 @@
         });
     });
 
+    const listId = document.getElementById('itemsList').getAttribute('data-listId');
+
     async function addItem() {
         const newItemName = document.getElementById('newItemInput').value;
         if (!newItemName) {
             return
         }
-        const currentUrl = window.location.href;
-        const id = currentUrl.match(/\/shopping-lists\/(\d+)$/)[1];
-        const addItemUrl = `/api/shopping-lists/${id}/items`;
+
+        const addItemUrl = `/api/shopping-lists/${listId}/items`;
         try {
             await fetch(addItemUrl, {
                 method: 'POST',
@@ -78,8 +79,7 @@
     }
 
     async function deleteItem(itemId) {
-        const currentUrl = window.location.href;
-        const deleteItemUrl = `${currentUrl}/items/${itemId}`;
+        const deleteItemUrl = `/api/shopping-lists/${listId}/items/${itemId}`;
         try {
             await fetch(deleteItemUrl, {
                 method: 'DELETE',
