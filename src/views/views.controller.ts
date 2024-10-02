@@ -3,10 +3,13 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
 import { formatDate } from '../util/date-time-format'
+import { InjectRepository } from '@nestjs/typeorm'
 
 @Controller()
 export class ViewsController {
-  constructor(private readonly shoppingListsRepository: Repository<ShoppingList>) {
+  constructor(
+    @InjectRepository(ShoppingList)
+    private readonly shoppingListsRepository: Repository<ShoppingList>) {
   }
 
   @Render('login')
@@ -32,7 +35,7 @@ export class ViewsController {
   @Get('shopping-lists/:id')
   async getShoppingList(@Param('id') id: number): Promise<{ items: string[] }> {
     const {items} = await this.shoppingListsRepository.findOneOrFail({where: {id}})
-    return {items}
+    return {items: items?.map(item => item.name) || []}
   }
 }
 

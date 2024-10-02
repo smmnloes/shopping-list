@@ -7,7 +7,8 @@ export NVM_DIR="$HOME/.nvm"
 
 cd /var/www/shopping
 git pull
-npm ci
+# comment in as needed
+# npm ci
 npm run build
 sudo systemctl restart shopping-list
 EOF

@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 import { AuthModule } from '../auth/auth.module'
 import { ApiController } from './api.controller'
-import { DatabaseModule } from '../data/database.module'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { ShoppingList } from '../data/entities/shopping-list'
+import { ListItem } from '../data/entities/list-item'
 
 @Module({
-  imports: [ AuthModule, ConfigModule, DatabaseModule ],
+  imports: [ AuthModule, TypeOrmModule.forFeature([ShoppingList, ListItem]) ],
   controllers: [ ApiController ],
   providers: [],
   exports: []

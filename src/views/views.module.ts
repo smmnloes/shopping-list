@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 import { AuthModule } from '../auth/auth.module'
 import { ViewsController } from './views.controller'
-import { DatabaseModule } from '../data/database.module'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { ShoppingList } from '../data/entities/shopping-list'
 
 @Module({
-  imports: [ AuthModule, ConfigModule, DatabaseModule ],
+  imports: [ AuthModule, TypeOrmModule.forFeature([ShoppingList]) ],
   controllers: [ ViewsController ],
   providers: [],
   exports: []

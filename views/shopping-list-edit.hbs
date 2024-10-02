@@ -10,14 +10,17 @@
 <div class="container"><h1>Items:</h1>
     <ul id="itemsList">
         {{#each items}}
-            <li>{{this}}</li>
+            <li>
+                <div><span>{{this}}</span>
+                    <button class="deleteButton" data-id="{{this.id}}"> - </button>
+                </div>
+            </li>
         {{/each}}
     </ul>
 
     <div>
-        <label for="newItemInput">New item name</label>
         <input type="text" id="newItemInput">
-        <button id="addItemButton">Add item</button>
+        <button id="addItemButton"> +</button>
     </div>
 </div>
 </body>
@@ -33,9 +36,17 @@
 
     document.getElementById('addItemButton').addEventListener('click', addItem)
 
+    document.querySelectorAll('.deleteButton').forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const button = event.target;
+            const itemId = button.getAttribute('data-id');
+            await deleteItem(itemId);
+        });
+    });
+
     async function addItem() {
-        const newItem = document.getElementById('newItemInput').value;
-        if (!newItem) {
+        const newItemName = document.getElementById('newItemInput').value;
+        if (!newItemName) {
             return
         }
         const currentUrl = window.location.href;
@@ -47,13 +58,13 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({item: newItem})
+                body: JSON.stringify({item: {name: newItemName}})
             });
 
             // Add the new item to the list in the DOM
             const ul = document.getElementById('itemsList');
             const li = document.createElement('li');
-            li.textContent = newItem;
+            li.textContent = newItemName;
             ul.appendChild(li);
 
             // Clear the input field
@@ -63,6 +74,25 @@
 
         } catch (error) {
             console.error('There was a problem adding the item', error);
+        }
+    }
+
+    async function deleteItem(itemId) {
+        const currentUrl = window.location.href;
+        const deleteItemUrl = `${currentUrl}/items/${itemId}`;
+        try {
+            await fetch(deleteItemUrl, {
+                method: 'DELETE',
+            });
+
+            // Remove the item from the list in the DOM
+            const li = document.querySelector(`button[data-id="${itemId}"]`).closest('li');
+            li.remove();
+
+            console.log('Item deleted');
+
+        } catch (error) {
+            console.error('There was a problem deleting the item', error);
         }
     }
 

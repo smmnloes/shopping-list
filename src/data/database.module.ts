@@ -1,18 +1,20 @@
 import { Module } from '@nestjs/common'
-import { datasourceProvider } from './datasource.providers'
 import { ShoppingList } from './entities/shopping-list'
-import { DataSource, Repository } from 'typeorm'
+import { ListItem } from './entities/list-item'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { ConfigService } from '@nestjs/config'
 
 @Module({
-  providers: [
-    datasourceProvider,
-    {
-      provide: Repository<ShoppingList>,
-      useFactory: (dataSource: DataSource) => dataSource.getRepository(ShoppingList),
-      inject: [ DataSource ]
-    }
-  ],
-  exports: [Repository<ShoppingList>]
+  imports: [ TypeOrmModule.forRootAsync({
+    useFactory: (configService: ConfigService) => ({
+      type: 'sqlite',
+      database: configService.get<string>('DATABASE_PATH'),
+      entities: [ ShoppingList, ListItem ],
+      synchronize: true
+    }),
+    inject: [ ConfigService ]
+  }) ],
+  exports: [ TypeOrmModule ]
 })
 export class DatabaseModule {
 }

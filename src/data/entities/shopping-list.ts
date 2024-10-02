@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { ListItem } from './list-item'
 
 @Entity()
 export class ShoppingList {
@@ -19,6 +20,6 @@ export class ShoppingList {
   @Column()
   completed: boolean = false
 
-  @Column('simple-json')
-  items: string[] = []
+  @OneToMany(() => ListItem, item => item.shoppingList, {eager: true, cascade: true})
+  items?: ListItem[]
 }
