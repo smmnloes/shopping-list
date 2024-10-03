@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios'
 
 
 export const login = async (username: string, password: string) => {
-  return axios.post('http://localhost:3000/auth/login', {username, password})
+  return axios.post('http://localhost:3000/auth/login', {username, password}, config)
 }
 
 export const getAllShoppingLists = async () => {

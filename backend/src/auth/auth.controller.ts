@@ -18,10 +18,10 @@ export class AuthController {
     const expirationMs = this.configService.get<number>('AUTH_EXPIRATION_PERIOD_DAYS') * 24 * 60 * 60 * 1000
     res.cookie('jwt', jwt,
       {
-        httpOnly: true,
-        secure: true,
+        httpOnly: false,
+        secure: false,
         maxAge: expirationMs,
-        sameSite: 'none'
+        sameSite: 'lax'
       })
     res.send({message: 'Login successful'}).status(200)
   }

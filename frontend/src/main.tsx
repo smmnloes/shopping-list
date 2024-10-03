@@ -1,22 +1,31 @@
-import { StrictMode } from 'react'
+import  { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Login from './pages/login.tsx'
 import ShoppingLists from './pages/shopping-lists.tsx'
+import PrivateRoute from './routing/private-route.tsx'
 
 
 const router = createBrowserRouter([
   {
     path: '/',
-    Component: App,
+    element: (
+      <PrivateRoute>
+        <App />
+      </PrivateRoute>
+    ),
   },{
     path: '/login',
-    Component: Login,
+    element: <Login />,
   },{
     path: '/shopping-lists',
-    Component: ShoppingLists,
+    element: (
+      <PrivateRoute>
+        <ShoppingLists />
+      </PrivateRoute>
+    ),
   },
 ])
 
