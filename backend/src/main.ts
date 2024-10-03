@@ -12,6 +12,11 @@ async function bootstrap() {
   app.setViewEngine('hbs')
   app.use(cookieParser())
   app.useGlobalFilters(new UnauthorizedRedirectFilter())
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    methods: [ 'GET', 'POST', 'DELETE' ],
+    credentials: true
+  })
   await app.listen(3000, 'localhost')
 }
 

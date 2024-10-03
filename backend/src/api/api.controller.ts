@@ -1,4 +1,4 @@
-import { Controller, Delete, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common'
+import { Controller, Delete, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
@@ -15,14 +15,23 @@ export class ApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists')
-  async createNewShoppingList(@Request() req: ExtendedRequest<void>) {
-    const id = (await this.shoppingListRepository.save(new ShoppingList(req.user.username))).id
-    return {id}
+  async createNewShoppingList(@Request() req: ExtendedRequest<void>): Promise<ShoppingListFrontend> {
+    const {id, createdAt, createdBy} = (await this.shoppingListRepository.save(new ShoppingList(req.user.username)))
+    return {id, createdAt, createdBy}
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('shopping-lists')
+  async getShoppingLists(): Promise<ShoppingListFrontend[]> {
+    const allLists = await this.shoppingListRepository.find({loadEagerRelations: false})
+    return allLists.map(({id, createdBy, createdAt}) => ({id, createdBy, createdAt}))
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists/:listId/items')
-  async addItemToList(@Param('listId', ParseIntPipe) listId: number, @Request() req: ExtendedRequest<{ item: { name: string } }>) {
+  async addItemToList(@Param('listId', ParseIntPipe) listId: number, @Request() req: ExtendedRequest<{
+    item: { name: string }
+  }>) {
     const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
     shoppingList.items.push(new ListItem(req.user.username, req.body.item.name))
     await this.shoppingListRepository.save(shoppingList)
@@ -37,3 +46,12 @@ export class ApiController {
   }
 
 }
+
+
+export type ShoppingListFrontend = {
+  id: number,
+  createdAt: Date,
+  createdBy: string,
+}
+
+type ItemFrontend = { name: string, id: number }
