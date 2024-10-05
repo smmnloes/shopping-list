@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createNewList, getAllShoppingLists } from '../api/api.ts'
+import { createNewList, getAllShoppingLists, deleteList } from '../api/api.ts'
 
 // TODO: share?
 interface ShoppingList {
@@ -10,7 +10,7 @@ interface ShoppingList {
 }
 
 const ShoppingLists = () => {
-  const [shoppingLists, setShoppingLists] = useState<ShoppingList[]>([])
+  const [ shoppingLists, setShoppingLists ] = useState<ShoppingList[]>([])
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -26,30 +26,41 @@ const ShoppingLists = () => {
 
   const createList = async () => {
     try {
-      const newList: ShoppingList= await createNewList().then(response => response.data)
-      setShoppingLists([...shoppingLists, newList])
+      const newList: ShoppingList = await createNewList().then(response => response.data)
+      setShoppingLists([ ...shoppingLists, newList ])
       console.log('New shopping list created')
     } catch (error) {
       console.error('There was a problem creating the new list', error)
     }
   }
 
-  const editList = (id: number) => {
-    navigate(`/shopping-lists/${id}`)
+  const handleEdit = (id: number) => {
+    navigate(`/shopping-lists/${ id }`)
+  }
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteList(id)
+      setShoppingLists(shoppingLists.filter(list => list.id !== id))
+      console.log('List deleted')
+    } catch (error) {
+      console.error('Error deleting shopping list:', error)
+    }
   }
 
   return (
     <div className="container">
       <h1>Shopping Lists</h1>
       <ul>
-        {shoppingLists.map(list => (
-          <li key={list.id}>
-            von: {list.createdBy} erstellt: {new Date(list.createdAt).toLocaleString()}
-            <button onClick={() => editList(list.id)}>Edit</button>
+        { shoppingLists.map(list => (
+          <li key={ list.id }>
+            von: { list.createdBy } erstellt: { new Date(list.createdAt).toLocaleString() }
+            <button onClick={ () => handleEdit(list.id) }>Edit</button>
+            <button onClick={ () => handleDelete(list.id) }>Delete</button>
           </li>
-        ))}
+        )) }
       </ul>
-      <button id="createList" onClick={createList}>Create new list</button>
+      <button id="createList" onClick={ createList }>Create new list</button>
     </div>
   )
 }

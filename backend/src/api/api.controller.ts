@@ -21,6 +21,13 @@ export class ApiController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Delete('shopping-lists/:listId')
+  async deleteShoppingList(@Param('listId', ParseIntPipe) listId: number) {
+    await this.shoppingListRepository.delete(listId)
+  }
+
+
+  @UseGuards(JwtAuthGuard)
   @Get('shopping-lists')
   async getShoppingLists(): Promise<ShoppingListFrontend[]> {
     const allLists = await this.shoppingListRepository.find({loadEagerRelations: false})

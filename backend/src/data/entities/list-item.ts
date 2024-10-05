@@ -21,6 +21,6 @@ export class ListItem {
   @Column()
   name: string
 
-  @ManyToOne(() => ShoppingList, shoppingList => shoppingList.items)
+  @ManyToOne(() => ShoppingList, shoppingList => shoppingList.items, {onDelete: 'CASCADE'})
   shoppingList: ShoppingList
 }

@@ -19,6 +19,10 @@ export const createNewList = async () => {
   return axios.post(`${backendHost}/api/shopping-lists`, {}, config)
 }
 
+export const deleteList = async (listId: number) => {
+  return axios.delete(`${backendHost}/api/shopping-lists/${listId}`, config)
+}
+
 export const getListItems = async (listId: string) => {
   return axios.get(`${backendHost}/api/shopping-lists/${ listId }/items`, config)
 }

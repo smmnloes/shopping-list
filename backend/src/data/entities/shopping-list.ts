@@ -20,6 +20,6 @@ export class ShoppingList {
   @Column()
   completed: boolean = false
 
-  @OneToMany(() => ListItem, item => item.shoppingList, {eager: true, cascade: true})
+  @OneToMany(() => ListItem, item => item.shoppingList, {eager: true, cascade: true })
   items?: ListItem[]
 }
