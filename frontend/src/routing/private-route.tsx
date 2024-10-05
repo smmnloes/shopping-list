@@ -1,25 +1,26 @@
-import { Navigate } from 'react-router-dom'
-import Cookies from 'js-cookie'
-import { jwtDecode } from 'jwt-decode'
+import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useAuth } from '../services/auth-provider.tsx'
 
-const isTokenValid = (token: string) => {
-  try {
-    const decodedToken: any = jwtDecode(token)
-    return decodedToken.exp * 1000 > Date.now()
-  } catch (error) {
-    console.error(error)
-    return false
-  }
-}
+const PrivateRoute = ({ children }: { children: JSX.Element }) => {
+  const navigate = useNavigate();
+  const { authStatus } = useAuth();
 
-const PrivateRoute = ({children}: { children: JSX.Element }) => {
-  const token = Cookies.get('jwt')
+  useEffect(() => {
+    if (authStatus && !authStatus.authenticated) {
+      navigate('/login');
+    }
+  }, [authStatus, navigate]);
 
-  if (!token || !isTokenValid(token)) {
-    return <Navigate to="/login"/>
+  if (authStatus === null) {
+    return <div>Loading...</div>;
   }
 
-  return children
+  if (!authStatus.authenticated) {
+    return null;
+  }
+
+  return children;
 }
 
 export default PrivateRoute
