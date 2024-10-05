@@ -11,7 +11,7 @@ interface ListItem {
 
 const EditList = () => {
   const [ listItems, setListItems ] = useState<ListItem[]>([])
-  const [newItemName, setNewItemName] = useState<string>('')
+  const [ newItemName, setNewItemName ] = useState<string>('')
 
   const {listId} = useParams<{ listId: string }>()
   if (!listId) {
@@ -27,9 +27,14 @@ const EditList = () => {
         console.error('Error fetching list items', error)
       }
     })()
-  }, [listId])
+  }, [ listId ])
 
-  const addItem = async () => {
+  const handleSubmit = async (event: any) => {
+    event.preventDefault()
+    if (!newItemName) {
+      return
+    }
+    event.target.reset()
     try {
       const newItem: ListItem = await addItemToList(listId, newItemName).then(response => response.data)
       setListItems([ ...listItems, newItem ])
@@ -56,12 +61,14 @@ const EditList = () => {
         { listItems.map(item => (
           <li key={ item.id }>
             { item.name }
-            <button onClick={ () => removeItem(item.id) }> - </button>
+            <button onClick={ () => removeItem(item.id) }> -</button>
           </li>
         )) }
       </ul>
-      <input type="text" onChange={e => setNewItemName(e.target.value)}/>
-      <button onClick={ addItem }>Add</button>
+      <form onSubmit={ handleSubmit }>
+        <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
+        <button type="submit">Add</button>
+      </form>
     </div>
   )
 }
