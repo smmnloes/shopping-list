@@ -3,6 +3,7 @@ import { AppModule } from './app.module'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { join } from 'path'
 import cookieParser from 'cookie-parser'
+import { ConfigService } from '@nestjs/config'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -11,7 +12,7 @@ async function bootstrap() {
   app.setViewEngine('hbs')
   app.use(cookieParser())
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: app.get(ConfigService).get('FRONTEND_HOST'),
     methods: [ 'GET', 'POST', 'DELETE' ],
     credentials: true
   })

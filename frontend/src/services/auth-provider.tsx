@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import axios from 'axios'
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { getAuthStatus } from '../api/api.ts'
 
 interface AuthContextProps {
   authStatus: AuthStatus | null
@@ -15,7 +15,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
 
   useEffect(() => {
     const fetchAuthStatus = async () => {
-      const status = await axios.get('http://localhost:3000/auth', {withCredentials: true}).then(result => result.data).catch(_ => ({authenticated: false}))
+      const status = await getAuthStatus().then(result => result.data).catch(_ => ({authenticated: false}))
       setAuthStatus(status)
     }
 
@@ -40,5 +40,5 @@ export const useAuth = () => {
 
 export type AuthStatus = {
   authenticated: boolean,
-  username: string
+  username?: string
 }

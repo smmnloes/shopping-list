@@ -7,6 +7,7 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   const { authStatus } = useAuth();
 
   useEffect(() => {
+    console.log(JSON.stringify(authStatus))
     if (authStatus && !authStatus.authenticated) {
       navigate('/login');
     }

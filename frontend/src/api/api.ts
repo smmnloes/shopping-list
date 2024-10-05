@@ -1,8 +1,13 @@
-import axios, { AxiosRequestConfig } from 'axios'
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { AuthStatus } from '../services/auth-provider.tsx'
 
 
 export const login = async (username: string, password: string) => {
-  return axios.post('http://localhost:3000/auth/login', {username, password}, config)
+  return axios.post('http://localhost:3000/api/auth/login', {username, password}, config)
+}
+
+export const getAuthStatus = async (): Promise<AxiosResponse<AuthStatus>> => {
+  return axios.get('http://localhost:3000/api/auth', config)
 }
 
 export const getAllShoppingLists = async () => {
@@ -22,7 +27,7 @@ export const addItemToList = async (listId: string, name: string) => {
 }
 
 export const removeItemFromList = async (listId: string, itemId: string) => {
-  return axios.delete(`http://localhost:3000/api/shopping-lists/${ listId }/items/${itemId}`, config)
+  return axios.delete(`http://localhost:3000/api/shopping-lists/${ listId }/items/${ itemId }`, config)
 }
 
 const config: AxiosRequestConfig = {

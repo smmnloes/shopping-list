@@ -7,7 +7,7 @@ import { JwtAuthGuard } from './guards/jwt.guard'
 import { ExtendedRequest } from '../util/request-types'
 
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService, private readonly configService: ConfigService) {
   }
@@ -26,8 +26,8 @@ export class AuthController {
     const expirationMs = this.configService.get<number>('AUTH_EXPIRATION_PERIOD_DAYS') * 24 * 60 * 60 * 1000
     res.cookie('jwt', jwt,
       {
-        httpOnly: false,
-        secure: false,
+        httpOnly: true,
+        secure: true,
         maxAge: expirationMs,
         sameSite: 'lax'
       })
