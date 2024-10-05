@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Login from './pages/login.tsx'
 import ShoppingLists from './pages/shopping-lists.tsx'
 import PrivateRoute from './routing/private-route.tsx'
+import EditList from './pages/edit-list.tsx'
 
 
 const router = createBrowserRouter([
@@ -24,6 +25,14 @@ const router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <ShoppingLists />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: '/shopping-lists/:listId',
+    element: (
+      <PrivateRoute>
+        <EditList />
       </PrivateRoute>
     ),
   },

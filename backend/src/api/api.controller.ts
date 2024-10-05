@@ -31,11 +31,21 @@ export class ApiController {
   @Post('shopping-lists/:listId/items')
   async addItemToList(@Param('listId', ParseIntPipe) listId: number, @Request() req: ExtendedRequest<{
     item: { name: string }
-  }>) {
+  }>): Promise<ListItemFrontend> {
     const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
-    shoppingList.items.push(new ListItem(req.user.username, req.body.item.name))
+    const newItem = new ListItem(req.user.username, req.body.item.name)
+    shoppingList.items.push(newItem)
     await this.shoppingListRepository.save(shoppingList)
+    return {id: newItem.id, name: newItem.name}
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('shopping-lists/:listId/items')
+  async getListItems(@Param('listId', ParseIntPipe) listId: number): Promise<ListItemFrontend[]> {
+    const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
+    return shoppingList.items.map(({id, name}) => ({id, name}))
+  }
+
 
   @UseGuards(JwtAuthGuard)
   @Delete('shopping-lists/:listId/items/:itemId')
@@ -54,4 +64,4 @@ export type ShoppingListFrontend = {
   createdBy: string,
 }
 
-type ItemFrontend = { name: string, id: number }
+type ListItemFrontend = { name: string, id: number }

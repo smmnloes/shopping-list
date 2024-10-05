@@ -13,17 +13,15 @@ const ShoppingLists = () => {
   const [shoppingLists, setShoppingLists] = useState<ShoppingList[]>([])
   const navigate = useNavigate()
 
-  const fetchShoppingLists = async () => {
-    try {
-      const lists = await getAllShoppingLists().then(response => response.data)
-      setShoppingLists(lists)
-    } catch (error) {
-      console.error('Error fetching shopping lists:', error)
-    }
-  }
-
   useEffect(() => {
-    fetchShoppingLists()
+    (async () => {
+      try {
+        const lists = await getAllShoppingLists().then(response => response.data)
+        setShoppingLists(lists)
+      } catch (error) {
+        console.error('Error fetching shopping lists:', error)
+      }
+    })()
   }, [])
 
   const createList = async () => {
