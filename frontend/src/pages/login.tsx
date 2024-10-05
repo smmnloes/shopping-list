@@ -12,8 +12,7 @@ function Login() {
   const onClick = async () => {
     try {
       await login(username, password)
-      setMessage('Anmeldung erfolgreich!')
-      setTimeout(() => navigate('/'), 2500)
+      navigate('/')
     } catch (error: unknown) {
       console.log((error as AxiosError).message)
       setMessage('Ungültiges Passwort!')
