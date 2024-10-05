@@ -10,5 +10,5 @@ git pull
 # comment in as needed
 npm run ci
 npm run build
-# sudo systemctl restart shopping-list
+sudo systemctl restart shopping-list-backend
 EOF
