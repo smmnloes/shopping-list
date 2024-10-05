@@ -21,7 +21,7 @@ export class AuthController {
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async login(@Request() req: ExtendedRequest<void>, @Response() res: ExpressResponse) {
+  async login(@Request() req: ExtendedRequest<void>, @Response() res: ExpressResponse<AuthStatus>) {
     const jwt = await this.authService.login(req.user)
     const expirationMs = this.configService.get<number>('AUTH_EXPIRATION_PERIOD_DAYS') * 24 * 60 * 60 * 1000
     res.cookie('jwt', jwt,
@@ -31,7 +31,7 @@ export class AuthController {
         maxAge: expirationMs,
         sameSite: 'lax'
       })
-    res.send({message: 'Login successful'}).status(200)
+    res.send({authenticated: true, username: req.user.username}).status(200)
   }
 }
 

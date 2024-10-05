@@ -3,7 +3,7 @@ import { AuthStatus } from '../services/auth-provider.tsx'
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST
 
-export const login = async (username: string, password: string) => {
+export const login = async (username: string, password: string): Promise<AxiosResponse<AuthStatus>> => {
   return axios.post(`${backendHost}/api/auth/login`, {username, password}, config)
 }
 
