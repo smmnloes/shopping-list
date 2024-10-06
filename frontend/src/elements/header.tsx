@@ -4,14 +4,15 @@ function Header() {
   const {authStatus} = useAuth()
   const authenticatedView = (authStatus: AuthStatus | null): string => {
     if (authStatus === null) {
-      return 'checking...'
+      return 'prüfe...'
     }
-    return authStatus.authenticated ? 'true' : 'false'
+    return authStatus.authenticated ? `angemeldet als "${ authStatus.username }"` : 'nicht angemeldet'
   }
   return (
     <>
-      <p>Authenticated: { authenticatedView(authStatus) }</p>
-      <p>Username: { authStatus?.username || '' } </p>
+      <div className="authHeader">
+        { authenticatedView(authStatus) }
+      </div>
     </>
   )
 }

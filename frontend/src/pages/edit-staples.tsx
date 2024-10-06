@@ -50,8 +50,8 @@ const EditStaples = () => {
   }
 
   return (
-    <div className="container">
-      <h1>Staples</h1>
+    <div>
+      <h1>Staples bearbeiten</h1>
       <ul>
         { staples.map(staple => (
           <li key={ staple.id }>
@@ -62,7 +62,7 @@ const EditStaples = () => {
       </ul>
       <form onSubmit={ handleSubmit }>
         <input type="text" onChange={ e => setNewStapleName(e.target.value) }/>
-        <button type="submit">Add</button>
+        <button type="submit"> + </button>
       </form>
     </div>
   )

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createNewList, getAllShoppingLists, deleteList } from '../api/api.ts'
 
-// TODO: share?
 interface ShoppingList {
   id: number
   createdBy: string
@@ -50,12 +49,12 @@ const ShoppingLists = () => {
   }
 
   return (
-    <div className="container">
-      <h1>Shopping Lists</h1>
+    <div>
+      <h1>Alle Einkaufslisten</h1>
       <ul>
         { shoppingLists.map(list => (
           <li key={ list.id }>
-            von: { list.createdBy } erstellt: { new Date(list.createdAt).toLocaleString() }
+            erstellt am <b>{ new Date(list.createdAt).toLocaleString() }</b> von <b>{ list.createdBy }</b>
             <button onClick={ () => handleEdit(list.id) }>Edit</button>
             <button onClick={ () => handleDelete(list.id) }>Delete</button>
           </li>
