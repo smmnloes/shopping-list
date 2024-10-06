@@ -25,9 +25,9 @@ function Login() {
 
   return (
     <>
-      <h1>Bitte einloggen</h1>
+      <h1>Login Page</h1>
       <div className="card">
-        <label htmlFor="userName">Nutzername:</label>
+        <label htmlFor="userName">Benutzername:</label>
         <form onSubmit={ e => e.preventDefault() }>
           <input id="userName" type="text" value={ username } onChange={ (e) => setUsername(e.target.value) }/>
           <label htmlFor="password">Passwort:</label>

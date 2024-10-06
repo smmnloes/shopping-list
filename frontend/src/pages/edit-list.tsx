@@ -55,8 +55,8 @@ const EditList = () => {
   }
 
   return (
-    <div>
-      <h1>Liste Bearbeiten</h1>
+    <div className="container">
+      <h1>Items</h1>
       <ul>
         { listItems.map(item => (
           <li key={ item.id }>
@@ -67,7 +67,7 @@ const EditList = () => {
       </ul>
       <form onSubmit={ handleSubmit }>
         <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
-        <button type="submit"> + </button>
+        <button type="submit">Add</button>
       </form>
     </div>
   )
