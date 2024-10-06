@@ -28,6 +28,7 @@ const ShoppingLists = () => {
     try {
       const newList: ShoppingList = await createNewList().then(response => response.data)
       setShoppingLists([ ...shoppingLists, newList ])
+      navigate(`/shopping-lists/${ newList.id }`)
       console.log('New shopping list created')
     } catch (error) {
       console.error('There was a problem creating the new list', error)
