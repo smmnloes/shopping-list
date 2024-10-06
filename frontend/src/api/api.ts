@@ -35,6 +35,17 @@ export const removeItemFromList = async (listId: string, itemId: string) => {
   return axios.delete(`${backendHost}/api/shopping-lists/${ listId }/items/${ itemId }`, config)
 }
 
+export const getStaples = async () => {
+  return axios.get(`${backendHost}/api/staples`, config)
+}
+
+export const createStaple = async (stapleName: string) => {
+  return axios.post(`${backendHost}/api/staples`, {staple: {name: stapleName}}, config)
+}
+export const deleteStaple = async (stapleId: string) => {
+  return axios.delete(`${backendHost}/api/staples/${stapleId}`, config)
+}
+
 const config: AxiosRequestConfig = {
   withCredentials: true
 }

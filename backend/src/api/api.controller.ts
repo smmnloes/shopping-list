@@ -9,21 +9,31 @@ import { InjectRepository } from '@nestjs/typeorm'
 @Controller('api')
 export class ApiController {
   constructor(
-    @InjectRepository(ShoppingList)
-    readonly shoppingListRepository: Repository<ShoppingList>) {
+    @InjectRepository(ShoppingList) readonly shoppingListRepository: Repository<ShoppingList>,
+    @InjectRepository(ListItem) readonly listItemRepository: Repository<ListItem>
+  ) {
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists')
   async createNewShoppingList(@Request() req: ExtendedRequest<void>): Promise<ShoppingListFrontend> {
-    const {id, createdAt, createdBy} = (await this.shoppingListRepository.save(new ShoppingList(req.user.username)))
+    const staples = await this.listItemRepository.find({where: {isStaple: true}})
+
+    const {
+      id,
+      createdAt,
+      createdBy
+    } = (await this.shoppingListRepository.save(new ShoppingList(req.user.username, staples)))
     return {id, createdAt, createdBy}
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('shopping-lists/:listId')
   async deleteShoppingList(@Param('listId', ParseIntPipe) listId: number) {
-    await this.shoppingListRepository.delete(listId)
+    const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
+    const itemsToDelete = shoppingList.items.filter(item => !item.isStaple)
+    await this.listItemRepository.remove(itemsToDelete)
+    await this.shoppingListRepository.remove([ shoppingList ])
   }
 
 
@@ -58,8 +68,42 @@ export class ApiController {
   @Delete('shopping-lists/:listId/items/:itemId')
   async deleteItemFromList(@Param('listId', ParseIntPipe) listId: number, @Param('itemId', ParseIntPipe) itemId: number) {
     const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
-    shoppingList.items = shoppingList.items.filter(item => item.id !== itemId)
+    const itemToDelete = shoppingList.items.find(item => item.id === itemId)
+    shoppingList.items = shoppingList.items.filter(item => item !== itemToDelete)
     await this.shoppingListRepository.save(shoppingList)
+    if (!itemToDelete.isStaple) {
+      await this.listItemRepository.delete(itemToDelete.id)
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('staples')
+  async getStaples(): Promise<ListItemFrontend[]> {
+    const staples = await this.listItemRepository.find({where: {isStaple: true}})
+    return staples.map(({id, name}) => ({id, name}))
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('staples')
+  async createStaple(@Request() req: ExtendedRequest<{ staple: { name: string } }>): Promise<ListItemFrontend> {
+    const {id, name} = (await this.listItemRepository.save(new ListItem(req.user.username, req.body.staple.name, true)))
+    return {id, name}
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('staples/:stapleId')
+  async deleteStaple(@Param('stapleId', ParseIntPipe) stapleId: number): Promise<void> {
+    const stapleToDelete = await this.listItemRepository.findOneOrFail({
+      where: {id: stapleId},
+      relations: [ 'shoppingLists' ]
+    })
+
+    // remove staple from all shopping lists
+    await Promise.all(stapleToDelete.shoppingLists.map(shoppingList => {
+      shoppingList.items = shoppingList.items.filter(item => item.id !== stapleId)
+      return this.shoppingListRepository.save(shoppingList)
+    }))
+    await this.listItemRepository.delete(stapleToDelete.id)
   }
 
 }

@@ -61,7 +61,7 @@ const EditList = () => {
         { listItems.map(item => (
           <li key={ item.id }>
             { item.name }
-            <button onClick={ () => removeItem(item.id) }> -</button>
+            <button onClick={ () => removeItem(item.id) }> - </button>
           </li>
         )) }
       </ul>

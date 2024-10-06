@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { ListItem } from './list-item'
 
 @Entity()
@@ -6,9 +6,10 @@ export class ShoppingList {
   @PrimaryGeneratedColumn()
   id: number
 
-  constructor(createdBy: string) {
+  constructor(createdBy: string, initialItems: ListItem[]) {
     this.createdBy = createdBy
     this.createdAt = new Date()
+    this.items = initialItems
   }
 
   @Column()
@@ -20,6 +21,7 @@ export class ShoppingList {
   @Column()
   completed: boolean = false
 
-  @OneToMany(() => ListItem, item => item.shoppingList, {eager: true, cascade: true })
-  items?: ListItem[]
+  @ManyToMany(() => ListItem, item => item.shoppingLists, {eager: true, cascade: ['insert'] })
+  @JoinTable()
+  items: ListItem[]
 }
