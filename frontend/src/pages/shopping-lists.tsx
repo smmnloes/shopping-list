@@ -50,7 +50,7 @@ const ShoppingLists = () => {
   }
 
   return (
-    <div className="container">
+    <div>
       <h1>Shopping Lists</h1>
       <ul>
         { shoppingLists.map(list => (

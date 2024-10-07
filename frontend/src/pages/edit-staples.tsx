@@ -29,11 +29,12 @@ const EditStaples = () => {
     if (!newStapleName) {
       return
     }
-    event.target.reset()
     try {
       const newStaple: ListItem = await createStaple(newStapleName).then(response => response.data)
       setStaples([ ...staples, newStaple ])
       console.log('Item added')
+      setNewStapleName('')
+      event.target.reset()
     } catch (error) {
       console.error('There was a problem adding a new icon', error)
     }
@@ -50,7 +51,7 @@ const EditStaples = () => {
   }
 
   return (
-    <div className="container">
+    <div>
       <h1>Staples</h1>
       <ul>
         { staples.map(staple => (

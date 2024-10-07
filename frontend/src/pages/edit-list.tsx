@@ -34,11 +34,12 @@ const EditList = () => {
     if (!newItemName) {
       return
     }
-    event.target.reset()
     try {
       const newItem: ListItem = await addItemToList(listId, newItemName).then(response => response.data)
       setListItems([ ...listItems, newItem ])
       console.log('Item added')
+      setNewItemName('')
+      event.target.reset()
     } catch (error) {
       console.error('There was a problem adding a new icon', error)
     }
@@ -55,7 +56,7 @@ const EditList = () => {
   }
 
   return (
-    <div className="container">
+    <div>
       <h1>Items</h1>
       <ul>
         { listItems.map(item => (
