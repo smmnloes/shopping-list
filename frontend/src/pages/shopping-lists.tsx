@@ -51,17 +51,17 @@ const ShoppingLists = () => {
 
   return (
     <div>
-      <h1>Shopping Lists</h1>
-      <ul>
+      <h1>Einkaufslisten</h1>
+      <div className="listContainer">
         { shoppingLists.map(list => (
-          <li key={ list.id }>
-            von: { list.createdBy } erstellt: { new Date(list.createdAt).toLocaleString() }
-            <button onClick={ () => handleEdit(list.id) }>Edit</button>
-            <button onClick={ () => handleDelete(list.id) }>Delete</button>
-          </li>
+          <div className="listElement" key={ list.id }>
+            <div className="listElementInfo">von <b>{ list.createdBy }, { new Date(list.createdAt).toLocaleString() }</b></div>
+            <button onClick={ () => handleEdit(list.id) }>Bearbeiten</button>
+            <button onClick={ () => handleDelete(list.id) }>Löschen</button>
+          </div>
         )) }
-      </ul>
-      <button id="createList" onClick={ createList }>Create new list</button>
+      </div>
+      <button id="createList" onClick={ createList }>Neu</button>
     </div>
   )
 }

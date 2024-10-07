@@ -1,0 +1,37 @@
+html {
+    font-size: 16px;
+    background-color: floralwhite;
+}
+
+#root {
+    margin: 30px;
+    font-family:
+            -apple-system, /* iOS/macOS */
+            BlinkMacSystemFont, /* macOS */
+            "Segoe UI", /* Windows */
+            Roboto, /* Android */
+            "Helvetica Neue", /* macOS/iOS */
+            Arial, /* Fallback generic font */
+            sans-serif; /* Default generic font */
+}
+
+.container {
+    width: 80vw;
+    text-align: center;
+    margin: auto;
+}
+
+.listContainer {
+    padding: 5px;
+}
+
+.listElement {
+    background-color: palevioletred;
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 10px;
+}
+
+.listElementInfo {
+    font-size: 0.6em;
+}

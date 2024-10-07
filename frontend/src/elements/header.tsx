@@ -10,8 +10,10 @@ function Header() {
   }
   return (
     <>
-      <p>Authenticated: { authenticatedView(authStatus) }</p>
-      <p>Username: { authStatus?.username || '' } </p>
+      <header>
+        <p>Authenticated: { authenticatedView(authStatus) }</p>
+        <p>Username: { authStatus?.username || '' } </p>
+      </header>
     </>
   )
 }
