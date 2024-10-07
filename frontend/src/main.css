@@ -25,13 +25,31 @@ html {
     padding: 5px;
 }
 
+.listElementContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
 .listElement {
     background-color: palevioletred;
     padding: 5px;
-    margin-bottom: 5px;
+    width: 70%;
+
     border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .listElementInfo {
-    font-size: 0.6em;
+    font-size: 0.8em;
+}
+
+.deleteButton {
+    font-size: 1em;
+    border-radius: 7px;
+    background-color: palevioletred;
+    outline: none;
+    margin-left: 5px;
+    border: none;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }

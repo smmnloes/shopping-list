@@ -36,6 +36,7 @@ const ShoppingLists = () => {
   }
 
   const handleEdit = (id: number) => {
+    console.log('triggered')
     navigate(`/shopping-lists/${ id }`)
   }
 
@@ -54,10 +55,14 @@ const ShoppingLists = () => {
       <h1>Einkaufslisten</h1>
       <div className="listContainer">
         { shoppingLists.map(list => (
-          <div className="listElement" key={ list.id }>
-            <div className="listElementInfo">von <b>{ list.createdBy }, { new Date(list.createdAt).toLocaleString() }</b></div>
-            <button onClick={ () => handleEdit(list.id) }>Bearbeiten</button>
-            <button onClick={ () => handleDelete(list.id) }>Löschen</button>
+          <div className="listElementContainer">
+            <div className="listElement" key={ list.id } role="link"
+                 onClick={ () => handleEdit(list.id) }>
+              <div
+                className="listElementInfo">von <b>{ list.createdBy }, { new Date(list.createdAt).toLocaleString() }</b>
+              </div>
+            </div>
+            <button className="deleteButton" onClick={ () => handleDelete(list.id) }>&#x2716;</button>
           </div>
         )) }
       </div>
