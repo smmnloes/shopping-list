@@ -10,6 +10,27 @@ export default defineConfig({
   plugins: [ react(), VitePWA({
     registerType: 'autoUpdate',
     includeAssets: [ 'favicon.svg', 'robots.txt', 'apple-touch-icon.png' ],
+
+    workbox: {
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/shopping.mloesch\.it\/api.*$/,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'api-cache',
+            networkTimeoutSeconds: 10,
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 24 * 60 * 60, // Cache for 1 day
+            },
+            cacheableResponse: {
+              statuses: [0, 200],
+            },
+          },
+        },
+      ],
+    },
+
     manifest: {
       name: 'Einkaufsliste',
       short_name: 'Einkaufsliste',
