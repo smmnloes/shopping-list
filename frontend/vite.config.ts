@@ -33,6 +33,7 @@ export default defineConfig({
 
     manifest: {
       name: 'Einkaufsliste',
+      display: 'browser',
       short_name: 'Einkaufsliste',
       description: 'Unsere Einkaufsliste',
       theme_color: '#ffffff',
