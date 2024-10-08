@@ -1,4 +1,5 @@
 import { AuthStatus, useAuth } from '../services/auth-provider.tsx'
+import OnlineStatus from './online-status.tsx'
 
 function Header() {
   const {authStatus} = useAuth()
@@ -6,13 +7,13 @@ function Header() {
     if (authStatus === null) {
       return 'checking...'
     }
-    return authStatus.authenticated ? 'true' : 'false'
+    return authStatus.authenticated ? `angemeldet als "${authStatus.username}"` : 'nicht angemeldet'
   }
   return (
     <>
       <header>
-        <p>Authenticated: { authenticatedView(authStatus) }</p>
-        <p>Username: { authStatus?.username || '' } </p>
+        <OnlineStatus/>
+        <p>{ authenticatedView(authStatus) }</p>
       </header>
     </>
   )
