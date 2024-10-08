@@ -1,5 +1,4 @@
 import { AuthStatus, useAuth } from '../services/auth-provider.tsx'
-import OnlineStatus from './online-status.tsx'
 
 function Header() {
   const {authStatus} = useAuth()
@@ -12,7 +11,6 @@ function Header() {
   return (
     <>
       <header>
-        <OnlineStatus/>
         <p>{ authenticatedView(authStatus) }</p>
       </header>
     </>
