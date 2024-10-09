@@ -59,7 +59,7 @@ const ShoppingLists = () => {
             <div className="listElement" key={ list.id } role="link"
                  onClick={ () => handleEdit(list.id) }>
               <div
-                className="listElementInfo">von <b>{ list.createdBy }, { new Date(list.createdAt).toLocaleString() }</b>
+                className="listElementInfo">von <b>{ list.createdBy },<br/>{ new Date(list.createdAt).toLocaleString() }</b>
               </div>
             </div>
             <button className="deleteButton" onClick={ () => handleDelete(list.id) }>&#x2716;</button>

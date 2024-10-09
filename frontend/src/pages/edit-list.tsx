@@ -58,14 +58,17 @@ const EditList = () => {
   return (
     <div>
       <h1>Items</h1>
-      <ul>
+      <div className="listContainer">
+
         { listItems.map(item => (
-          <li key={ item.id }>
-            { item.name }
-            <button onClick={ () => removeItem(item.id) }> - </button>
-          </li>
+          <div className="listElementContainer">
+            <div className="listElement">
+              { item.name }
+            </div>
+            <button  className="deleteButton" onClick={ () => removeItem(item.id) }>&#x2716;</button>
+          </div>
         )) }
-      </ul>
+      </div>
       <form onSubmit={ handleSubmit }>
         <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
         <button type="submit">Add</button>
