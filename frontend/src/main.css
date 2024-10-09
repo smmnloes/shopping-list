@@ -26,6 +26,7 @@ html {
 
 button {
     background-color: var(--color-highlight);
+    color: var(--color-font);
 }
 
 .container {
@@ -37,7 +38,6 @@ button {
 
 .listContainer {
     padding: 5px;
-    width: 70%;
     margin: auto;
 }
 
