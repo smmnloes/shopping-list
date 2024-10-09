@@ -65,13 +65,13 @@ const EditList = () => {
             <div className="listElement">
               { item.name }
             </div>
-            <button  className="deleteButton" onClick={ () => removeItem(item.id) }>&#x2716;</button>
+            <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"/></button>
           </div>
         )) }
       </div>
       <form onSubmit={ handleSubmit }>
         <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
-        <button className="addButton small" type="submit">+</button>
+        <button className="addButton small" type="submit">Hinzufügen</button>
       </form>
     </div>
   )

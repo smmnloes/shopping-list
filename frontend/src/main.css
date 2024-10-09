@@ -7,13 +7,10 @@
 
 :root {
     --color-font: #2D3142;
-    --secondary-color: #70C1B3;
     --color-three: #bcb9e3;
     --color-background: #EAE8FF;
     --color-highlight: #b0cfed;
-    --color-shadow: rgb(118, 142, 165);
-    --font-size: 1.5rem;
-    --spacing: 8px;
+    --color-shadow: rgb(64, 76, 90);
 }
 
 
@@ -56,7 +53,7 @@ button {
     width: 100%;
 
     border-radius: 10px;
-    box-shadow: 2px 2px 5px black;
+    box-shadow: 2px 2px 5px var(--color-shadow);
 }
 
 
@@ -64,9 +61,9 @@ button {
 .deleteButton {
     border-radius: 7px;
     outline: none;
-    margin-left: 5px;
+    margin-left: 15px;
     border: none;
-    box-shadow: 2px 2px 5px black;
+    box-shadow: 2px 2px 5px var(--color-shadow);
 }
 
 .deleteButton img {
@@ -78,13 +75,11 @@ button {
     border-radius: 7px;
     outline: none;
     border: none;
-    box-shadow: 2px 2px 5px black;
+    box-shadow: 2px 2px 5px var(--color-shadow);
     padding: 7px;
 }
 
 .addButton.small {
-    width: 1.5em;
-    height: 1.5em;
     margin-left: 10px;
 }
 
@@ -93,7 +88,7 @@ button {
     border-radius: 7px;
     outline: none;
     border: none;
-    box-shadow: 2px 2px 5px black;
+    box-shadow: 2px 2px 5px var(--color-shadow);
     padding: 10px;
     margin: auto;
 }

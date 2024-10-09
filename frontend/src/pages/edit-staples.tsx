@@ -57,13 +57,14 @@ const EditStaples = () => {
         { staples.map(staple => (
           <div className="listElementContainer">
             <div className="listElement">{ staple.name }</div>
-            <button className="deleteButton" onClick={ () => deleteStaple(staple.id) }>&#x2716;</button>
+            <button className="deleteButton" onClick={ () => deleteStaple(staple.id) }><img src="/paper-bin.svg"/>
+            </button>
           </div>
         )) }
       </div>
       <form onSubmit={ handleSubmit }>
         <input type="text" onChange={ e => setNewStapleName(e.target.value) }/>
-        <button  className="addButton small" type="submit">+</button>
+        <button  className="addButton small" type="submit">Hinzufügen</button>
       </form>
     </div>
   )
