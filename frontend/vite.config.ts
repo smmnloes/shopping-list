@@ -18,7 +18,7 @@ export default defineConfig({
           handler: 'NetworkFirst',
           options: {
             cacheName: 'api-cache',
-            networkTimeoutSeconds: 10,
+            networkTimeoutSeconds: 5,
             expiration: {
               maxEntries: 100,
               maxAgeSeconds: 24 * 60 * 60, // Cache for 1 day
@@ -33,7 +33,7 @@ export default defineConfig({
 
     manifest: {
       name: 'Einkaufsliste',
-      display: 'browser',
+      display: 'minimal-ui',
       short_name: 'Einkaufsliste',
       description: 'Unsere Einkaufsliste',
       theme_color: '#ffffff',
