@@ -57,7 +57,7 @@ const EditList = () => {
 
   return (
     <div>
-      <h1>Items</h1>
+      <h1>Liste bearbeiten</h1>
       <div className="listContainer">
 
         { listItems.map(item => (
