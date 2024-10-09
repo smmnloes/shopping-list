@@ -71,7 +71,7 @@ const EditList = () => {
       </div>
       <form onSubmit={ handleSubmit }>
         <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
-        <button type="submit">Add</button>
+        <button className="addButton small" type="submit">+</button>
       </form>
     </div>
   )

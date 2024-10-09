@@ -6,10 +6,10 @@ function App() {
     <>
       <h1>Einkaufsliste</h1>
       <nav>
-        <ul>
-          <li><Link to="/shopping-lists">Einkaufslisten</Link></li>
-          <li><Link to="/staples">Staples</Link></li>
-        </ul>
+        <div className="navContainer">
+          <div className="navElement small"><Link to="/shopping-lists"><img src="/shopping-list-icon.svg"/></Link></div>
+          <div className="navElement"><Link to="/staples"><img src="/stapler.svg"/></Link></div>
+        </div>
       </nav>
     </>
   )

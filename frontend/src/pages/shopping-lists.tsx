@@ -59,14 +59,14 @@ const ShoppingLists = () => {
             <div className="listElement" key={ list.id } role="link"
                  onClick={ () => handleEdit(list.id) }>
               <div
-                className="listElementInfo">von <b>{ list.createdBy },<br/>{ new Date(list.createdAt).toLocaleString() }</b>
+                className="listElementInfo">von { list.createdBy },<br/>{ new Date(list.createdAt).toLocaleString() }
               </div>
             </div>
             <button className="deleteButton" onClick={ () => handleDelete(list.id) }>&#x2716;</button>
           </div>
         )) }
       </div>
-      <button id="createList" onClick={ createList }>Neu</button>
+      <button className="addButton" onClick={ createList }> + </button>
     </div>
   )
 }

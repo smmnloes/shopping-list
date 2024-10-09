@@ -1,24 +1,29 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('/fonts/Poppins-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
 html {
     font-size: 16px;
     background-color: floralwhite;
 }
 
 #root {
-    margin: 30px;
-    font-family:
-            -apple-system, /* iOS/macOS */
-            BlinkMacSystemFont, /* macOS */
-            "Segoe UI", /* Windows */
-            Roboto, /* Android */
-            "Helvetica Neue", /* macOS/iOS */
-            Arial, /* Fallback generic font */
-            sans-serif; /* Default generic font */
+
 }
 
 .container {
-    width: 80vw;
+    width: 90vw;
     text-align: center;
     margin: auto;
+    max-width:550px;
 }
 
 .listContainer {
@@ -28,7 +33,7 @@ html {
 .listElementContainer {
     display: flex;
     justify-content: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .listElement {
@@ -45,6 +50,8 @@ html {
 }
 
 .deleteButton {
+    font-weight: 700;
+    width: 2.5em;
     font-size: 1em;
     border-radius: 7px;
     background-color: palevioletred;
@@ -52,4 +59,90 @@ html {
     margin-left: 5px;
     border: none;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.addButton {
+    width: 1.5em;
+    height: 1.5em;
+    font-weight: 700;
+    font-size: 2em;
+    background-color: palevioletred;
+    border-radius: 7px;
+    outline: none;
+    border: none;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.addButton.small {
+    font-size: 1.5em;
+    width: 1.5em;
+    height: 1.5em;
+    margin-left: 10px;
+}
+
+.loginButton {
+    width: 50%;
+    background-color: palevioletred;
+    border-radius: 7px;
+    outline: none;
+    border: none;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    margin: auto;
+}
+
+.header {
+    text-align: right;
+    font-size: 0.7em;
+    padding: 10px;
+}
+
+form input {
+    font-size: 1em;
+    border-radius: 7px;
+    outline: none;
+    border: black solid 1px;
+    padding: 8px;
+}
+
+.navContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.navElement {
+}
+
+.navElement img {
+    height: 4em;
+    width: 4em;
+    padding: 20px;
+    filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.4));
+
+}
+
+.navElement.small img {
+    height: 3.7em;
+    width: 3.7em;
+}
+
+.loginContainer {
+
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    padding: 35px;
+}
+
+
+
+.loginForm input {
+    margin-bottom: 20px;
+}
+
+.loginForm label {
+    text-align: left;
+    font-size: 0.8em;
 }

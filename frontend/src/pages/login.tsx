@@ -25,14 +25,14 @@ function Login() {
 
   return (
     <>
-      <h1>Login Page</h1>
-      <div className="card">
-        <label htmlFor="userName">Nutzername:</label>
-        <form onSubmit={ e => e.preventDefault() }>
+      <h1>Anmeldung</h1>
+      <div className="container">
+        <form className="loginForm" onSubmit={ e => e.preventDefault() }>
+          <label htmlFor="userName">Nutzername:</label>
           <input id="userName" type="text" value={ username } onChange={ (e) => setUsername(e.target.value) }/>
           <label htmlFor="password">Passwort:</label>
           <input id="password" type="password" value={ password } onChange={ (e) => setPassword(e.target.value) }/>
-          <button type="submit"  onClick={ onClick }>Anmelden</button>
+          <button className="loginButton" type="submit" onClick={ onClick }>Anmelden</button>
         </form>
 
         { message && <p>{ message }</p> }

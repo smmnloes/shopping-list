@@ -10,7 +10,7 @@ function Header() {
   }
   return (
     <>
-      <header>
+      <header className="header">
         <p>{ authenticatedView(authStatus) }</p>
       </header>
     </>
