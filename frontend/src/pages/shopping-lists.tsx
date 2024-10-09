@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createNewList, getAllShoppingLists, deleteList } from '../api/api.ts'
+import { createNewList, deleteList, getAllShoppingLists } from '../api/api.ts'
 
 // TODO: share?
 interface ShoppingList {
@@ -50,6 +50,19 @@ const ShoppingLists = () => {
     }
   }
 
+  const formatDate=(createdAt: string) => {
+    const date = new Date(createdAt)
+    return date.toLocaleDateString('de', {
+      month: '2-digit',
+      day: '2-digit',
+    }) + ' um ' + date.toLocaleTimeString('de', {
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+
+
+  }
+
   return (
     <div>
       <h1>Einkaufslisten</h1>
@@ -59,14 +72,14 @@ const ShoppingLists = () => {
             <div className="listElement" key={ list.id } role="link"
                  onClick={ () => handleEdit(list.id) }>
               <div
-                className="listElementInfo">von { list.createdBy },<br/>{ new Date(list.createdAt).toLocaleString() }
+                className="listElementInfo">von { list.createdBy },<br/>{ formatDate(list.createdAt) }
               </div>
             </div>
-            <button className="deleteButton" onClick={ () => handleDelete(list.id) }>&#x2716;</button>
+            <button className="deleteButton" onClick={ () => handleDelete(list.id) }><img src="/paper-bin.svg"/></button>
           </div>
         )) }
       </div>
-      <button className="addButton" onClick={ createList }> + </button>
+      <button className="addButton" onClick={ createList }>Neue Liste</button>
     </div>
   )
 }

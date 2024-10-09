@@ -9,7 +9,7 @@ export default defineConfig({
   },
   plugins: [ react(), VitePWA({
     registerType: 'autoUpdate',
-    includeAssets: [ 'vite.svg' ],
+    includeAssets: [ '*.svg', '*.png', 'fonts/*.ttf' ],
 
     workbox: {
       runtimeCaching: [

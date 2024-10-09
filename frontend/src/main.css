@@ -5,18 +5,30 @@
     font-style: normal;
 }
 
+:root {
+    --color-font: #2D3142;
+    --secondary-color: #70C1B3;
+    --color-three: #bcb9e3;
+    --color-background: #EAE8FF;
+    --color-highlight: #b0cfed;
+    --color-shadow: rgb(118, 142, 165);
+    --font-size: 1.5rem;
+    --spacing: 8px;
+}
+
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Calibri', sans-serif;
+    color: var(--color-font);
 }
 
 html {
     font-size: 16px;
-    background-color: floralwhite;
+    background-color: var(--color-background);
 }
 
-#root {
-
+button {
+    background-color: var(--color-highlight);
 }
 
 .container {
@@ -28,6 +40,8 @@ html {
 
 .listContainer {
     padding: 5px;
+    width: 70%;
+    margin: auto;
 }
 
 .listElementContainer {
@@ -37,44 +51,38 @@ html {
 }
 
 .listElement {
-    background-color: palevioletred;
-    padding: 5px;
-    width: 70%;
+    background-color: var(--color-three);
+    padding: 10px;
+    width: 100%;
 
     border-radius: 10px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 2px 5px black;
 }
 
-.listElementInfo {
-    font-size: 0.8em;
-}
+
 
 .deleteButton {
-    font-weight: 700;
-    width: 2.5em;
-    font-size: 1em;
     border-radius: 7px;
-    background-color: palevioletred;
     outline: none;
     margin-left: 5px;
     border: none;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 2px 5px black;
+}
+
+.deleteButton img {
+    height: 20px;
+    width: 20px;
 }
 
 .addButton {
-    width: 1.5em;
-    height: 1.5em;
-    font-weight: 700;
-    font-size: 2em;
-    background-color: palevioletred;
     border-radius: 7px;
     outline: none;
     border: none;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 2px 5px black;
+    padding: 7px;
 }
 
 .addButton.small {
-    font-size: 1.5em;
     width: 1.5em;
     height: 1.5em;
     margin-left: 10px;
@@ -82,26 +90,23 @@ html {
 
 .loginButton {
     width: 50%;
-    background-color: palevioletred;
     border-radius: 7px;
     outline: none;
     border: none;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 2px 5px black;
     padding: 10px;
     margin: auto;
 }
 
 .header {
     text-align: right;
-    font-size: 0.7em;
     padding: 10px;
 }
 
 form input {
-    font-size: 1em;
     border-radius: 7px;
     outline: none;
-    border: black solid 1px;
+    border: var(--color-font) solid 1px;
     padding: 8px;
 }
 
@@ -117,7 +122,7 @@ form input {
     height: 4em;
     width: 4em;
     padding: 20px;
-    filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.4));
+    filter: drop-shadow(3px 3px 2px var(--color-shadow));
 
 }
 
@@ -126,14 +131,14 @@ form input {
     width: 3.7em;
 }
 
-.loginContainer {
 
-}
 
 .loginForm {
     display: flex;
     flex-direction: column;
     padding: 35px;
+    width: 50%;
+    margin: auto;
 }
 
 
@@ -144,5 +149,4 @@ form input {
 
 .loginForm label {
     text-align: left;
-    font-size: 0.8em;
 }
