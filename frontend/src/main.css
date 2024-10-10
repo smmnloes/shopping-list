@@ -140,15 +140,15 @@ form input {
 
 .addItemForm {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .addItemForm input {
-    width: 60%;
+    width: 40%;
 }
 
 .addItemForm button {
-    width: 30%;
+    width: 20%;
 }
 
 .listAndInput {
