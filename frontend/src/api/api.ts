@@ -7,6 +7,10 @@ export const login = async (username: string, password: string): Promise<AuthSta
   return axios.post(`${ backendHost }/api/auth/login`, {username, password}, config).then(response => response.data)
 }
 
+export const logout = async () => {
+  return axios.post(`${ backendHost }/api/auth/logout`,{}, config).then(response => response.data)
+}
+
 export const getAuthStatus = async (): Promise<AuthStatus> => {
   return axios.get(`${ backendHost }/api/auth`, config).then(response => response.data)
 }

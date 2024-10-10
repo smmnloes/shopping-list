@@ -21,6 +21,10 @@ input {
 button {
     background-color: var(--color-highlight);
     color: var(--color-font);
+    border-radius: 7px;
+    outline: none;
+    border: none;
+    box-shadow: 2px 2px 5px var(--color-shadow);
 }
 
 .container {
@@ -52,11 +56,8 @@ button {
 
 
 .deleteButton {
-    border-radius: 7px;
-    outline: none;
     margin-left: 15px;
-    border: none;
-    box-shadow: 2px 2px 5px var(--color-shadow);
+
 }
 
 .deleteButton img {
@@ -65,10 +66,6 @@ button {
 }
 
 .addButton {
-    border-radius: 7px;
-    outline: none;
-    border: none;
-    box-shadow: 2px 2px 5px var(--color-shadow);
     padding: 7px;
 }
 
@@ -78,10 +75,6 @@ button {
 
 .loginButton {
     width: 50%;
-    border-radius: 7px;
-    outline: none;
-    border: none;
-    box-shadow: 2px 2px 5px var(--color-shadow);
     padding: 10px;
     margin: auto;
 }
@@ -89,6 +82,7 @@ button {
 .header {
     text-align: right;
     padding: 10px;
+    font-size: 15px;
 }
 
 form input {
@@ -125,7 +119,7 @@ form input {
     display: flex;
     flex-direction: column;
     padding: 35px;
-    width: 50%;
+    width: 70%;
     margin: auto;
 }
 
@@ -156,4 +150,11 @@ form input {
 
 .listAndInput {
     padding: 5px;
+}
+
+
+
+.header button {
+    padding: 5px;
+    margin-top: 5px;
 }

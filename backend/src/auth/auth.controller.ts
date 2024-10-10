@@ -33,6 +33,20 @@ export class AuthController {
       })
     res.send({authenticated: true, username: req.user.username}).status(200)
   }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async logout(@Response() res: ExpressResponse<void>) {
+    res.cookie('jwt', 'invalid',
+      {
+        httpOnly: true,
+        secure: true,
+        maxAge: 0,
+        sameSite: 'lax'
+      })
+    res.status(200).send()
+  }
 }
 
 export type AuthStatus = {

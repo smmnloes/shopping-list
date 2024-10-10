@@ -1,17 +1,28 @@
 import { AuthStatus, useAuth } from '../services/auth-provider.tsx'
+import { logout } from '../api/api.ts'
+import { useNavigate } from 'react-router-dom'
 
 function Header() {
-  const {authStatus} = useAuth()
+  const {authStatus, setAuthStatus} = useAuth()
+  const navigate = useNavigate()
   const authenticatedView = (authStatus: AuthStatus | null): string => {
     if (authStatus === null) {
       return 'checking...'
     }
-    return authStatus.authenticated ? `angemeldet als "${authStatus.username}"` : 'nicht angemeldet'
+    return authStatus.authenticated ? `angemeldet als ${ authStatus.username }` : 'nicht angemeldet'
   }
+
+  const handleLogout = async () => {
+    await logout()
+    setAuthStatus({authenticated: false})
+    navigate('/login')
+  }
+
   return (
     <>
       <header className="header">
-        <p>{ authenticatedView(authStatus) }</p>
+        <div>{ authenticatedView(authStatus) }</div>
+        { authStatus?.authenticated && (<button onClick={ handleLogout }>Logout</button>) }
       </header>
     </>
   )
