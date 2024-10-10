@@ -10,11 +10,12 @@
 body {
     font-family: 'Calibri', sans-serif;
     color: var(--color-font);
-}
-
-html {
     font-size: 20px;
     background-color: var(--color-background);
+}
+
+input {
+    font-size: 16px;
 }
 
 button {
@@ -140,15 +141,17 @@ form input {
 
 .addItemForm {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
 }
 
+
+
 .addItemForm input {
-    width: 40%;
+    width: 60%;
 }
 
 .addItemForm button {
-    width: 20%;
+    width: 30%;
 }
 
 .listAndInput {
