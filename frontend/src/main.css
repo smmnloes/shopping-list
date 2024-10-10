@@ -79,11 +79,6 @@ button {
     margin: auto;
 }
 
-.header {
-    text-align: right;
-    padding: 10px;
-    font-size: 15px;
-}
 
 form input {
     border-radius: 7px;
@@ -152,6 +147,11 @@ form input {
     padding: 5px;
 }
 
+.header {
+    text-align: right;
+    padding: 10px;
+    font-size: 15px;
+}
 
 
 .header button {
@@ -161,4 +161,5 @@ form input {
 
 .onlineIndicator {
     margin-top: 5px;
+    font-size: 15px;
 }
