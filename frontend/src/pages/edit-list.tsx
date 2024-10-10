@@ -58,21 +58,23 @@ const EditList = () => {
   return (
     <div>
       <h1>Liste bearbeiten</h1>
-      <div className="listContainer">
-
-        { listItems.map(item => (
-          <div className="listElementContainer">
-            <div className="listElement">
-              { item.name }
+      <div className="listAndInput">
+        <div className="listContainer">
+          { listItems.map(item => (
+            <div className="listElementContainer">
+              <div className="listElement">
+                { item.name }
+              </div>
+              <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"/>
+              </button>
             </div>
-            <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"/></button>
-          </div>
-        )) }
+          )) }
+        </div>
+        <form className="addItemForm" onSubmit={ handleSubmit }>
+          <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
+          <button className="addButton small" type="submit">Hinzufügen</button>
+        </form>
       </div>
-      <form onSubmit={ handleSubmit }>
-        <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
-        <button className="addButton small" type="submit">Hinzufügen</button>
-      </form>
     </div>
   )
 }
