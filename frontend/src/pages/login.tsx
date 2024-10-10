@@ -13,7 +13,7 @@ function Login() {
 
   const onClick = async () => {
     try {
-      const authStatus = await login(username, password).then(response => response.data)
+      const authStatus = await login(username, password)
       setAuthStatus(authStatus)
       navigate('/')
     } catch (error: unknown) {

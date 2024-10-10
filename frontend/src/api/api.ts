@@ -1,26 +1,26 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 import { AuthStatus } from '../services/auth-provider.tsx'
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST
 
-export const login = async (username: string, password: string): Promise<AxiosResponse<AuthStatus>> => {
-  return axios.post(`${ backendHost }/api/auth/login`, {username, password}, config)
+export const login = async (username: string, password: string): Promise<AuthStatus> => {
+  return axios.post(`${ backendHost }/api/auth/login`, {username, password}, config).then(response => response.data)
 }
 
-export const getAuthStatus = async (): Promise<AxiosResponse<AuthStatus>> => {
-  return axios.get(`${ backendHost }/api/auth`, config)
+export const getAuthStatus = async (): Promise<AuthStatus> => {
+  return axios.get(`${ backendHost }/api/auth`, config).then(response => response.data)
 }
 
 export const getAllShoppingLists = async () => {
-  return axios.get(`${ backendHost }/api/shopping-lists`, config)
+  return axios.get(`${ backendHost }/api/shopping-lists`, config).then(response => response.data)
 }
 
 export const createNewList = async () => {
-  return axios.post(`${ backendHost }/api/shopping-lists`, {}, config)
+  return axios.post(`${ backendHost }/api/shopping-lists`, {}, config).then(response => response.data)
 }
 
 export const deleteList = async (listId: number) => {
-  return axios.delete(`${ backendHost }/api/shopping-lists/${ listId }`, config)
+  return axios.delete(`${ backendHost }/api/shopping-lists/${ listId }`, config).then(response => response.data)
 }
 
 export const getListItems = async (listId: string) => {

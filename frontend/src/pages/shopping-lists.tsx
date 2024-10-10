@@ -16,7 +16,7 @@ const ShoppingLists = () => {
   useEffect(() => {
     (async () => {
       try {
-        const lists = await getAllShoppingLists().then(response => response.data)
+        const lists = await getAllShoppingLists()
         setShoppingLists(lists)
       } catch (error) {
         console.error('Error fetching shopping lists:', error)
@@ -26,7 +26,7 @@ const ShoppingLists = () => {
 
   const createList = async () => {
     try {
-      const newList: ShoppingList = await createNewList().then(response => response.data)
+      const newList: ShoppingList = await createNewList()
       setShoppingLists([ ...shoppingLists, newList ])
       navigate(`/shopping-lists/${ newList.id }`)
       console.log('New shopping list created')

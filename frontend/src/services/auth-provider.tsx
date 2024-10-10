@@ -15,7 +15,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
 
   useEffect(() => {
     const fetchAuthStatus = async () => {
-      const status = await getAuthStatus().then(result => result.data).catch(_ => ({authenticated: false}))
+      const status = await getAuthStatus().catch(_ => ({authenticated: false}))
       setAuthStatus(status)
     }
 
