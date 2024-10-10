@@ -1,6 +1,7 @@
 import { AuthStatus, useAuth } from '../services/auth-provider.tsx'
-import { logout } from '../api/api.ts'
+import { logout, onlineStatus } from '../api/api.ts'
 import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
 function Header() {
   const {authStatus, setAuthStatus} = useAuth()
@@ -11,6 +12,26 @@ function Header() {
     }
     return authStatus.authenticated ? `angemeldet als ${ authStatus.username }` : 'nicht angemeldet'
   }
+
+  // TODO refactor out into own component, make certain actions unavailable when offline (global context)
+  const [isOnline, setIsOnline] = useState<boolean | null>(null);
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const response = await onlineStatus();
+        setIsOnline(response.status === 200);
+      } catch (error) {
+        setIsOnline(false);
+      }
+    };
+
+    checkStatus();
+
+    const intervalId = setInterval(checkStatus, 3000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   const handleLogout = async () => {
     await logout()
@@ -23,6 +44,7 @@ function Header() {
       <header className="header">
         <div>{ authenticatedView(authStatus) }</div>
         { authStatus?.authenticated && (<button onClick={ handleLogout }>Logout</button>) }
+        <div className="onlineIndicator">{isOnline ? 'online': 'offline'}</div>
       </header>
     </>
   )

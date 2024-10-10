@@ -14,7 +14,9 @@ export default defineConfig({
     workbox: {
       runtimeCaching: [
         {
-          urlPattern: /^https:\/\/shopping.mloesch\.it\/api.*$/,
+          urlPattern: ({url}) => {
+            return url.pathname.startsWith('/api') && !url.pathname.includes('onlinestatus')
+          },
           handler: 'NetworkFirst',
           options: {
             cacheName: 'api-cache',

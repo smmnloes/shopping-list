@@ -14,6 +14,11 @@ export class ApiController {
   ) {
   }
 
+  @Get('onlinestatus')
+  async getOnlineStatus(): Promise<void> {
+    return
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists')
   async createNewShoppingList(@Request() req: ExtendedRequest<void>): Promise<ShoppingListFrontend> {

@@ -50,6 +50,10 @@ export const deleteStaple = async (stapleId: string) => {
   return axios.delete(`${ backendHost }/api/staples/${ stapleId }`, config).then(response => response.data)
 }
 
+export const onlineStatus = async () => {
+  return axios.get(`${ backendHost }/api/onlinestatus`, config)
+}
+
 const config: AxiosRequestConfig = {
   withCredentials: true
 }

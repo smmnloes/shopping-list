@@ -43,7 +43,6 @@ const EditableList = (
     try {
       const newItem: ListItem = await addItemApiCall(newItemName, listId)
       setListItems([ ...listItems, newItem ])
-      console.log('Item added')
       setNewItemName('')
       event.target.reset()
     } catch (error) {
@@ -66,8 +65,8 @@ const EditableList = (
       <h1>{ title }</h1>
       <div className="listAndInput">
         <div className="listContainer">
-          { listItems.map(item => (
-            <div className="listElementContainer">
+          { listItems.map((item, index) => (
+            <div key={index} className="listElementContainer">
               <div className="listElement">
                 { item.name }
               </div>
