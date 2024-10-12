@@ -65,14 +65,14 @@ export class ApiController {
     const newItem = new ListItem(req.user.username, req.body.item.name, shoppingList.shopCategory)
     shoppingList.items.push(newItem)
     await this.shoppingListRepository.save(shoppingList)
-    return {id: newItem.id, name: newItem.name}
+    return {id: newItem.id, name: newItem.name, isStaple: newItem.isStaple}
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('shopping-lists/:listId')
   async getListWithItems(@Param('listId', ParseIntPipe) listId: number): Promise<ListWithItemsFrontend> {
     const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
-    return {id: shoppingList.id, category: shoppingList.shopCategory, items: shoppingList.items.map(({id, name}) => ({id, name}))}
+    return {id: shoppingList.id, category: shoppingList.shopCategory, items: shoppingList.items.map(({id, name, isStaple}) => ({id, name, isStaple}))}
   }
 
 
@@ -90,16 +90,16 @@ export class ApiController {
 
   @UseGuards(JwtAuthGuard)
   @Get('staples')
-  async getStaples(@Query('category') category): Promise<ListItemFrontend[]> {
+  async getStaples(@Query('category') category: ShopCategory): Promise<ListItemFrontend[]> {
     const staples = await this.listItemRepository.find({where: {isStaple: true, shopCategory: category}})
-    return staples.map(({id, name}) => ({id, name}))
+    return staples.map(({id, name, isStaple}) => ({id, name, isStaple}))
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('staples')
   async createStaple(@Request() req: ExtendedRequest<{ staple: { name: string, category: ShopCategory } }>): Promise<ListItemFrontend> {
-    const {id, name} = (await this.listItemRepository.save(new ListItem(req.user.username, req.body.staple.name, req.body.staple.category, true)))
-    return {id, name}
+    const {id, name, isStaple} = (await this.listItemRepository.save(new ListItem(req.user.username, req.body.staple.name, req.body.staple.category, true)))
+    return {id, name, isStaple}
   }
 
   @UseGuards(JwtAuthGuard)
@@ -127,6 +127,6 @@ export type ShoppingListFrontend = {
   createdBy: string,
 }
 
-type ListItemFrontend = { name: string, id: number }
+type ListItemFrontend = { name: string, id: number, isStaple: boolean }
 
 type ListWithItemsFrontend = { id: number, category: ShopCategory, items: ListItemFrontend[] }

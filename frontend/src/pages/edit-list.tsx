@@ -64,7 +64,7 @@ const EditList = () => {
         <div className="listContainer">
           { listItems.map((item, index) => (
             <div key={ index } className="listElementContainer">
-              <div className="listElement">
+              <div className={`listElement ${item.isStaple ? 'staple' : ''}`}>
                 { item.name }
               </div>
               <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"

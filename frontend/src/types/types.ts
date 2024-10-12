@@ -3,6 +3,7 @@
 export interface ListItem {
   id: string
   name: string
+  isStaple: boolean
 }
 
 export type ListWithItems = { id: number, category: ShopCategory, items: ListItem[] }
