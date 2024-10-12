@@ -22,7 +22,9 @@ export class ApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists')
-  async createNewShoppingList(@Request() req: ExtendedRequest<{category: ShopCategory}>): Promise<ShoppingListFrontend> {
+  async createNewShoppingList(@Request() req: ExtendedRequest<{
+    category: ShopCategory
+  }>): Promise<ShoppingListFrontend> {
     const {category} = req.body
     const staples = await this.listItemRepository.find({where: {isStaple: true, shopCategory: category}})
 
@@ -46,8 +48,11 @@ export class ApiController {
 
   @UseGuards(JwtAuthGuard)
   @Get('shopping-lists')
-  async getShoppingLists(): Promise<ShoppingListFrontend[]> {
-    const allLists = await this.shoppingListRepository.find({loadEagerRelations: false})
+  async getShoppingLists(@Query('category') category: ShopCategory): Promise<ShoppingListFrontend[]> {
+    const allLists = await this.shoppingListRepository.find({
+      where: {shopCategory: category},
+      loadEagerRelations: false
+    })
     return allLists.map(({id, createdBy, createdAt}) => ({id, createdBy, createdAt}))
   }
 
@@ -64,10 +69,10 @@ export class ApiController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('shopping-lists/:listId/items')
-  async getListItems(@Param('listId', ParseIntPipe) listId: number): Promise<ListItemFrontend[]> {
+  @Get('shopping-lists/:listId')
+  async getListWithItems(@Param('listId', ParseIntPipe) listId: number): Promise<ListWithItemsFrontend> {
     const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
-    return shoppingList.items.map(({id, name}) => ({id, name}))
+    return {id: shoppingList.id, category: shoppingList.shopCategory, items: shoppingList.items.map(({id, name}) => ({id, name}))}
   }
 
 
@@ -123,3 +128,5 @@ export type ShoppingListFrontend = {
 }
 
 type ListItemFrontend = { name: string, id: number }
+
+type ListWithItemsFrontend = { id: number, category: ShopCategory, items: ListItemFrontend[] }

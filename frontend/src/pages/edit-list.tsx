@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { ListItem } from '../types/types.ts'
-import { addItemToList, getListItems, removeItemFromList } from '../api/api.ts'
+import { configForCategory, ListItem, ListWithItems } from '../types/types.ts'
+import { addItemToList, getListWithItems, removeItemFromList } from '../api/api.ts'
 
 
 const EditList = () => {
@@ -9,14 +9,14 @@ const EditList = () => {
   if (!listId) {
     throw new Error('listId must be present')
   }
-  const [ listItems, setListItems ] = useState<ListItem[]>([])
+  const [ listWithItems, setListWithItems ] = useState<ListWithItems | undefined>(undefined)
   const [ newItemName, setNewItemName ] = useState<string>('')
 
   useEffect(() => {
     (async () => {
       try {
-        const items = await getListItems(listId)
-        setListItems(items)
+        const items = await getListWithItems(listId)
+        setListWithItems(items)
       } catch (error) {
         console.error('Error fetching list items', error)
       }
@@ -30,7 +30,8 @@ const EditList = () => {
     }
     try {
       const newItem: ListItem = await addItemToList(newItemName, listId)
-      setListItems([ ...listItems, newItem ])
+      listWithItems?.items.push(newItem)
+      setListWithItems(listWithItems)
       setNewItemName('')
       event.target.reset()
     } catch (error) {
@@ -41,19 +42,27 @@ const EditList = () => {
   const removeItem = async (itemId: string) => {
     try {
       await removeItemFromList(itemId, listId)
-      setListItems(listItems.filter(item => item.id !== itemId))
+      listWithItems!.items = listWithItems!.items.filter(item => item.id !== itemId)
+      setListWithItems(listWithItems)
       console.log('Item removed')
     } catch (error) {
       console.error('There was a problem removing the item', error)
     }
   }
-
+  const config = listWithItems ? configForCategory[listWithItems?.category] : undefined
   return (
     <div>
       <h1>Liste Bearbeiten</h1>
+      <div className="shopCategoryContainer">
+
+        <div className="shopCategoryIcon">
+          <img alt={ listWithItems?.category || '?' } src={ config?.iconPath }/>
+        </div>
+
+      </div>
       <div className="listAndInput">
         <div className="listContainer">
-          { listItems.map((item, index) => (
+          { listWithItems?.items.map((item, index) => (
             <div key={ index } className="listElementContainer">
               <div className="listElement">
                 { item.name }

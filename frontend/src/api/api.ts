@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import { AuthStatus } from '../services/auth-provider.tsx'
-import { ShopCategory } from '../types/types.ts'
+import { ListWithItems, ShopCategory } from '../types/types.ts'
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST
 
@@ -16,8 +16,8 @@ export const getAuthStatus = async (): Promise<AuthStatus> => {
   return axios.get(`${ backendHost }/api/auth`, config).then(response => response.data)
 }
 
-export const getAllShoppingLists = async () => {
-  return axios.get(`${ backendHost }/api/shopping-lists`, config).then(response => response.data)
+export const getAllShoppingLists = async (category: ShopCategory) => {
+  return axios.get(`${ backendHost }/api/shopping-lists`, {params: {category}, ...config}).then(response => response.data)
 }
 
 export const createNewList = async (category: ShopCategory) => {
@@ -28,8 +28,8 @@ export const deleteList = async (listId: number) => {
   return axios.delete(`${ backendHost }/api/shopping-lists/${ listId }`, config).then(response => response.data)
 }
 
-export const getListItems = async (listId: string) => {
-  return axios.get(`${ backendHost }/api/shopping-lists/${ listId }/items`, config).then(response => response.data)
+export const getListWithItems = async (listId: string): Promise<ListWithItems> => {
+  return axios.get(`${ backendHost }/api/shopping-lists/${ listId }`, config).then(response => response.data)
 }
 
 export const addItemToList = async (name: string, listId: string) => {

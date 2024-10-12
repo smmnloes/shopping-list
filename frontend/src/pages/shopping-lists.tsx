@@ -13,17 +13,18 @@ interface ShoppingList {
 const ShoppingLists = () => {
   const [ shoppingLists, setShoppingLists ] = useState<ShoppingList[]>([])
   const navigate = useNavigate()
+  const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>(ShopCategory.GROCERY)
 
   useEffect(() => {
     (async () => {
       try {
-        const lists = await getAllShoppingLists()
+        const lists = await getAllShoppingLists(selectedCategory)
         setShoppingLists(lists)
       } catch (error) {
         console.error('Error fetching shopping lists:', error)
       }
     })()
-  }, [])
+  }, [selectedCategory])
 
   const createList = async (category: ShopCategory) => {
     try {
@@ -67,6 +68,13 @@ const ShoppingLists = () => {
   return (
     <div>
       <h1>Einkaufslisten</h1>
+      <div className="shopCategoryContainer">
+        { Object.entries(configForCategory).map(([ category, config ], index) =>
+          (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }` } key={ index }><img
+            alt={ category } onClick={ () => setSelectedCategory(category as ShopCategory) }
+            src={ config.iconPath }/></div>)
+        ) }
+      </div>
       <div className="listContainer">
         { shoppingLists.length > 0 ? shoppingLists.map(list => (
           <div className="listElementContainer">
@@ -79,18 +87,9 @@ const ShoppingLists = () => {
             <button className="deleteButton" onClick={ () => handleDelete(list.id) }><img src="/paper-bin.svg"/>
             </button>
           </div>
-        )): (<p>Noch keine Liste erstellt.</p>) }
+        )) : (<p>Noch keine Liste erstellt.</p>) }
       </div>
-      <div className="addListButtonsContainer">
-        { Object.entries(configForCategory).map(([ category, config ], index) =>
-          (<button key={ index } className="addListButton" onClick={ () => createList(category as ShopCategory) }>
-            <div className="addButtonInner">
-              <img alt={ category } src={ config.iconPath }/>
-              <span>Neue Liste</span>
-            </div>
-          </button>)
-        ) }
-      </div>
+      <button className="addButton" onClick={ () => createList(selectedCategory) }>Neue Liste</button>
     </div>
   )
 }

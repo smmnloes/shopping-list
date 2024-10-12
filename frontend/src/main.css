@@ -67,6 +67,7 @@ button {
 
 .addButton {
     padding: 7px;
+    font-size:20px;
 }
 
 .addButton.small {
@@ -173,38 +174,17 @@ form input {
 .shopCategoryIcon {
     margin:1em;
     padding: 0.2em;
+    background-color: var(--color-background);
 }
 
 .shopCategoryIcon img {
     height: 3em;
-    filter: sepia(1) saturate(10000%) hue-rotate(180deg);
+    filter:grayscale(100%) brightness(6) invert(5%);
+
+    mix-blend-mode: hard-light;
 }
 .shopCategoryIcon.selected {
     background-color: var(--color-highlight);
     border-radius: 7px;
 }
 
-.addListButtonsContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.addListButton {
-    margin: 1em;
-    width: 10em;
-
-
-}
-
-.addButtonInner {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.addListButton img {
-filter: sepia(1) saturate(10000%) hue-rotate(180deg);
-    height: 3em;
-    margin: 0.5em;
-}

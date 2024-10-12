@@ -1,7 +1,11 @@
+// TODO think about type sharing
+
 export interface ListItem {
   id: string
   name: string
 }
+
+export type ListWithItems = { id: number, category: ShopCategory, items: ListItem[] }
 
 export enum ShopCategory {
   GROCERY='GROCERY',
