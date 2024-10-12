@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import { AuthStatus } from '../services/auth-provider.tsx'
+import { ShopCategory } from '../types/types.ts'
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST
 
@@ -8,7 +9,7 @@ export const login = async (username: string, password: string): Promise<AuthSta
 }
 
 export const logout = async () => {
-  return axios.post(`${ backendHost }/api/auth/logout`,{}, config).then(response => response.data)
+  return axios.post(`${ backendHost }/api/auth/logout`, {}, config).then(response => response.data)
 }
 
 export const getAuthStatus = async (): Promise<AuthStatus> => {
@@ -19,8 +20,8 @@ export const getAllShoppingLists = async () => {
   return axios.get(`${ backendHost }/api/shopping-lists`, config).then(response => response.data)
 }
 
-export const createNewList = async () => {
-  return axios.post(`${ backendHost }/api/shopping-lists`, {}, config).then(response => response.data)
+export const createNewList = async (category: ShopCategory) => {
+  return axios.post(`${ backendHost }/api/shopping-lists`, {category}, config).then(response => response.data)
 }
 
 export const deleteList = async (listId: number) => {
@@ -39,12 +40,17 @@ export const removeItemFromList = async (itemId: string, listId: string) => {
   return axios.delete(`${ backendHost }/api/shopping-lists/${ listId }/items/${ itemId }`, config).then(response => response.data)
 }
 
-export const getStaples = async () => {
-  return axios.get(`${ backendHost }/api/staples`, config).then(response => response.data)
+export const getStaples = async (category: ShopCategory) => {
+  return axios.get(`${ backendHost }/api/staples`, {params: {category}, ...config}).then(response => response.data)
 }
 
-export const createStaple = async (stapleName: string) => {
-  return axios.post(`${ backendHost }/api/staples`, {staple: {name: stapleName}}, config).then(response => response.data)
+export const createStaple = async (stapleName: string, category: ShopCategory) => {
+  return axios.post(`${ backendHost }/api/staples`, {
+    staple: {
+      name: stapleName,
+      category
+    }
+  }, config).then(response => response.data)
 }
 export const deleteStaple = async (stapleId: string) => {
   return axios.delete(`${ backendHost }/api/staples/${ stapleId }`, config).then(response => response.data)

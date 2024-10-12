@@ -54,11 +54,12 @@ const EditList = () => {
       <div className="listAndInput">
         <div className="listContainer">
           { listItems.map((item, index) => (
-            <div key={index} className="listElementContainer">
+            <div key={ index } className="listElementContainer">
               <div className="listElement">
                 { item.name }
               </div>
-              <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg" alt="delete item"/>
+              <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"
+                                                                                          alt="delete item"/>
               </button>
             </div>
           )) }

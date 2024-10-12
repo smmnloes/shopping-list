@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createNewList, deleteList, getAllShoppingLists } from '../api/api.ts'
+import { configForCategory, ShopCategory } from '../types/types.ts'
 
 // TODO: share?
 interface ShoppingList {
@@ -24,9 +25,9 @@ const ShoppingLists = () => {
     })()
   }, [])
 
-  const createList = async () => {
+  const createList = async (category: ShopCategory) => {
     try {
-      const newList: ShoppingList = await createNewList()
+      const newList: ShoppingList = await createNewList(category)
       setShoppingLists([ ...shoppingLists, newList ])
       navigate(`/shopping-lists/${ newList.id }`)
       console.log('New shopping list created')
@@ -50,7 +51,7 @@ const ShoppingLists = () => {
     }
   }
 
-  const formatDate=(createdAt: string) => {
+  const formatDate = (createdAt: string) => {
     const date = new Date(createdAt)
     return date.toLocaleDateString('de', {
       month: '2-digit',
@@ -67,7 +68,7 @@ const ShoppingLists = () => {
     <div>
       <h1>Einkaufslisten</h1>
       <div className="listContainer">
-        { shoppingLists.map(list => (
+        { shoppingLists.length > 0 ? shoppingLists.map(list => (
           <div className="listElementContainer">
             <div className="listElement" key={ list.id } role="link"
                  onClick={ () => handleEdit(list.id) }>
@@ -75,11 +76,21 @@ const ShoppingLists = () => {
                 className="listElementInfo">von { list.createdBy },<br/>{ formatDate(list.createdAt) }
               </div>
             </div>
-            <button className="deleteButton" onClick={ () => handleDelete(list.id) }><img src="/paper-bin.svg"/></button>
+            <button className="deleteButton" onClick={ () => handleDelete(list.id) }><img src="/paper-bin.svg"/>
+            </button>
           </div>
-        )) }
+        )): (<p>Noch keine Liste erstellt.</p>) }
       </div>
-      <button className="addButton" onClick={ createList }>Neue Liste</button>
+      <div className="addListButtonsContainer">
+        { Object.entries(configForCategory).map(([ category, config ], index) =>
+          (<button key={ index } className="addListButton" onClick={ () => createList(category as ShopCategory) }>
+            <div className="addButtonInner">
+              <img alt={ category } src={ config.iconPath }/>
+              <span>Neue Liste</span>
+            </div>
+          </button>)
+        ) }
+      </div>
     </div>
   )
 }

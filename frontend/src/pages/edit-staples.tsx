@@ -1,22 +1,29 @@
 import { useEffect, useState } from 'react'
-import { ListItem } from '../types/types.ts'
+import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
 import { createStaple, deleteStaple, getStaples } from '../api/api.ts'
 
 
 const EditStaples = () => {
   const [ staples, setStaples ] = useState<ListItem[]>([])
   const [ newStapleName, setNewStapleName ] = useState<string>('')
+  const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>(ShopCategory.GROCERY)
 
   useEffect(() => {
     (async () => {
       try {
-        const items = await getStaples()
+        const items = await getStaples(selectedCategory)
+        console.log('Staples fetched')
         setStaples(items)
       } catch (error) {
         console.error('Error fetching staples', error)
       }
     })()
-  }, [])
+  }, [selectedCategory])
+
+  useEffect(() => {
+    console.log('Selected category changed to:', selectedCategory)
+  }, [ selectedCategory ])
+
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
@@ -24,7 +31,7 @@ const EditStaples = () => {
       return
     }
     try {
-      const newItem: ListItem = await createStaple(newStapleName)
+      const newItem: ListItem = await createStaple(newStapleName, selectedCategory)
       setStaples([ ...staples, newItem ])
       setNewStapleName('')
       event.target.reset()
@@ -33,10 +40,10 @@ const EditStaples = () => {
     }
   }
 
-  const removeItem = async (itemId: string) => {
+  const removeStaple = async (stapleId: string) => {
     try {
-      await deleteStaple(itemId)
-      setStaples(staples.filter(item => item.id !== itemId))
+      await deleteStaple(stapleId)
+      setStaples(staples.filter(staple => staple.id !== stapleId))
       console.log('Item removed')
     } catch (error) {
       console.error('There was a problem removing the staple', error)
@@ -46,14 +53,22 @@ const EditStaples = () => {
   return (
     <div>
       <h1>Staples</h1>
+      <div className="shopCategoryContainer">
+        { Object.entries(configForCategory).map(([ category, config ], index) =>
+          (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }`} key={index}><img
+            alt={ category } onClick={ () => setSelectedCategory(category as ShopCategory) }
+            src={ config.iconPath }/></div>)
+        ) }
+      </div>
       <div className="listAndInput">
         <div className="listContainer">
           { staples.map((item, index) => (
-            <div key={index} className="listElementContainer">
+            <div key={ index } className="listElementContainer">
               <div className="listElement">
                 { item.name }
               </div>
-              <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg" alt="delete item"/>
+              <button className="deleteButton" onClick={ () => removeStaple(item.id) }><img src="/paper-bin.svg"
+                                                                                          alt="delete item"/>
               </button>
             </div>
           )) }
