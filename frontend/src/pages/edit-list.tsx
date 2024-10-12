@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { configForCategory, ListItem, ListWithItems } from '../types/types.ts'
+import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
 import { addItemToList, getListWithItems, removeItemFromList } from '../api/api.ts'
 
 
@@ -9,14 +9,16 @@ const EditList = () => {
   if (!listId) {
     throw new Error('listId must be present')
   }
-  const [ listWithItems, setListWithItems ] = useState<ListWithItems | undefined>(undefined)
+  const [ listProperties, setListProperties ] = useState<{ category: ShopCategory }>()
+  const [ listItems, setListItems ] = useState<ListItem[]>([])
   const [ newItemName, setNewItemName ] = useState<string>('')
 
   useEffect(() => {
     (async () => {
       try {
-        const items = await getListWithItems(listId)
-        setListWithItems(items)
+        const {items, category} = await getListWithItems(listId)
+        setListProperties({category})
+        setListItems(items)
       } catch (error) {
         console.error('Error fetching list items', error)
       }
@@ -30,8 +32,7 @@ const EditList = () => {
     }
     try {
       const newItem: ListItem = await addItemToList(newItemName, listId)
-      listWithItems?.items.push(newItem)
-      setListWithItems(listWithItems)
+      setListItems([ ...listItems, newItem ])
       setNewItemName('')
       event.target.reset()
     } catch (error) {
@@ -42,27 +43,26 @@ const EditList = () => {
   const removeItem = async (itemId: string) => {
     try {
       await removeItemFromList(itemId, listId)
-      listWithItems!.items = listWithItems!.items.filter(item => item.id !== itemId)
-      setListWithItems(listWithItems)
+      setListItems(listItems.filter(item => item.id !== itemId))
       console.log('Item removed')
     } catch (error) {
       console.error('There was a problem removing the item', error)
     }
   }
-  const config = listWithItems ? configForCategory[listWithItems?.category] : undefined
+  const config = listProperties ? configForCategory[listProperties.category] : undefined
   return (
     <div>
       <h1>Liste Bearbeiten</h1>
       <div className="shopCategoryContainer">
 
         <div className="shopCategoryIcon">
-          <img alt={ listWithItems?.category || '?' } src={ config?.iconPath }/>
+          <img alt={ listProperties?.category || '' } src={ config?.iconPath }/>
         </div>
 
       </div>
       <div className="listAndInput">
         <div className="listContainer">
-          { listWithItems?.items.map((item, index) => (
+          { listItems.map((item, index) => (
             <div key={ index } className="listElementContainer">
               <div className="listElement">
                 { item.name }

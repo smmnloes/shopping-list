@@ -77,8 +77,8 @@ const ShoppingLists = () => {
       </div>
       <div className="listContainer">
         { shoppingLists.length > 0 ? shoppingLists.map(list => (
-          <div className="listElementContainer">
-            <div className="listElement" key={ list.id } role="link"
+          <div className="listElementContainer"  key={ list.id }>
+            <div className="listElement" role="link"
                  onClick={ () => handleEdit(list.id) }>
               <div
                 className="listElementInfo">von { list.createdBy },<br/>{ formatDate(list.createdAt) }
