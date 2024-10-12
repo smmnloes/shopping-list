@@ -179,7 +179,7 @@ form input {
 }
 
 .shopCategoryIcon img {
-    height: 3em;
+    height: 2em;
     filter:grayscale(100%) brightness(6) invert(5%);
 
     mix-blend-mode: hard-light;
