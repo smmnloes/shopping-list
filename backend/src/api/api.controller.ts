@@ -60,6 +60,20 @@ export class ApiController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post('shopping-lists/:category/items')
+  async addStaplesToCategoryList(@Param('category') category: ShopCategory, @Request() req: ExtendedRequest<{
+    ids: string[]
+  }>): Promise<void> {
+    const shoppingList = await this.getListForCategory(category)
+
+    const ids = req.body.ids.map(id => Number.parseInt(id))
+    const staplesToAdd = await this.listItemRepository.find({where: {id: In(ids)}})
+    shoppingList.items.push(...staplesToAdd)
+
+    await this.shoppingListRepository.save(shoppingList)
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('shopping-lists/:category/staples')
   async resetStaples(@Param('category') category: ShopCategory): Promise<ListItem[]> {
     const staples = await this.listItemRepository.find({where: {shopCategory: category, isStaple: true}})

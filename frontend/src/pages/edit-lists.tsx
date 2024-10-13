@@ -1,14 +1,27 @@
 import { useEffect, useState } from 'react'
 import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
-import { addItemToCategory, getItemsForCategory, removeItemFromCategory, resetStaples } from '../api/api.ts'
+import {
+  addItemToCategory,
+  addStaplesToCategoryList,
+  getItemsForCategory,
+  getStaples,
+  removeItemFromCategory
+} from '../api/api.ts'
 
 
 const EditLists = () => {
   const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>(ShopCategory.GROCERY)
-  // handle staples separately??
+
   const [ listItems, setListItems ] = useState<ListItem[]>([])
   const [ addedStaples, setAddedStaples ] = useState<ListItem[]>([])
+
   const [ newItemName, setNewItemName ] = useState<string>('')
+
+  const [ modalVisible, setModalVisible ] = useState<boolean>(false)
+
+  const [ availableStaples, setAvailableStaples ] = useState<ListItem[]>([])
+  const [ selectedStaples, setSelectedStaples ] = useState<ListItem[]>([])
+
 
   useEffect(() => {
     (async () => {
@@ -48,11 +61,28 @@ const EditLists = () => {
     }
   }
 
-  const handleResetStaples = async () => {
-    const staples = await resetStaples(selectedCategory)
-    setAddedStaples([ ...addedStaples.filter(item => !item.isStaple), ...staples ])
+  const handleOpenModal = async () => {
+    const staples = await getStaples(selectedCategory)
+    setAvailableStaples(staples)
+    setModalVisible(true)
   }
 
+  const handleModalClose = () => {
+    setModalVisible(false)
+    setSelectedStaples([])
+  }
+
+  const handleStapleSelected = (item: ListItem) => {
+    setSelectedStaples(selectedStaples.includes(item) ? selectedStaples.filter(staple => staple !== item) : ([ ...selectedStaples, item ]))
+  }
+
+  const handleModalAddButton = async () => {
+    const staplesToAdd = selectedStaples.filter(staple => !addedStaples.some(addedStaple => addedStaple.id === staple.id))
+    await addStaplesToCategoryList(staplesToAdd.map(staple => staple.id), selectedCategory)
+    setAddedStaples([ ...addedStaples, ...staplesToAdd ])
+    setSelectedStaples([])
+    setModalVisible(false)
+  }
 
   return (
     <div>
@@ -66,8 +96,26 @@ const EditLists = () => {
       </div>
       <div className="listAndInput">
         <div className="resetStaplesContainer">
-          <button className="resetStaplesButton" onClick={ handleResetStaples }><img src="/stapler.svg"/><img
-            src="/reset-staples.svg" alt="reset staples"/></button>
+          <button className="openModalBtn" onClick={ handleOpenModal }><img src="/stapler.svg"/><span className="stapleAddSign"> + </span></button>
+        </div>
+        <div className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` }>
+          <div className="modal">
+            <span className="close-btn" onClick={ handleModalClose }>&times;</span>
+            <h2>Staples auswählen</h2>
+            <div className="modalList">
+              { availableStaples.length === 0 ? ('Keine Staples angelegt :/') :
+                availableStaples.map((item, index) =>
+                  (<div key={ index } className="listElementContainer">
+                      <div
+                        onClick={ () => handleStapleSelected(item) }
+                        className={ `listElement ${ selectedStaples.some(staple => staple.id === item.id) ? 'selectedStaple' : '' }` }>
+                        { item.name }
+                      </div>
+                    </div>
+                  )) }
+            </div>
+            <button className="modalAddBtn" onClick={ handleModalAddButton }>Hinzufügen</button>
+          </div>
         </div>
         <div className="listContainer">
           { addedStaples.length === 0 ? ('Noch Keine Staples hinzugefügt...') :
