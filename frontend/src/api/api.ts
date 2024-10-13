@@ -24,11 +24,15 @@ export const addItemToCategory = async (name: string, category: ShopCategory) =>
   return axios.post(`${ backendHost }/api/shopping-lists/${ category }/items`, {item: {name}}, config).then(response => response.data)
 }
 
+export const resetStaples = async (category: ShopCategory) => {
+  return axios.post(`${ backendHost }/api/shopping-lists/${ category }/staples`, {}, config).then(response => response.data)
+}
+
 export const removeItemFromCategory = async (itemId: string, category:ShopCategory) => {
   return axios.delete(`${ backendHost }/api/shopping-lists/${ category }/items/${ itemId }`, config).then(response => response.data)
 }
 
-export const getStaples = async (category: ShopCategory) => {
+export const getStaples = async (category: ShopCategory): Promise<ListItem[]> => {
   return axios.get(`${ backendHost }/api/staples`, {params: {category}, ...config}).then(response => response.data)
 }
 

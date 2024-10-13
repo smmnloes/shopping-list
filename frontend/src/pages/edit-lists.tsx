@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
-import { addItemToCategory, getItemsForCategory, removeItemFromCategory } from '../api/api.ts'
+import { addItemToCategory, getItemsForCategory, removeItemFromCategory, resetStaples } from '../api/api.ts'
 
 
 const EditLists = () => {
   const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>(ShopCategory.GROCERY)
+  // handle staples separately??
   const [ listItems, setListItems ] = useState<ListItem[]>([])
   const [ newItemName, setNewItemName ] = useState<string>('')
 
@@ -43,6 +44,14 @@ const EditLists = () => {
       console.error('There was a problem removing the item', error)
     }
   }
+
+  const handleResetStaples = async () => {
+    const staples = await resetStaples(selectedCategory)
+    setListItems([ ...listItems.filter(item => !item.isStaple), ...staples ])
+  }
+
+  const isStaple = (item: ListItem) => item.isStaple
+
   return (
     <div>
       <h1>Liste Bearbeiten</h1>
@@ -54,8 +63,12 @@ const EditLists = () => {
         ) }
       </div>
       <div className="listAndInput">
+        <span>Staples:</span>
         <div className="listContainer">
-          { listItems.map((item, index) => (
+          <div className="resetStaplesContainer">
+            <button className="resetStaplesButton" onClick={ handleResetStaples }>Reset staples</button>
+          </div>
+          { listItems.map((item, index) => item.isStaple && (
             <div key={ index } className="listElementContainer">
               <div className="listElement">
                 { item.name }
@@ -66,6 +79,19 @@ const EditLists = () => {
             </div>
           )) }
         </div>
+        { listItems.filter((item) => !isStaple(item)).length > 0 &&
+          (<div className="listContainer">
+            { listItems.map((item, index) => !item.isStaple && (
+              <div key={ index } className="listElementContainer">
+                <div className="listElement">
+                  { item.name }
+                </div>
+                <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"
+                                                                                            alt="delete item"/>
+                </button>
+              </div>
+            )) }
+          </div>) }
         <form className="addItemForm" onSubmit={ handleSubmit }>
           <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
           <button className="addButton small" type="submit">Hinzufügen</button>

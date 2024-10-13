@@ -11,7 +11,7 @@ import {
   UseGuards
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
-import { Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
 import { ListItem } from '../data/entities/list-item'
 import { ExtendedRequest } from '../util/request-types'
@@ -39,10 +39,10 @@ export class ApiController {
   private async getListForCategory(category: ShopCategory): Promise<ShoppingList> {
     const shoppingLists = await this.shoppingListRepository.find({where: {shopCategory: category}})
     if (shoppingLists.length === 0) {
-      throw new NotFoundException(`No list for category ${category} found`)
+      throw new NotFoundException(`No list for category ${ category } found`)
     }
     if (shoppingLists.length > 1) {
-      console.error(`More than 1 list found for category ${category}. Picking first one`)
+      console.error(`More than 1 list found for category ${ category }. Picking first one`)
     }
     return shoppingLists[0]
   }
@@ -57,6 +57,16 @@ export class ApiController {
     shoppingList.items.push(newItem)
     await this.shoppingListRepository.save(shoppingList)
     return {id: newItem.id, name: newItem.name, isStaple: newItem.isStaple}
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('shopping-lists/:category/staples')
+  async resetStaples(@Param('category') category: ShopCategory): Promise<ListItem[]> {
+    const staples = await this.listItemRepository.find({where: {shopCategory: category}})
+    const shoppingList = await this.getListForCategory(category)
+    shoppingList.items.push(...staples.filter(staple => !shoppingList.items.includes(staple)))
+    await this.shoppingListRepository.save(shoppingList)
+    return staples
   }
 
   @UseGuards(JwtAuthGuard)
@@ -89,8 +99,14 @@ export class ApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('staples')
-  async createStaple(@Request() req: ExtendedRequest<{ staple: { name: string, category: ShopCategory } }>): Promise<ListItemFrontend> {
-    const {id, name, isStaple} = (await this.listItemRepository.save(new ListItem(req.user.username, req.body.staple.name, req.body.staple.category, true)))
+  async createStaple(@Request() req: ExtendedRequest<{
+    staple: { name: string, category: ShopCategory }
+  }>): Promise<ListItemFrontend> {
+    const {
+      id,
+      name,
+      isStaple
+    } = (await this.listItemRepository.save(new ListItem(req.user.username, req.body.staple.name, req.body.staple.category, true)))
     return {id, name, isStaple}
   }
 
@@ -112,11 +128,5 @@ export class ApiController {
 
 }
 
-
-export type ShoppingListFrontend = {
-  id: number,
-  createdAt: Date,
-  createdBy: string,
-}
 
 type ListItemFrontend = { name: string, id: number, isStaple: boolean }
