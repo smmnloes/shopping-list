@@ -35,7 +35,7 @@ button {
 }
 
 .listContainer {
-    margin: auto auto 25px;
+    margin-bottom: 25px;
     border-radius: 20px;
     border: white solid 2px;
     padding: 5px;
@@ -235,6 +235,15 @@ form input {
     width: 300px;
     text-align: center;
     position: relative;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal .listContainer {
+    overflow-y: auto;
+    width: 90%;
 }
 
 .close-btn {
@@ -247,6 +256,7 @@ form input {
 
 .selectedStaple {
     border: white solid 2px;
+    padding: 8px;
 }
 
 .modalList {
@@ -257,9 +267,27 @@ form input {
     padding: 7px;
     font-size: 15px;
     margin-bottom: 10px;
+    width: 40%;
 }
+
 
 .stapleAddSign {
     font-size: 25px;
     font-weight: bolder;
+}
+
+.modalSelectBtnContainer {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.modalSelectBtnContainer button {
+    padding: 7px;
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 15px;
+    margin-bottom: 10px;
+    width: 20%;
 }
