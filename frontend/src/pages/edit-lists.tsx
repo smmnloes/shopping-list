@@ -96,9 +96,12 @@ const EditLists = () => {
       </div>
       <div className="listAndInput">
         <div className="resetStaplesContainer">
-          <button className="openModalBtn" onClick={ handleOpenModal }><img src="/stapler.svg"/><span className="stapleAddSign"> + </span></button>
+          <button className="openModalBtn" onClick={ handleOpenModal }><img src="/stapler.svg"/><span
+            className="stapleAddSign"> + </span></button>
         </div>
-        <div className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` }>
+        <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
+          if ((e.target as any).id === 'modal-overlay') setModalVisible(false)
+        } }>
           <div className="modal">
             <span className="close-btn" onClick={ handleModalClose }>&times;</span>
             <h2>Staples auswählen</h2>
