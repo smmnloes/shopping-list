@@ -18,7 +18,7 @@ const EditStaples = () => {
         console.error('Error fetching staples', error)
       }
     })()
-  }, [selectedCategory])
+  }, [ selectedCategory ])
 
   useEffect(() => {
     console.log('Selected category changed to:', selectedCategory)
@@ -49,29 +49,30 @@ const EditStaples = () => {
       console.error('There was a problem removing the staple', error)
     }
   }
-  
+
   return (
     <div>
       <h1>Staples</h1>
       <div className="shopCategoryContainer">
         { Object.entries(configForCategory).map(([ category, config ], index) =>
-          (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }`} key={index}><img
+          (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }` } key={ index }><img
             alt={ category } onClick={ () => setSelectedCategory(category as ShopCategory) }
             src={ config.iconPath }/></div>)
         ) }
       </div>
       <div className="listAndInput">
         <div className="listContainer">
-          { staples.map((item, index) => (
-            <div key={ index } className="listElementContainer">
-              <div className="listElement staple">
-                { item.name }
+          { staples.length === 0 ? 'Noch keine Staples angelegt...' :
+            staples.map((item, index) => (
+              <div key={ index } className="listElementContainer">
+                <div className="listElement staple">
+                  { item.name }
+                </div>
+                <button className="deleteButton" onClick={ () => removeStaple(item.id) }><img src="/paper-bin.svg"
+                                                                                              alt="delete item"/>
+                </button>
               </div>
-              <button className="deleteButton" onClick={ () => removeStaple(item.id) }><img src="/paper-bin.svg"
-                                                                                          alt="delete item"/>
-              </button>
-            </div>
-          )) }
+            )) }
         </div>
         <form className="addItemForm" onSubmit={ handleSubmit }>
           <input type="text" onChange={ e => setNewStapleName(e.target.value) }/>

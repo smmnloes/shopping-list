@@ -70,16 +70,17 @@ const EditLists = () => {
             src="/reset-staples.svg" alt="reset staples"/></button>
         </div>
         <div className="listContainer">
-          { addedStaples.map((item, index) =>
-            (<div key={ index } className="listElementContainer">
-                <div className="listElement">
-                  { item.name }
+          { addedStaples.length === 0 ? ('Noch Keine Staples hinzugefügt...') :
+            addedStaples.map((item, index) =>
+              (<div key={ index } className="listElementContainer">
+                  <div className="listElement">
+                    { item.name }
+                  </div>
+                  <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"
+                                                                                              alt="delete item"/>
+                  </button>
                 </div>
-                <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"
-                                                                                            alt="delete item"/>
-                </button>
-              </div>
-            )) }
+              )) }
         </div>
         { listItems.length > 0 &&
           (<div className="listContainer">
