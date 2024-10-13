@@ -105,7 +105,8 @@ const EditLists = () => {
           <div className="modal">
             <span className="close-btn" onClick={ handleModalClose }>&times;</span>
             <h2>Staples auswählen</h2>
-            <div className="modalList">
+            <button className="modalAddBtn" onClick={() => setSelectedStaples(availableStaples)}>Alle</button>
+            <div className="listContainer">
               { availableStaples.length === 0 ? ('Keine Staples angelegt :/') :
                 availableStaples.map((item, index) =>
                   (<div key={ index } className="listElementContainer">
