@@ -1,4 +1,15 @@
-import { Controller, Delete, Get, Param, ParseIntPipe, Post, Query, Request, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  Request,
+  UseGuards
+} from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
@@ -20,48 +31,28 @@ export class ApiController {
     return
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('shopping-lists')
-  async createNewShoppingList(@Request() req: ExtendedRequest<{
-    category: ShopCategory
-  }>): Promise<ShoppingListFrontend> {
-    const {category} = req.body
-    const staples = await this.listItemRepository.find({where: {isStaple: true, shopCategory: category}})
-
-    const {
-      id,
-      createdAt,
-      createdBy
-    } = (await this.shoppingListRepository.save(new ShoppingList(req.user.username, category, staples)))
-    return {id, createdAt, createdBy}
+  /**
+   *  We actually dont need the list-construct anymore, we can just query for items with a category
+   * @param category
+   * @private
+   */
+  private async getListForCategory(category: ShopCategory): Promise<ShoppingList> {
+    const shoppingLists = await this.shoppingListRepository.find({where: {shopCategory: category}})
+    if (shoppingLists.length === 0) {
+      throw new NotFoundException(`No list for category ${category} found`)
+    }
+    if (shoppingLists.length > 1) {
+      console.error(`More than 1 list found for category ${category}. Picking first one`)
+    }
+    return shoppingLists[0]
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('shopping-lists/:listId')
-  async deleteShoppingList(@Param('listId', ParseIntPipe) listId: number) {
-    const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
-    const itemsToDelete = shoppingList.items.filter(item => !item.isStaple)
-    await this.listItemRepository.remove(itemsToDelete)
-    await this.shoppingListRepository.remove([ shoppingList ])
-  }
-
-
-  @UseGuards(JwtAuthGuard)
-  @Get('shopping-lists')
-  async getShoppingLists(@Query('category') category: ShopCategory): Promise<ShoppingListFrontend[]> {
-    const allLists = await this.shoppingListRepository.find({
-      where: {shopCategory: category},
-      loadEagerRelations: false
-    })
-    return allLists.map(({id, createdBy, createdAt}) => ({id, createdBy, createdAt}))
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('shopping-lists/:listId/items')
-  async addItemToList(@Param('listId', ParseIntPipe) listId: number, @Request() req: ExtendedRequest<{
+  @Post('shopping-lists/:category/items')
+  async addItemToCategory(@Param('category') category: ShopCategory, @Request() req: ExtendedRequest<{
     item: { name: string }
   }>): Promise<ListItemFrontend> {
-    const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
+    const shoppingList = await this.getListForCategory(category)
     const newItem = new ListItem(req.user.username, req.body.item.name, shoppingList.shopCategory)
     shoppingList.items.push(newItem)
     await this.shoppingListRepository.save(shoppingList)
@@ -69,17 +60,18 @@ export class ApiController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('shopping-lists/:listId')
-  async getListWithItems(@Param('listId', ParseIntPipe) listId: number): Promise<ListWithItemsFrontend> {
-    const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
-    return {id: shoppingList.id, category: shoppingList.shopCategory, items: shoppingList.items.map(({id, name, isStaple}) => ({id, name, isStaple}))}
+  @Get('shopping-lists/:category')
+  async getItemsForCategory(@Param('category') category: ShopCategory): Promise<{ items: ListItemFrontend[] }> {
+    const shoppingList = await this.getListForCategory(category)
+    return {items: shoppingList.items.map(({id, name, isStaple}) => ({id, name, isStaple}))}
   }
 
 
   @UseGuards(JwtAuthGuard)
-  @Delete('shopping-lists/:listId/items/:itemId')
-  async deleteItemFromList(@Param('listId', ParseIntPipe) listId: number, @Param('itemId', ParseIntPipe) itemId: number) {
-    const shoppingList = await this.shoppingListRepository.findOneOrFail({where: {id: listId}})
+  @Delete('shopping-lists/:category/items/:itemId')
+  async deleteItemFromCategory(@Param('category') category: ShopCategory, @Param('itemId', ParseIntPipe) itemId: number) {
+    const shoppingList = await this.getListForCategory(category)
+
     const itemToDelete = shoppingList.items.find(item => item.id === itemId)
     shoppingList.items = shoppingList.items.filter(item => item !== itemToDelete)
     await this.shoppingListRepository.save(shoppingList)
@@ -128,5 +120,3 @@ export type ShoppingListFrontend = {
 }
 
 type ListItemFrontend = { name: string, id: number, isStaple: boolean }
-
-type ListWithItemsFrontend = { id: number, category: ShopCategory, items: ListItemFrontend[] }

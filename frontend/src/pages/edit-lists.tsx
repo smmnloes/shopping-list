@@ -1,29 +1,23 @@
-import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
-import { addItemToList, getListWithItems, removeItemFromList } from '../api/api.ts'
+import { addItemToCategory, getItemsForCategory, removeItemFromCategory } from '../api/api.ts'
 
 
-const EditList = () => {
-  const {listId} = useParams<{ listId: string }>()
-  if (!listId) {
-    throw new Error('listId must be present')
-  }
-  const [ listProperties, setListProperties ] = useState<{ category: ShopCategory }>()
+const EditLists = () => {
+  const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>(ShopCategory.GROCERY)
   const [ listItems, setListItems ] = useState<ListItem[]>([])
   const [ newItemName, setNewItemName ] = useState<string>('')
 
   useEffect(() => {
     (async () => {
       try {
-        const {items, category} = await getListWithItems(listId)
-        setListProperties({category})
+        const {items} = await getItemsForCategory(selectedCategory)
         setListItems(items)
       } catch (error) {
         console.error('Error fetching list items', error)
       }
     })()
-  }, [ listId ])
+  }, [ selectedCategory ])
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
@@ -31,7 +25,7 @@ const EditList = () => {
       return
     }
     try {
-      const newItem: ListItem = await addItemToList(newItemName, listId)
+      const newItem: ListItem = await addItemToCategory(newItemName, selectedCategory)
       setListItems([ ...listItems, newItem ])
       setNewItemName('')
       event.target.reset()
@@ -42,29 +36,28 @@ const EditList = () => {
 
   const removeItem = async (itemId: string) => {
     try {
-      await removeItemFromList(itemId, listId)
+      await removeItemFromCategory(itemId, selectedCategory)
       setListItems(listItems.filter(item => item.id !== itemId))
       console.log('Item removed')
     } catch (error) {
       console.error('There was a problem removing the item', error)
     }
   }
-  const config = listProperties ? configForCategory[listProperties.category] : undefined
   return (
     <div>
       <h1>Liste Bearbeiten</h1>
       <div className="shopCategoryContainer">
-
-        <div className="shopCategoryIcon">
-          <img alt={ listProperties?.category || '' } src={ config?.iconPath }/>
-        </div>
-
+        { Object.entries(configForCategory).map(([ category, config ], index) =>
+          (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }` } key={ index }><img
+            alt={ category } onClick={ () => setSelectedCategory(category as ShopCategory) }
+            src={ config.iconPath }/></div>)
+        ) }
       </div>
       <div className="listAndInput">
         <div className="listContainer">
           { listItems.map((item, index) => (
             <div key={ index } className="listElementContainer">
-              <div className={`listElement ${item.isStaple ? 'staple' : ''}`}>
+              <div className="listElement">
                 { item.name }
               </div>
               <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"
@@ -82,4 +75,4 @@ const EditList = () => {
   )
 }
 
-export default EditList
+export default EditLists

@@ -4,7 +4,6 @@
     --color-background: #EAE8FF;
     --color-highlight: #b0cfed;
     --color-shadow: rgb(64, 76, 90);
-    --color-staple: #cfcedf
 }
 
 
@@ -52,10 +51,6 @@ button {
 
     border-radius: 10px;
     box-shadow: 2px 2px 5px var(--color-shadow);
-}
-
-.listElement.staple {
-    background-color: var(--color-staple);
 }
 
 .deleteButton {
@@ -176,6 +171,7 @@ form input {
 }
 
 .shopCategoryIcon {
+    width: 200px;
     margin:1em;
     padding: 0.2em;
     background-color: var(--color-background);

@@ -3,9 +3,8 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './pages/login.tsx'
-import ShoppingLists from './pages/shopping-lists.tsx'
 import PrivateRoute from './routing/private-route.tsx'
-import EditList from './pages/edit-list.tsx'
+import EditLists from './pages/edit-lists.tsx'
 import Layout from './elements/layout.tsx'
 import { AuthProvider } from './services/auth-provider.tsx'
 import EditStaples from './pages/edit-staples.tsx'
@@ -27,14 +26,9 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/login" element={
               <Login/>
             }/>
-            <Route path="/shopping-lists" element={
+            <Route path="/edit-lists" element={
               <PrivateRoute>
-                <ShoppingLists/>
-              </PrivateRoute>
-            }/>
-            <Route path="/shopping-lists/:listId" element={
-              <PrivateRoute>
-                <EditList/>
+                <EditLists/>
               </PrivateRoute>
             }/>
             <Route path="/staples" element={

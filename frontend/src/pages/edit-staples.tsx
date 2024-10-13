@@ -49,7 +49,7 @@ const EditStaples = () => {
       console.error('There was a problem removing the staple', error)
     }
   }
-
+  
   return (
     <div>
       <h1>Staples</h1>
