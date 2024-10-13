@@ -148,6 +148,7 @@ form input {
 
 .listAndInput {
     padding: 5px;
+    margin-top: 20px;
 }
 
 .header {
@@ -197,6 +198,14 @@ form input {
 }
 
 .resetStaplesButton {
+    display: flex;
+    justify-content: space-between;
     padding: 5px;
-    margin: 5px;
+    margin: 10px;
+    width: 70px;
+    height: 40px;
+}
+
+.resetStaplesButton * {
+    padding: 2px;
 }

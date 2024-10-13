@@ -62,7 +62,7 @@ export class ApiController {
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists/:category/staples')
   async resetStaples(@Param('category') category: ShopCategory): Promise<ListItem[]> {
-    const staples = await this.listItemRepository.find({where: {shopCategory: category}})
+    const staples = await this.listItemRepository.find({where: {shopCategory: category, isStaple: true}})
     const shoppingList = await this.getListForCategory(category)
     shoppingList.items.push(...staples.filter(staple => !shoppingList.items.includes(staple)))
     await this.shoppingListRepository.save(shoppingList)

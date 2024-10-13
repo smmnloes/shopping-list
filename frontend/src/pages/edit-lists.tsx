@@ -7,13 +7,15 @@ const EditLists = () => {
   const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>(ShopCategory.GROCERY)
   // handle staples separately??
   const [ listItems, setListItems ] = useState<ListItem[]>([])
+  const [ addedStaples, setAddedStaples ] = useState<ListItem[]>([])
   const [ newItemName, setNewItemName ] = useState<string>('')
 
   useEffect(() => {
     (async () => {
       try {
         const {items} = await getItemsForCategory(selectedCategory)
-        setListItems(items)
+        setAddedStaples(items.filter(item => item.isStaple))
+        setListItems(items.filter(item => !item.isStaple))
       } catch (error) {
         console.error('Error fetching list items', error)
       }
@@ -39,6 +41,7 @@ const EditLists = () => {
     try {
       await removeItemFromCategory(itemId, selectedCategory)
       setListItems(listItems.filter(item => item.id !== itemId))
+      setAddedStaples(addedStaples.filter(staple => staple.id !== itemId))
       console.log('Item removed')
     } catch (error) {
       console.error('There was a problem removing the item', error)
@@ -47,10 +50,9 @@ const EditLists = () => {
 
   const handleResetStaples = async () => {
     const staples = await resetStaples(selectedCategory)
-    setListItems([ ...listItems.filter(item => !item.isStaple), ...staples ])
+    setAddedStaples([ ...addedStaples.filter(item => !item.isStaple), ...staples ])
   }
 
-  const isStaple = (item: ListItem) => item.isStaple
 
   return (
     <div>
@@ -62,27 +64,14 @@ const EditLists = () => {
             src={ config.iconPath }/></div>)
         ) }
       </div>
-      <div className="listAndInput">
-        <span>Staples:</span>
-        <div className="listContainer">
-          <div className="resetStaplesContainer">
-            <button className="resetStaplesButton" onClick={ handleResetStaples }>Reset staples</button>
-          </div>
-          { listItems.map((item, index) => item.isStaple && (
-            <div key={ index } className="listElementContainer">
-              <div className="listElement">
-                { item.name }
-              </div>
-              <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"
-                                                                                          alt="delete item"/>
-              </button>
-            </div>
-          )) }
+      <div className="listAndInput m-top">
+        <div className="resetStaplesContainer">
+          <button className="resetStaplesButton" onClick={ handleResetStaples }><img src="/stapler.svg"/><img
+            src="/reset-staples.svg" alt="reset staples"/></button>
         </div>
-        { listItems.filter((item) => !isStaple(item)).length > 0 &&
-          (<div className="listContainer">
-            { listItems.map((item, index) => !item.isStaple && (
-              <div key={ index } className="listElementContainer">
+        <div className="listContainer">
+          { addedStaples.map((item, index) =>
+            (<div key={ index } className="listElementContainer">
                 <div className="listElement">
                   { item.name }
                 </div>
@@ -91,6 +80,19 @@ const EditLists = () => {
                 </button>
               </div>
             )) }
+        </div>
+        { listItems.length > 0 &&
+          (<div className="listContainer">
+            { listItems.map((item, index) =>
+              <div key={ index } className="listElementContainer">
+                <div className="listElement">
+                  { item.name }
+                </div>
+                <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"
+                                                                                            alt="delete item"/>
+                </button>
+              </div>
+            ) }
           </div>) }
         <form className="addItemForm" onSubmit={ handleSubmit }>
           <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
