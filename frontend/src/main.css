@@ -95,7 +95,8 @@ form input {
     justify-content: center;
 }
 
-.navElement {
+.navContainer * {
+    padding: 5px;
 }
 
 .navElement img {
@@ -202,10 +203,9 @@ form input {
     justify-content: space-between;
     padding: 5px;
     margin: 10px;
-    width: 70px;
-    height: 40px;
 }
 
-.resetStaplesButton * {
-    padding: 2px;
+.resetStaplesButton img {
+    height: 30px;
+    width: 36px;
 }
