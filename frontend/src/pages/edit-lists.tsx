@@ -64,7 +64,7 @@ const EditLists = () => {
             src={ config.iconPath }/></div>)
         ) }
       </div>
-      <div className="listAndInput m-top">
+      <div className="listAndInput">
         <div className="resetStaplesContainer">
           <button className="resetStaplesButton" onClick={ handleResetStaples }><img src="/stapler.svg"/><img
             src="/reset-staples.svg" alt="reset staples"/></button>
