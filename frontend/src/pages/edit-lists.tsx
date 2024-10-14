@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
 import {
-  addItemToCategory,
+  createNewItemForCategory,
   addStaplesToCategoryList,
   getItemsForCategory,
   getStaples,
@@ -41,7 +41,7 @@ const EditLists = () => {
       return
     }
     try {
-      const newItem: ListItem = await addItemToCategory(newItemName, selectedCategory)
+      const newItem: ListItem = await createNewItemForCategory(newItemName, selectedCategory)
       setListItems([ ...listItems, newItem ])
       setNewItemName('')
       event.target.reset()
@@ -110,7 +110,7 @@ const EditLists = () => {
               <button onClick={ () => setSelectedStaples([]) }>Keiner</button>
             </div>
             <div className="listContainer">
-              { availableStaples.length === 0 ? ('Keine Staples angelegt :/') :
+              { availableStaples.length === 0 ? ('Keine Staples angelegt.') :
                 availableStaples.map((item, index) =>
                   (<div key={ index } className="listElementContainer">
                       <div
@@ -125,7 +125,7 @@ const EditLists = () => {
           </div>
         </div>
         <div className="listContainer">
-          { addedStaples.length === 0 ? ('Noch Keine Staples hinzugefügt...') :
+          { addedStaples.length === 0 ? ('Noch keine Staples hinzugefügt.') :
             addedStaples.map((item, index) =>
               (<div key={ index } className="listElementContainer">
                   <div className="listElement">

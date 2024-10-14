@@ -49,7 +49,7 @@ export class ApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists/:category/items')
-  async addItemToCategory(@Param('category') category: ShopCategory, @Request() req: ExtendedRequest<{
+  async createNewItemForCategory(@Param('category') category: ShopCategory, @Request() req: ExtendedRequest<{
     item: { name: string }
   }>): Promise<ListItemFrontend> {
     const shoppingList = await this.getListForCategory(category)
@@ -60,7 +60,7 @@ export class ApiController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('shopping-lists/:category/items')
+  @Post('shopping-lists/:category/staples')
   async addStaplesToCategoryList(@Param('category') category: ShopCategory, @Request() req: ExtendedRequest<{
     ids: string[]
   }>): Promise<void> {
@@ -71,16 +71,6 @@ export class ApiController {
     shoppingList.items.push(...staplesToAdd)
 
     await this.shoppingListRepository.save(shoppingList)
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('shopping-lists/:category/staples')
-  async resetStaples(@Param('category') category: ShopCategory): Promise<ListItem[]> {
-    const staples = await this.listItemRepository.find({where: {shopCategory: category, isStaple: true}})
-    const shoppingList = await this.getListForCategory(category)
-    shoppingList.items.push(...staples.filter(staple => !shoppingList.items.includes(staple)))
-    await this.shoppingListRepository.save(shoppingList)
-    return staples
   }
 
   @UseGuards(JwtAuthGuard)
