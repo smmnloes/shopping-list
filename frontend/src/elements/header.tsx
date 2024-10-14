@@ -27,7 +27,7 @@ function Header() {
 
     checkStatus();
 
-    const intervalId = setInterval(checkStatus, 3000);
+    const intervalId = setInterval(checkStatus, 5000);
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
