@@ -52,6 +52,10 @@ export const onlineStatus = async () => {
   return axios.get(`${ backendHost }/api/onlinestatus`, config)
 }
 
+export const getMealsForWeek = (week: number, year: number): Promise<{meals: (string | null)[]}> => {
+  return axios.get(`${ backendHost }/api/meals/${week}-${year}`, config).then(response => response.data)
+}
+
 const config: AxiosRequestConfig = {
   withCredentials: true
 }

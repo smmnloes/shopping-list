@@ -17,12 +17,14 @@ import { ListItem } from '../data/entities/list-item'
 import { ExtendedRequest } from '../util/request-types'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ShopCategory } from '../data/entities/common-types'
+import { MealPlan } from '../data/entities/meal-plan'
 
 @Controller('api')
 export class ApiController {
   constructor(
     @InjectRepository(ShoppingList) readonly shoppingListRepository: Repository<ShoppingList>,
-    @InjectRepository(ListItem) readonly listItemRepository: Repository<ListItem>
+    @InjectRepository(ListItem) readonly listItemRepository: Repository<ListItem>,
+    @InjectRepository(MealPlan) readonly mealPlanRepository: Repository<MealPlan>
   ) {
   }
 
@@ -32,7 +34,6 @@ export class ApiController {
   }
 
   /**
-   *  We actually dont need the list-construct anymore, we can just query for items with a category
    * @param category
    * @private
    */
@@ -128,6 +129,12 @@ export class ApiController {
       return this.shoppingListRepository.save(shoppingList)
     }))
     await this.listItemRepository.delete(stapleToDelete.id)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('meals/:week-year')
+  async getMealsForWeek(@Param('week-year', ParseIntPipe) weekYear: string): Promise<{ meals: (string | null)[] }> {
+    return this.mealPlanRepository.findOneOrFail({where: {weekYear}}).then(result => ({meals: result.meals}))
   }
 
 }
