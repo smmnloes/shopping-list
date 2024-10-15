@@ -23,7 +23,8 @@ const MealPlan = memo(() => {
         const {meals} = await getMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday))
         setMealsForWeek(meals)
       } catch (error) {
-        console.error('Error fetching meals', error)
+        console.log('Could not fetch meal plan')
+        setMealsForWeek([])
       }
     })()
   }, [ selectedMonday ])
@@ -55,11 +56,11 @@ const MealPlan = memo(() => {
         </div>
         <table className="mealTable">
           <tbody>
-          { mealsForWeek.map((meal, index) => (
+          { Array(7).fill(0).map((_,index)  => (
             <tr
               key={ index }>
               <td>{ weekDay[index] }</td>
-              <td><textarea value={ meal ?? '-' } onChange={ (event) => {
+              <td><textarea value={ mealsForWeek[index] ?? '-' } onChange={ (event) => {
                 mealsForWeek[index] = event.target.value
                 setMealsForWeek([ ...mealsForWeek ])
               } }/></td>

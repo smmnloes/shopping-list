@@ -15,6 +15,6 @@ export class MealPlan {
   @Column({unique: true})
   weekYear: string
 
-  @Column()
+  @Column({type: 'simple-array'})
   meals: (string | null)[]
 }

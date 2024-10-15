@@ -132,9 +132,14 @@ export class ApiController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('meals/:week-year')
-  async getMealsForWeek(@Param('week-year', ParseIntPipe) weekYear: string): Promise<{ meals: (string | null)[] }> {
-    return this.mealPlanRepository.findOneOrFail({where: {weekYear}}).then(result => ({meals: result.meals}))
+  @Get('meals/:weekyear')
+  async getMealsForWeek(@Param('weekyear') weekYear: string): Promise<{ meals: (string | null)[] }> {
+    const result = await this.mealPlanRepository.findOne({where: {weekYear}})
+    if (result === null) {
+      throw new NotFoundException('Meal plan not found')
+    } else {
+      return {meals: result.meals}
+    }
   }
 
 }
