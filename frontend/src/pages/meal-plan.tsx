@@ -60,7 +60,7 @@ const MealPlan = memo(() => {
             <tr
               key={ index }>
               <td>{ weekDay[index] }</td>
-              <td><textarea value={ mealsForWeek[index] ?? '-' } onChange={ (event) => {
+              <td><textarea value={ mealsForWeek[index] ?? '' } onChange={ (event) => {
                 mealsForWeek[index] = event.target.value
                 setMealsForWeek([ ...mealsForWeek ])
               } }/></td>
