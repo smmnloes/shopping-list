@@ -335,6 +335,7 @@ form input {
     height: 30px;
     width: 90%;
     font-size: 18px;
+    resize: vertical;
 }
 
 
