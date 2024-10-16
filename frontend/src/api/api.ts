@@ -52,9 +52,14 @@ export const onlineStatus = async () => {
   return axios.get(`${ backendHost }/api/onlinestatus`, config)
 }
 
-export const getMealsForWeek = (week: number, year: number): Promise<{meals: (string | null)[]}> => {
+export const getMealsForWeek = (week: number, year: number): Promise<{meals: (string)[]}> => {
   return axios.get(`${ backendHost }/api/meals/${week}-${year}`, config).then(response => response.data)
 }
+
+export const saveMealsForWeek = (week: number, year: number, meals: string[]): Promise<void> => {
+  return axios.post(`${ backendHost }/api/meals/${week}-${year}`, {meals}, config)
+}
+
 
 const config: AxiosRequestConfig = {
   withCredentials: true

@@ -1,6 +1,6 @@
 import { addWeeks, endOfWeek, getWeek, getYear, startOfWeek } from 'date-fns'
 import { memo, useEffect, useState } from 'react'
-import { getMealsForWeek } from '../api/api.ts'
+import { getMealsForWeek, saveMealsForWeek } from '../api/api.ts'
 
 const getDateRangeForWeek = (week: number): [ Date, Date ] => {
   const firstDayOfYear = new Date(getYear(new Date(), {}), 0, 1)
@@ -14,17 +14,20 @@ const getCurrentWeek = () => getWeek(new Date())
 const getCurrentWeekMonday = () => getDateRangeForWeek(getCurrentWeek())[0]
 
 const MealPlan = memo(() => {
-  const [ mealsForWeek, setMealsForWeek ] = useState<(string | null)[]>([])
+  const [ mealsForWeek, setMealsForWeek ] = useState<(string)[]>([])
   const [ selectedMonday, setSelectedMonday ] = useState<Date>(getCurrentWeekMonday())
+  const [ lastSavedMeals, setLastSavedMeals] = useState<string[] | undefined>(undefined)
 
   useEffect(() => {
     (async () => {
       try {
         const {meals} = await getMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday))
         setMealsForWeek(meals)
+        setLastSavedMeals(meals)
+        console.log('Meal plan fetched')
       } catch (error) {
         console.log('Could not fetch meal plan')
-        setMealsForWeek([])
+        setMealsForWeek(Array(7).fill(''))
       }
     })()
   }, [ selectedMonday ])
@@ -38,6 +41,21 @@ const MealPlan = memo(() => {
     }) } - ${ weekEnd.toLocaleDateString(undefined, {day: '2-digit', month: '2-digit'}) }`
   }
 
+  const handleSave = async () => {
+    if (!mealsForWeek.some(meal => meal)) {
+      console.log('Nothing to save')
+      return
+    }
+
+    if (JSON.stringify(lastSavedMeals) === JSON.stringify(mealsForWeek)) {
+      console.log('Nothing changed since last save')
+      return
+    }
+
+    await saveMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday), mealsForWeek)
+    setLastSavedMeals(mealsForWeek)
+    console.log('Meals saved')
+  }
 
   return (<div>
       <h1>Meal Plan</h1>
@@ -63,7 +81,7 @@ const MealPlan = memo(() => {
               <td><textarea value={ mealsForWeek[index] ?? '' } onChange={ (event) => {
                 mealsForWeek[index] = event.target.value
                 setMealsForWeek([ ...mealsForWeek ])
-              } }/></td>
+              }} onBlur={() => handleSave()}/></td>
             </tr>
           )) }
           </tbody>
