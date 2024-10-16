@@ -14,23 +14,35 @@ const getCurrentWeek = () => getWeek(new Date())
 const getCurrentWeekMonday = () => getDateRangeForWeek(getCurrentWeek())[0]
 
 const MealPlan = memo(() => {
-  const [ mealsForWeek, setMealsForWeek ] = useState<(string)[]>([])
   const [ selectedMonday, setSelectedMonday ] = useState<Date>(getCurrentWeekMonday())
-  const [ lastSavedMeals, setLastSavedMeals] = useState<string[] | undefined>(undefined)
+
+  const mealsForWeekDefault = Array(7).fill('')
+  const [ mealsForWeek, setMealsForWeek ] = useState<(string)[]>(mealsForWeekDefault)
+
+  const mealDoneChecksDefault = Array(7).fill(false)
+  const [ mealDoneChecks, setMealDoneChecks ] = useState<boolean[]>(mealDoneChecksDefault)
 
   useEffect(() => {
     (async () => {
       try {
-        const {meals} = await getMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday))
+        const {meals, checks} = await getMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday))
         setMealsForWeek(meals)
-        setLastSavedMeals(meals)
+        setMealDoneChecks(checks)
+
         console.log('Meal plan fetched')
       } catch (error) {
         console.log('Could not fetch meal plan')
-        setMealsForWeek(Array(7).fill(''))
+        setMealsForWeek(mealsForWeekDefault)
+        setMealDoneChecks(mealDoneChecksDefault)
       }
     })()
   }, [ selectedMonday ])
+
+  useEffect(() => {
+    (async () => {
+      await handleSave()
+    })()
+  }, [ mealDoneChecks ])
 
 
   const getDateRangeForWeekFormatted = (week: number): string => {
@@ -42,52 +54,49 @@ const MealPlan = memo(() => {
   }
 
   const handleSave = async () => {
-    if (!mealsForWeek.some(meal => meal)) {
-      console.log('Nothing to save')
-      return
-    }
-
-    if (JSON.stringify(lastSavedMeals) === JSON.stringify(mealsForWeek)) {
-      console.log('Nothing changed since last save')
-      return
-    }
-
-    await saveMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday), mealsForWeek)
-    setLastSavedMeals(mealsForWeek)
+    await saveMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday), mealsForWeek, mealDoneChecks)
+    console.log(JSON.stringify({checks: mealDoneChecks, meals: mealsForWeek}))
     console.log('Meals saved')
   }
 
   return (<div>
       <h1>Meal Plan</h1>
-        <div className="kwSelect">
-          <div className="weekButtons">
-            <button onClick={ () => setSelectedMonday(addWeeks(selectedMonday, -1)) }>&#8678;</button>
-            <div className="kwDate">
-              <span>KW { getWeek(selectedMonday).toString().padStart(2, '0') }</span>
-              <span className="dateDisplay"> { getDateRangeForWeekFormatted(getWeek(selectedMonday)) }<br/>
-                { getYear(selectedMonday) }
+      <div className="kwSelect">
+        <div className="weekButtons">
+          <button onClick={ () => setSelectedMonday(addWeeks(selectedMonday, -1)) }>&#8678;</button>
+          <div className="kwDate">
+            <span>KW { getWeek(selectedMonday).toString().padStart(2, '0') }</span>
+            <span className="dateDisplay"> { getDateRangeForWeekFormatted(getWeek(selectedMonday)) }<br/>
+              { getYear(selectedMonday) }
               </span>
-            </div>
-            <button onClick={ () => setSelectedMonday(addWeeks(selectedMonday, 1)) }>&#8680;</button>
           </div>
-
+          <button onClick={ () => setSelectedMonday(addWeeks(selectedMonday, 1)) }>&#8680;</button>
         </div>
-        <table className="mealTable">
-          <tbody>
-          { Array(7).fill(0).map((_,index)  => (
-            <tr
-              key={ index }>
-              <td>{ weekDay[index] }</td>
-              <td><textarea value={ mealsForWeek[index] ?? '' } onChange={ (event) => {
-                mealsForWeek[index] = event.target.value
-                setMealsForWeek([ ...mealsForWeek ])
-              }} onBlur={() => handleSave()}/></td>
-            </tr>
-          )) }
-          </tbody>
-        </table>
 
       </div>
+      <table className="mealTable">
+        <tbody>
+        { Array(7).fill(0).map((_, index) => (
+          <tr
+            key={ index }>
+            <td>{ weekDay[index] }</td>
+            <td className="mealDoneCheck"><input type="checkbox" checked={ mealDoneChecks[index] || false }
+                                                 onChange={ (event) => {
+                                                   const newMealDoneChecks = [ ...mealDoneChecks ]
+                                                   newMealDoneChecks[index] = event.target.checked
+                                                   setMealDoneChecks(newMealDoneChecks)
+                                                 } } disabled={ !mealsForWeek[index] }/></td>
+            <td><textarea value={ mealsForWeek[index] ?? '' } onChange={ (event) => {
+              const newMealsForWeek = [ ...mealsForWeek ]
+              newMealsForWeek[index] = event.target.value
+              setMealsForWeek(newMealsForWeek)
+            } } onBlur={ () => handleSave() }/></td>
+          </tr>
+        )) }
+        </tbody>
+      </table>
+
+    </div>
   )
 })
 

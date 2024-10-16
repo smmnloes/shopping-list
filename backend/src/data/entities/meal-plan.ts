@@ -1,12 +1,14 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { BooleanArrayTransformer } from '../transformers/boolean-array-transformer'
 
 @Entity()
 export class MealPlan {
 
-  constructor(createdBy: string, weekYear: string, meals: string[]) {
+  constructor(createdBy: string, weekYear: string, meals: string[], checks: boolean[]) {
     this.createdBy = createdBy
     this.weekYear = weekYear
     this.meals = meals
+    this.checks = checks
     this.lastUpdatedAt = new Date()
   }
 
@@ -24,5 +26,8 @@ export class MealPlan {
   weekYear: string
 
   @Column({type: 'simple-array'})
-  meals: (string | null)[]
+  meals: string[]
+
+  @Column({type: 'text', transformer: new BooleanArrayTransformer()})
+  checks: boolean[]
 }

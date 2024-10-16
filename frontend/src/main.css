@@ -346,3 +346,7 @@ form input {
     display:flex;
     flex-direction: column;
 }
+
+td.mealDoneCheck {
+    padding: 0;
+}

@@ -15,26 +15,27 @@ export class MealApiController {
 
   @UseGuards(JwtAuthGuard)
   @Get('meals/:weekyear')
-  async getMealsForWeek(@Param('weekyear') weekYear: string): Promise<{ meals: (string)[] }> {
+  async getMealsForWeek(@Param('weekyear') weekYear: string): Promise<{ meals: string[], checks: boolean[] }> {
     const result = await this.mealPlanRepository.findOne({where: {weekYear}})
     if (result === null) {
       throw new NotFoundException('Meal plan not found')
     } else {
-      return {meals: result.meals}
+      return {meals: result.meals, checks: result.checks}
     }
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('meals/:weekyear')
-  async saveMealsForWeek(@Param('weekyear') weekYear: string, @Request() {body: {meals}, user: {username}}: ExtendedRequest<{
-    meals: string[]
+  async saveMealsForWeek(@Param('weekyear') weekYear: string, @Request() {body: {meals, checks}, user: {username}}: ExtendedRequest<{
+    meals: string[], checks: boolean[]
   }>): Promise<void> {
     const toSave = await this.mealPlanRepository.findOne({where: {weekYear}}).then(result => {
       if (result) {
         result.meals = meals
+        result.checks = checks
         return result
       } else {
-        return new MealPlan(username, weekYear, meals)
+        return new MealPlan(username, weekYear, meals, checks)
       }
     })
     await this.mealPlanRepository.save(toSave)
