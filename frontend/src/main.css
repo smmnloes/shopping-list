@@ -14,7 +14,7 @@ body {
     background-color: var(--color-background);
 }
 
-input {
+input,textarea {
     font-size: 16px;
 }
 
@@ -311,7 +311,7 @@ form input {
     background-color: var(--color-list-item);
     border-collapse: collapse;
     box-shadow: 2px 2px 5px var(--color-shadow);
-    width: 80vw;
+    width: 90%;
 }
 
 .mealTable td {
@@ -334,6 +334,7 @@ form input {
     padding: 5px;
     height: 30px;
     width: 90%;
+    font-size: 18px;
 }
 
 
