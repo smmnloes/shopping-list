@@ -1,3 +1,3 @@
 use pnpm
 remember selection of category after back button
-staples picker instead of auto add
+pfeile bei meal plan sehen scheiße aus auf mobile -> svg nutzen

@@ -54,8 +54,8 @@ const MealPlan = memo(() => {
   }
 
   const handleSave = async () => {
+    console.log('Saving')
     await saveMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday), mealsForWeek, mealDoneChecks)
-    console.log(JSON.stringify({checks: mealDoneChecks, meals: mealsForWeek}))
     console.log('Meals saved')
   }
 
@@ -86,11 +86,15 @@ const MealPlan = memo(() => {
                                                    newMealDoneChecks[index] = event.target.checked
                                                    setMealDoneChecks(newMealDoneChecks)
                                                  } } disabled={ !mealsForWeek[index] }/></td>
-            <td><textarea value={ mealsForWeek[index] ?? '' } onChange={ (event) => {
-              const newMealsForWeek = [ ...mealsForWeek ]
-              newMealsForWeek[index] = event.target.value
-              setMealsForWeek(newMealsForWeek)
-            } } onBlur={ () => handleSave() }/></td>
+            <td><textarea value={ mealsForWeek[index] ?? '' }
+                          disabled={ mealDoneChecks[index] }
+                          className={mealDoneChecks[index] ? 'strike-through' : ''}
+                          onChange={ (event) => {
+                            const newMealsForWeek = [ ...mealsForWeek ]
+                            newMealsForWeek[index] = event.target.value
+                            setMealsForWeek(newMealsForWeek)
+                          } }
+                          onBlur={ () => handleSave() }/></td>
           </tr>
         )) }
         </tbody>
