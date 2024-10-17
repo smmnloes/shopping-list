@@ -292,6 +292,15 @@ form input {
 
 .weekButtons {
     display: flex;
+    justify-content: center;
+}
+.weekButtons img {
+    width: 35px;
+    margin: 0 20px;
+    filter: invert(1) brightness(10) drop-shadow(3px 3px 2px rgba(64, 76, 90, 0.5));
+}
+.weekButtons img.rotated {
+    transform: rotate(180deg);
 }
 
 .kwSelect button {

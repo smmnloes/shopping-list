@@ -63,14 +63,17 @@ const MealPlan = memo(() => {
       <h1>Meal Plan</h1>
       <div className="kwSelect">
         <div className="weekButtons">
-          <button onClick={ () => setSelectedMonday(addWeeks(selectedMonday, -1)) }>&#8678;</button>
+          <img src="/arrow-circle-left.svg" alt="previous week"
+               onClick={ () => setSelectedMonday(addWeeks(selectedMonday, -1)) }/>
+
           <div className="kwDate">
             <span>KW { getWeek(selectedMonday).toString().padStart(2, '0') }</span>
             <span className="dateDisplay"> { getDateRangeForWeekFormatted(getWeek(selectedMonday)) }<br/>
               { getYear(selectedMonday) }
               </span>
           </div>
-          <button onClick={ () => setSelectedMonday(addWeeks(selectedMonday, 1)) }>&#8680;</button>
+          <img className="rotated" src="/arrow-circle-left.svg" alt="next week"
+               onClick={ () => setSelectedMonday(addWeeks(selectedMonday, 1)) }/>
         </div>
 
       </div>
@@ -99,7 +102,6 @@ const MealPlan = memo(() => {
         )) }
         </tbody>
       </table>
-
     </div>
   )
 })
