@@ -22,6 +22,8 @@ const MealPlan = memo(() => {
   const mealDoneChecksDefault = Array(7).fill(false)
   const [ mealDoneChecks, setMealDoneChecks ] = useState<boolean[]>(mealDoneChecksDefault)
 
+  const [ remoteDataFetched, setRemoteDataFetched ] = useState<boolean>(false)
+
   useEffect(() => {
     (async () => {
       try {
@@ -29,6 +31,7 @@ const MealPlan = memo(() => {
         setMealsForWeek(meals)
         setMealDoneChecks(checks)
 
+        setRemoteDataFetched(true)
         console.log('Meal plan fetched')
       } catch (error) {
         console.log('Could not fetch meal plan')
@@ -54,6 +57,10 @@ const MealPlan = memo(() => {
   }
 
   const handleSave = async () => {
+    if (!remoteDataFetched) {
+      console.log('Not saving because remote data was not fetched yet!')
+      return
+    }
     console.log('Saving')
     await saveMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday), mealsForWeek, mealDoneChecks)
     console.log('Meals saved')
