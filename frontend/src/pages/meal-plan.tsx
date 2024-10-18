@@ -1,6 +1,7 @@
 import { addWeeks, endOfWeek, getWeek, getYear, startOfWeek } from 'date-fns'
 import { memo, useEffect, useState } from 'react'
 import { getMealsForWeek, saveMealsForWeek } from '../api/api.ts'
+import objectHash from 'object-hash'
 
 const getDateRangeForWeek = (week: number): [ Date, Date ] => {
   const firstDayOfYear = new Date(getYear(new Date(), {}), 0, 1)
@@ -23,6 +24,9 @@ const MealPlan = memo(() => {
   const [ mealDoneChecks, setMealDoneChecks ] = useState<boolean[]>(mealDoneChecksDefault)
 
   const [ remoteDataFetched, setRemoteDataFetched ] = useState<boolean>(false)
+  const [ lastSavedState, setLastSavedState ] = useState<string>()
+
+  const generateSavedState = () => objectHash({mealsForWeek, mealDoneChecks})
 
   useEffect(() => {
     (async () => {
@@ -32,6 +36,7 @@ const MealPlan = memo(() => {
         setMealDoneChecks(checks)
 
         setRemoteDataFetched(true)
+        setLastSavedState(generateSavedState())
         console.log('Meal plan fetched')
       } catch (error) {
         console.log('Could not fetch meal plan')
@@ -61,8 +66,14 @@ const MealPlan = memo(() => {
       console.log('Not saving because remote data was not fetched yet!')
       return
     }
+    const currentState = generateSavedState()
+    if (currentState === lastSavedState) {
+      console.log('Not saving because state has not changed since last save')
+      return
+    }
     console.log('Saving')
     await saveMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday), mealsForWeek, mealDoneChecks)
+    setLastSavedState(currentState)
     console.log('Meals saved')
   }
 
