@@ -3,6 +3,7 @@
     --color-list-item: #d6d2e8;
     --color-background: #EAE8FF;
     --color-highlight: #b0cfed;
+    --color-error: #f19c9c;
     --color-shadow: rgb(64, 76, 90);
 }
 
@@ -161,9 +162,18 @@ form input {
     margin-top: 5px;
 }
 
-.onlineIndicator {
-    margin-top: 5px;
-    font-size: 15px;
+.offline-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--color-error); /* Adjust the background color as needed */
+    color: white; /* Adjust the text color as needed */
+    text-align: center;
+    padding: 10px; /* Adjust the padding as needed */
+    z-index: 1000; /* Ensure the banner is above other content */
+    box-shadow: -5px 2px 5px rgba(0, 0, 0, 0.3);
+
 }
 
 .shopCategoryContainer {

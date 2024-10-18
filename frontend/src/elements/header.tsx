@@ -13,8 +13,7 @@ function Header() {
     return authStatus.authenticated ? `angemeldet als ${ authStatus.username }` : 'nicht angemeldet'
   }
 
-  // TODO refactor out into own component, make certain actions unavailable when offline (global context)
-  const [isOnline, setIsOnline] = useState<boolean | null>(null);
+  const [isOnline, setIsOnline] = useState<boolean>(true);
   useEffect(() => {
     const checkStatus = async () => {
       try {
@@ -42,9 +41,11 @@ function Header() {
   return (
     <>
       <header className="header">
+        <div className="offline-banner" hidden={isOnline}>
+          du bist offline
+        </div>
         <div>{ authenticatedView(authStatus) }</div>
         { authStatus?.authenticated && (<button onClick={ handleLogout }>Logout</button>) }
-        <div className="onlineIndicator">{isOnline ? 'online': 'offline'}</div>
       </header>
     </>
   )
