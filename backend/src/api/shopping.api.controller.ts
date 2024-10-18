@@ -83,9 +83,6 @@ export class ShoppingApiController {
     const itemToDelete = shoppingList.items.find(item => item.id === itemId)
     shoppingList.items = shoppingList.items.filter(item => item !== itemToDelete)
     await this.shoppingListRepository.save(shoppingList)
-    if (!itemToDelete.isStaple) {
-      await this.listItemRepository.delete(itemToDelete.id)
-    }
   }
 
   @UseGuards(JwtAuthGuard)
