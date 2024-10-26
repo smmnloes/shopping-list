@@ -35,10 +35,10 @@ export default defineConfig({
 
     manifest: {
       name: 'Einkaufsliste',
-      display: 'minimal-ui',
+      display: 'standalone',
       short_name: 'Einkaufsliste',
       description: 'Unsere Einkaufsliste',
-      theme_color: '#ffffff',
+      theme_color: '#eae8ff',
       icons: [
         {
           src: 'icon.png',
