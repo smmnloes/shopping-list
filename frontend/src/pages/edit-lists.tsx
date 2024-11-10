@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
 import {
   createNewItemForCategory,
@@ -7,6 +7,7 @@ import {
   getStaples,
   removeItemFromCategory
 } from '../api/api.ts'
+import { CheckedItem, getCheckedItemsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
 
 
 const EditLists = () => {
@@ -14,6 +15,7 @@ const EditLists = () => {
 
   const [ listItems, setListItems ] = useState<ListItem[]>([])
   const [ addedStaples, setAddedStaples ] = useState<ListItem[]>([])
+  const [ checkedItems, setCheckedItems ] = useState<CheckedItem[]>([])
 
   const [ newItemName, setNewItemName ] = useState<string>('')
 
@@ -22,10 +24,12 @@ const EditLists = () => {
   const [ availableStaples, setAvailableStaples ] = useState<ListItem[]>([])
   const [ selectedStaples, setSelectedStaples ] = useState<ListItem[]>([])
 
-
+// Bug: Switching categories removes the checked items from the other category...
+  // TODO: button to delete all checked items
   useEffect(() => {
     (async () => {
       try {
+        setCheckedItems(getCheckedItemsFromLocal(selectedCategory))
         const {items} = await getItemsForCategory(selectedCategory)
         setAddedStaples(items.filter(item => item.isStaple))
         setListItems(items.filter(item => !item.isStaple))
@@ -55,6 +59,9 @@ const EditLists = () => {
       await removeItemFromCategory(itemId, selectedCategory)
       setListItems(listItems.filter(item => item.id !== itemId))
       setAddedStaples(addedStaples.filter(staple => staple.id !== itemId))
+      const newCheckedItems = checkedItems.filter(item => item.itemId !== itemId)
+      setCheckedItems(newCheckedItems)
+      setCheckedItemsToLocal(newCheckedItems)
       console.log('Item removed')
     } catch (error) {
       console.error('There was a problem removing the item', error)
@@ -82,6 +89,39 @@ const EditLists = () => {
     setAddedStaples([ ...addedStaples, ...staplesToAdd ])
     setSelectedStaples([])
     setModalVisible(false)
+  }
+
+  const handleCheckedItemsOnChange = (event: ChangeEvent<HTMLInputElement>, itemId: string) => {
+    let newCheckedItems = [ ...checkedItems ]
+    const checked = event.target.checked
+    if (checked) {
+      newCheckedItems.push({
+        itemId,
+        category: selectedCategory
+      })
+    } else {
+      newCheckedItems = newCheckedItems.filter(checkedItem => checkedItem.itemId !== itemId)
+    }
+    setCheckedItems(newCheckedItems)
+    setCheckedItemsToLocal(newCheckedItems)
+  }
+  const isItemChecked = (itemId: string) => checkedItems.find(checkedItem => checkedItem.itemId === itemId) !== undefined
+
+  const EditableCheckableListItem = ({index, item}: { index: number, item: ListItem }) => {
+    return <div key={ index } className="listElementContainer">
+      <div className="listElement">
+        <div className="listItemCheckBox"><input type="checkbox"
+                                                 checked={ isItemChecked(item.id) }
+                                                 onChange={ (event) => handleCheckedItemsOnChange(event, item.id) }/>
+        </div>
+        <div className={ 'label ' + (isItemChecked(item.id) ? 'strike-through' : '') }>{ item.name }</div>
+        <div className="deleteButton"><img src="/paper-bin.svg" onClick={ () => removeItem(item.id) }
+                                           alt="delete item"/>
+        </div>
+
+      </div>
+
+    </div>
   }
 
   return (
@@ -127,29 +167,16 @@ const EditLists = () => {
         <div className="listContainer">
           { addedStaples.length === 0 ? ('Noch keine Staples hinzugefügt.') :
             addedStaples.map((item, index) =>
-              (<div key={ index } className="listElementContainer">
-                  <div className="listElement">
-                    { item.name }
-                  </div>
-                  <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"
-                                                                                              alt="delete item"/>
-                  </button>
-                </div>
-              )) }
+              (<EditableCheckableListItem key={ index } index={ index } item={ item }/>)
+            ) }
         </div>
         { listItems.length > 0 &&
           (<div className="listContainer">
             { listItems.map((item, index) =>
-              <div key={ index } className="listElementContainer">
-                <div className="listElement">
-                  { item.name }
-                </div>
-                <button className="deleteButton" onClick={ () => removeItem(item.id) }><img src="/paper-bin.svg"
-                                                                                            alt="delete item"/>
-                </button>
-              </div>
+              (<EditableCheckableListItem key={ index } index={ index } item={ item }/>)
             ) }
-          </div>) }
+          </div>)
+        }
         <form className="addItemForm" onSubmit={ handleSubmit }>
           <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
           <button className="addButton small" type="submit">Hinzufügen</button>
