@@ -24,12 +24,12 @@ const EditLists = () => {
   const [ availableStaples, setAvailableStaples ] = useState<ListItem[]>([])
   const [ selectedStaples, setSelectedStaples ] = useState<ListItem[]>([])
 
-// Bug: Switching categories removes the checked items from the other category...
+
   // TODO: button to delete all checked items
   useEffect(() => {
     (async () => {
       try {
-        setCheckedItems(getCheckedItemsFromLocal(selectedCategory))
+        setCheckedItems(getCheckedItemsFromLocal())
         const {items} = await getItemsForCategory(selectedCategory)
         setAddedStaples(items.filter(item => item.isStaple))
         setListItems(items.filter(item => !item.isStaple))
@@ -118,9 +118,7 @@ const EditLists = () => {
         <div className="deleteButton"><img src="/paper-bin.svg" onClick={ () => removeItem(item.id) }
                                            alt="delete item"/>
         </div>
-
       </div>
-
     </div>
   }
 
@@ -136,7 +134,7 @@ const EditLists = () => {
       </div>
       <div className="listAndInput">
         <div className="resetStaplesContainer">
-          <button className="openModalBtn" onClick={ handleOpenModal }><img src="/stapler.svg"/><span
+          <button className="openModalBtn" onClick={ handleOpenModal }><img src="/stapler.svg" alt='modal-open'/><span
             className="stapleAddSign"> + </span></button>
         </div>
         <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {

@@ -6,14 +6,13 @@ const CHECKED_ITEMS_KEY = 'checkedItems'
 
 
 export const getCheckedItemsFromLocal =
-  (category: ShopCategory): CheckedItem[] => {
+  (): CheckedItem[] => {
     const allCheckedItems = localStorage.getItem(CHECKED_ITEMS_KEY)
     if (allCheckedItems === null) {
       console.error('Error while fetching all checked items')
       return []
     }
-    const allCheckedItemsParsed = JSON.parse(allCheckedItems) as CheckedItem[]
-    return allCheckedItemsParsed.filter(item => item.category === category)
+    return JSON.parse(allCheckedItems) as CheckedItem[]
   }
 
 
