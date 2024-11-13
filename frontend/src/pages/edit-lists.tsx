@@ -1,13 +1,13 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
 import {
-  createNewItemForCategory,
   addStaplesToCategoryList,
+  createNewItemForCategory,
   getItemsForCategory,
   getStaples,
   removeItemFromCategory
 } from '../api/api.ts'
-import { CheckedItem, getCheckedItemsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
+import { CheckedItemId, getCheckedItemIdsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
 
 
 const EditLists = () => {
@@ -15,7 +15,7 @@ const EditLists = () => {
 
   const [ listItems, setListItems ] = useState<ListItem[]>([])
   const [ addedStaples, setAddedStaples ] = useState<ListItem[]>([])
-  const [ checkedItems, setCheckedItems ] = useState<CheckedItem[]>([])
+  const [ checkedItemsIds, setCheckedItemsIds ] = useState<CheckedItemId[]>([])
 
   const [ newItemName, setNewItemName ] = useState<string>('')
 
@@ -29,7 +29,7 @@ const EditLists = () => {
   useEffect(() => {
     (async () => {
       try {
-        setCheckedItems(getCheckedItemsFromLocal())
+        setCheckedItemsIds(getCheckedItemIdsFromLocal())
         const {items} = await getItemsForCategory(selectedCategory)
         setAddedStaples(items.filter(item => item.isStaple))
         setListItems(items.filter(item => !item.isStaple))
@@ -54,14 +54,17 @@ const EditLists = () => {
     }
   }
 
-  const removeItem = async (itemId: string) => {
+  const updateCheckedItems = (checkedItems: CheckedItemId[]) => {
+    setCheckedItemsIds(checkedItems)
+    setCheckedItemsToLocal(checkedItems)
+  }
+
+  const removeItem = async (toRemoveId: string) => {
     try {
-      await removeItemFromCategory(itemId, selectedCategory)
-      setListItems(listItems.filter(item => item.id !== itemId))
-      setAddedStaples(addedStaples.filter(staple => staple.id !== itemId))
-      const newCheckedItems = checkedItems.filter(item => item.itemId !== itemId)
-      setCheckedItems(newCheckedItems)
-      setCheckedItemsToLocal(newCheckedItems)
+      await removeItemFromCategory(toRemoveId, selectedCategory)
+      setListItems(listItems.filter(item => item.id !== toRemoveId))
+      setAddedStaples(addedStaples.filter(staple => staple.id !== toRemoveId))
+      updateCheckedItems(checkedItemsIds.filter(itemId => itemId !== toRemoveId))
       console.log('Item removed')
     } catch (error) {
       console.error('There was a problem removing the item', error)
@@ -92,22 +95,19 @@ const EditLists = () => {
   }
 
   const handleCheckedItemsOnChange = (event: ChangeEvent<HTMLInputElement>, itemId: string) => {
-    let newCheckedItems = [ ...checkedItems ]
+    let newCheckedItems = [ ...checkedItemsIds ]
     const checked = event.target.checked
     if (checked) {
-      newCheckedItems.push({
-        itemId,
-        category: selectedCategory
-      })
+      newCheckedItems.push(itemId)
     } else {
-      newCheckedItems = newCheckedItems.filter(checkedItem => checkedItem.itemId !== itemId)
+      newCheckedItems = newCheckedItems.filter(id => id !== itemId)
     }
-    setCheckedItems(newCheckedItems)
-    setCheckedItemsToLocal(newCheckedItems)
+    updateCheckedItems(newCheckedItems)
   }
-  const isItemChecked = (itemId: string) => checkedItems.find(checkedItem => checkedItem.itemId === itemId) !== undefined
 
   const EditableCheckableListItem = ({index, item}: { index: number, item: ListItem }) => {
+    const isItemChecked = (itemId: string) => checkedItemsIds.includes(itemId)
+
     return <div key={ index } className="listElementContainer">
       <div className="listElement">
         <div className="listItemCheckBox"><input type="checkbox"
