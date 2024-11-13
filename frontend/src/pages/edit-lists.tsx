@@ -7,7 +7,7 @@ import {
   getStaples,
   removeItemFromCategory
 } from '../api/api.ts'
-import { CheckedItemId, getCheckedItemIdsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
+import { CheckedItem, getCheckedItemIdsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
 
 
 const EditLists = () => {
@@ -15,7 +15,7 @@ const EditLists = () => {
 
   const [ listItems, setListItems ] = useState<ListItem[]>([])
   const [ addedStaples, setAddedStaples ] = useState<ListItem[]>([])
-  const [ checkedItemsIds, setCheckedItemsIds ] = useState<CheckedItemId[]>([])
+  const [ checkedItems, setCheckedItems ] = useState<CheckedItem[]>([])
 
   const [ newItemName, setNewItemName ] = useState<string>('')
 
@@ -25,11 +25,10 @@ const EditLists = () => {
   const [ selectedStaples, setSelectedStaples ] = useState<ListItem[]>([])
 
 
-  // TODO: button to delete all checked items
   useEffect(() => {
     (async () => {
       try {
-        setCheckedItemsIds(getCheckedItemIdsFromLocal())
+        setCheckedItems(getCheckedItemIdsFromLocal())
         const {items} = await getItemsForCategory(selectedCategory)
         setAddedStaples(items.filter(item => item.isStaple))
         setListItems(items.filter(item => !item.isStaple))
@@ -54,17 +53,17 @@ const EditLists = () => {
     }
   }
 
-  const updateCheckedItems = (checkedItems: CheckedItemId[]) => {
-    setCheckedItemsIds(checkedItems)
+  const updateCheckedItems = (checkedItems: CheckedItem[]) => {
+    setCheckedItems(checkedItems)
     setCheckedItemsToLocal(checkedItems)
   }
 
-  const removeItem = async (toRemoveId: string) => {
+  const removeItems = async (toRemoveIds: number[]) => {
     try {
-      await removeItemFromCategory(toRemoveId, selectedCategory)
-      setListItems(listItems.filter(item => item.id !== toRemoveId))
-      setAddedStaples(addedStaples.filter(staple => staple.id !== toRemoveId))
-      updateCheckedItems(checkedItemsIds.filter(itemId => itemId !== toRemoveId))
+      await Promise.allSettled(toRemoveIds.map(id => removeItemFromCategory(id, selectedCategory)))
+      setListItems(listItems.filter(item => !toRemoveIds.includes(item.id)))
+      setAddedStaples(addedStaples.filter(staple => !toRemoveIds.includes(staple.id)))
+      updateCheckedItems(checkedItems.filter(item => !toRemoveIds.includes(item.id)))
       console.log('Item removed')
     } catch (error) {
       console.error('There was a problem removing the item', error)
@@ -94,19 +93,23 @@ const EditLists = () => {
     setModalVisible(false)
   }
 
-  const handleCheckedItemsOnChange = (event: ChangeEvent<HTMLInputElement>, itemId: string) => {
-    let newCheckedItems = [ ...checkedItemsIds ]
+  const handleCheckedItemsOnChange = (event: ChangeEvent<HTMLInputElement>, itemId: number) => {
+    let newCheckedItems = [ ...checkedItems ]
     const checked = event.target.checked
     if (checked) {
-      newCheckedItems.push(itemId)
+      newCheckedItems.push({id: itemId, category: selectedCategory})
     } else {
-      newCheckedItems = newCheckedItems.filter(id => id !== itemId)
+      newCheckedItems = newCheckedItems.filter(item => item.id !== itemId)
     }
     updateCheckedItems(newCheckedItems)
   }
 
+  const handleClearCheckedItems = async () => {
+    await removeItems(checkedItems.filter(item => item.category === selectedCategory).map(item => item.id))
+  }
+
   const EditableCheckableListItem = ({index, item}: { index: number, item: ListItem }) => {
-    const isItemChecked = (itemId: string) => checkedItemsIds.includes(itemId)
+    const isItemChecked = (itemId: number) => !!checkedItems.find(item => item.id === itemId)
 
     return <div key={ index } className="listElementContainer">
       <div className="listElement">
@@ -115,7 +118,7 @@ const EditLists = () => {
                                                  onChange={ (event) => handleCheckedItemsOnChange(event, item.id) }/>
         </div>
         <div className={ 'label ' + (isItemChecked(item.id) ? 'strike-through' : '') }>{ item.name }</div>
-        <div className="deleteButton"><img src="/paper-bin.svg" onClick={ () => removeItem(item.id) }
+        <div className="deleteButton"><img src="/paper-bin.svg" onClick={ () => removeItems([item.id]) }
                                            alt="delete item"/>
         </div>
       </div>
@@ -133,9 +136,13 @@ const EditLists = () => {
         ) }
       </div>
       <div className="listAndInput">
-        <div className="resetStaplesContainer">
-          <button className="openModalBtn" onClick={ handleOpenModal }><img src="/stapler.svg" alt='modal-open'/><span
-            className="stapleAddSign"> + </span></button>
+        <div className="listTopControlsContainer">
+          <button className="openModalBtn" onClick={ handleOpenModal }><img src="/stapler.svg" alt="modal-open"/><span
+            className="stapleAddSign"> + </span>
+          </button>
+          <button className="clearCheckedItems" onClick={ handleClearCheckedItems }><img src="/clear-all.svg"
+                                                                                         alt="clear-checked-items"/>
+          </button>
         </div>
         <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
           if ((e.target as any).id === 'modal-overlay') setModalVisible(false)

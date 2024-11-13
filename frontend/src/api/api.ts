@@ -24,11 +24,11 @@ export const createNewItemForCategory = async (name: string, category: ShopCateg
   return axios.post(`${ backendHost }/api/shopping-lists/${ category }/items`, {item: {name}}, config).then(response => response.data)
 }
 
-export const addStaplesToCategoryList = (stapleIdsToAdd: string[], category: ShopCategory)=> {
+export const addStaplesToCategoryList = (stapleIdsToAdd: number[], category: ShopCategory)=> {
   return axios.post(`${ backendHost }/api/shopping-lists/${ category }/staples`, {ids: stapleIdsToAdd}, config).then(response => response.data)
 }
 
-export const removeItemFromCategory = async (itemId: string, category:ShopCategory) => {
+export const removeItemFromCategory = async (itemId: number, category:ShopCategory) => {
   return axios.delete(`${ backendHost }/api/shopping-lists/${ category }/items/${ itemId }`, config).then(response => response.data)
 }
 
@@ -44,7 +44,7 @@ export const createStaple = async (stapleName: string, category: ShopCategory) =
     }
   }, config).then(response => response.data)
 }
-export const deleteStaple = async (stapleId: string) => {
+export const deleteStaple = async (stapleId: number) => {
   return axios.delete(`${ backendHost }/api/staples/${ stapleId }`, config).then(response => response.data)
 }
 

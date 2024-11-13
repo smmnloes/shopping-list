@@ -1,7 +1,7 @@
 // TODO think about type sharing
 
 export interface ListItem {
-  id: string
+  id: number
   name: string
   isStaple: boolean
 }

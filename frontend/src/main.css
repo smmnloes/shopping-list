@@ -215,19 +215,23 @@ form input {
     border-radius: 7px;
 }
 
-.resetStaplesContainer {
+.listTopControlsContainer {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
+}
+
+.listTopControlsContainer button {
+    padding: 5px;
+    margin: 10px;
 }
 
 .openModalBtn {
     display: flex;
     justify-content: space-between;
-    padding: 5px;
-    margin: 10px;
+
 }
 
-.openModalBtn img {
+.listTopControlsContainer img {
     height: 30px;
     width: 36px;
 }
