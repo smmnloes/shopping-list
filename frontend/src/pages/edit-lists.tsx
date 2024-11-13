@@ -8,6 +8,7 @@ import {
   removeItemFromCategory
 } from '../api/api.ts'
 import { CheckedItem, getCheckedItemIdsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
+import useOnlineStatus from '../hooks/useOnlineStatus.ts'
 
 
 const EditLists = () => {
@@ -24,6 +25,7 @@ const EditLists = () => {
   const [ availableStaples, setAvailableStaples ] = useState<ListItem[]>([])
   const [ selectedStaples, setSelectedStaples ] = useState<ListItem[]>([])
 
+  const isOnline = useOnlineStatus()
 
   useEffect(() => {
     (async () => {
@@ -118,8 +120,9 @@ const EditLists = () => {
                                                  onChange={ (event) => handleCheckedItemsOnChange(event, item.id) }/>
         </div>
         <div className={ 'label ' + (isItemChecked(item.id) ? 'strike-through' : '') }>{ item.name }</div>
-        <div className="deleteButton"><img src="/paper-bin.svg" onClick={ () => removeItems([item.id]) }
-                                           alt="delete item"/>
+        <div className={ `deleteButton ${ !isOnline ? 'disabled' : '' }` }><img src="/paper-bin.svg"
+                                                                                onClick={ () => isOnline && removeItems([ item.id ]) }
+                                                                                alt="delete item"/>
         </div>
       </div>
     </div>
@@ -137,11 +140,13 @@ const EditLists = () => {
       </div>
       <div className="listAndInput">
         <div className="listTopControlsContainer">
-          <button className="openModalBtn" onClick={ handleOpenModal }><img src="/stapler.svg" alt="modal-open"/><span
+          <button className="openModalBtn" onClick={ handleOpenModal } disabled={ !isOnline }><img src="/stapler.svg"
+                                                                                                   alt="modal-open"/><span
             className="stapleAddSign"> + </span>
           </button>
-          <button className="clearCheckedItems" onClick={ handleClearCheckedItems }><img src="/clear-all.svg"
-                                                                                         alt="clear-checked-items"/>
+          <button className="clearCheckedItems" onClick={ handleClearCheckedItems } disabled={ !isOnline }><img
+            src="/clear-all.svg"
+            alt="clear-checked-items"/>
           </button>
         </div>
         <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
@@ -184,7 +189,7 @@ const EditLists = () => {
         }
         <form className="addItemForm" onSubmit={ handleSubmit }>
           <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
-          <button className="addButton small" type="submit">Hinzufügen</button>
+          <button className="addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
         </form>
       </div>
     </div>

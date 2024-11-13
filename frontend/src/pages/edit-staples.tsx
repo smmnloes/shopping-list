@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
 import { createStaple, deleteStaple, getStaples } from '../api/api.ts'
+import useOnlineStatus from '../hooks/useOnlineStatus.ts'
 
 
 const EditStaples = () => {
   const [ staples, setStaples ] = useState<ListItem[]>([])
   const [ newStapleName, setNewStapleName ] = useState<string>('')
   const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>(ShopCategory.GROCERY)
+  const isOnline = useOnlineStatus()
 
   useEffect(() => {
     (async () => {
@@ -40,7 +42,7 @@ const EditStaples = () => {
     }
   }
 
-  const removeStaple = async (stapleId: string) => {
+  const removeStaple = async (stapleId: number) => {
     try {
       await deleteStaple(stapleId)
       setStaples(staples.filter(staple => staple.id !== stapleId))
@@ -65,18 +67,20 @@ const EditStaples = () => {
           { staples.length === 0 ? 'Noch keine Staples angelegt...' :
             staples.map((item, index) => (
               <div key={ index } className="listElementContainer">
-                <div className="listElement staple">
-                  { item.name }
+                <div className="listElement">
+                  <div className="label ">{ item.name }</div>
+                  <div className={ `deleteButton ${ !isOnline ? 'disabled' : '' }` }><img src="/paper-bin.svg"
+                                                                                          onClick={ () => isOnline && removeStaple(item.id) }
+                                                                                          alt="delete item"/>
+                  </div>
                 </div>
-                <button className="deleteButton" onClick={ () => removeStaple(item.id) }><img src="/paper-bin.svg"
-                                                                                              alt="delete item"/>
-                </button>
+
               </div>
             )) }
         </div>
         <form className="addItemForm" onSubmit={ handleSubmit }>
           <input type="text" onChange={ e => setNewStapleName(e.target.value) }/>
-          <button className="addButton small" type="submit">Hinzufügen</button>
+          <button className="addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
         </form>
       </div>
     </div>

@@ -2,6 +2,7 @@ import { addWeeks, endOfWeek, getWeek, getYear, startOfWeek } from 'date-fns'
 import { memo, useEffect, useState } from 'react'
 import { getMealsForWeek, saveMealsForWeek } from '../api/api.ts'
 import objectHash from 'object-hash'
+import useOnlineStatus from '../hooks/useOnlineStatus.ts'
 
 const getDateRangeForWeek = (week: number): [ Date, Date ] => {
   const firstDayOfYear = new Date(getYear(new Date(), {}), 0, 1)
@@ -25,6 +26,8 @@ const MealPlan = memo(() => {
 
   const [ remoteDataFetched, setRemoteDataFetched ] = useState<boolean>(false)
   const [ lastSavedState, setLastSavedState ] = useState<string>()
+
+  const isOnline = useOnlineStatus()
 
   const generateSavedState = () => objectHash({mealsForWeek, mealDoneChecks})
 
@@ -106,10 +109,10 @@ const MealPlan = memo(() => {
                                                    const newMealDoneChecks = [ ...mealDoneChecks ]
                                                    newMealDoneChecks[index] = event.target.checked
                                                    setMealDoneChecks(newMealDoneChecks)
-                                                 } } disabled={ !mealsForWeek[index] }/></td>
+                                                 } } disabled={ !mealsForWeek[index] || !isOnline }/></td>
             <td><textarea value={ mealsForWeek[index] ?? '' }
-                          disabled={ mealDoneChecks[index] }
-                          className={mealDoneChecks[index] ? 'strike-through' : ''}
+                          disabled={ mealDoneChecks[index] || !isOnline }
+                          className={ mealDoneChecks[index] ? 'strike-through' : '' }
                           onChange={ (event) => {
                             const newMealsForWeek = [ ...mealsForWeek ]
                             newMealsForWeek[index] = event.target.value

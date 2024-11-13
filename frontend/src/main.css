@@ -15,8 +15,14 @@ body {
     background-color: var(--color-background);
 }
 
-input,textarea {
+input, textarea {
     font-size: 16px;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
 }
 
 button {
@@ -32,7 +38,7 @@ button {
     width: 90vw;
     text-align: center;
     margin: auto;
-    max-width:550px;
+    max-width: 550px;
 }
 
 .listContainer {
@@ -82,9 +88,13 @@ button {
     width: 20px;
 }
 
+.deleteButton.disabled img   {
+    filter: grayscale(100%) brightness(3.5);
+}
+
 .addButton {
     padding: 7px;
-    font-size:20px;
+    font-size: 20px;
 }
 
 .addButton.small {
@@ -136,7 +146,6 @@ form input {
 }
 
 
-
 .loginForm input {
     margin-bottom: 20px;
 }
@@ -149,7 +158,6 @@ form input {
     display: flex;
     justify-content: space-between;
 }
-
 
 
 .addItemForm input {
@@ -199,17 +207,18 @@ form input {
 
 .shopCategoryIcon {
     width: 200px;
-    margin:1em;
+    margin: 1em;
     padding: 0.2em;
     background-color: var(--color-background);
 }
 
 .shopCategoryIcon img {
     height: 2em;
-    filter:grayscale(100%) brightness(6) invert(5%);
+    filter: grayscale(100%) brightness(6) invert(5%);
 
     mix-blend-mode: hard-light;
 }
+
 .shopCategoryIcon.selected {
     background-color: var(--color-highlight);
     border-radius: 7px;
@@ -323,11 +332,13 @@ form input {
     display: flex;
     justify-content: center;
 }
+
 .weekButtons img {
     width: 35px;
     margin: 0 20px;
     filter: invert(1) brightness(10) drop-shadow(3px 3px 2px rgba(64, 76, 90, 0.5));
 }
+
 .weekButtons img.rotated {
     transform: rotate(180deg);
 }
@@ -357,7 +368,7 @@ form input {
     border-bottom: 1px solid var(--color-background);
 }
 
-.mealTable tr:last-child td{
+.mealTable tr:last-child td {
     border-bottom: 0;
 }
 
@@ -380,8 +391,9 @@ form input {
 .dateDisplay {
     font-size: 0.8rem;
 }
+
 .kwDate {
-    display:flex;
+    display: flex;
     flex-direction: column;
 }
 
