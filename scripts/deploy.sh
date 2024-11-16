@@ -1,4 +1,6 @@
 #!/bin/bash
+npm version minor
+git push
 
 ssh -t ubuntu@3.73.126.153 << 'EOF'
 #!/bin/bash
