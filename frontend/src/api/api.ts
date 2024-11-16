@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { AuthStatus } from '../services/auth-provider.tsx'
 import { ListItem, ShopCategory } from '../types/types.ts'
+import axiosRetry from 'axios-retry'
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST
 
@@ -8,6 +9,7 @@ const backendHost = import.meta.env.VITE_BACKEND_HOST
 const axiosInstance = axios.create({
   withCredentials: true
 })
+axiosRetry(axiosInstance, {retries: 3, retryDelay: axiosRetry.exponentialDelay})
 
 export const login = async (username: string, password: string): Promise<AuthStatus> => {
   return axiosInstance.post(`${ backendHost }/api/auth/login`, {username, password}).then(response => response.data)
