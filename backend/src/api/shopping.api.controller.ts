@@ -74,14 +74,14 @@ export class ShoppingApiController {
     return {items: shoppingList.items.map(({id, name, isStaple}) => ({id, name, isStaple}))}
   }
 
-
   @UseGuards(JwtAuthGuard)
-  @Delete('shopping-lists/:category/items/:itemId')
-  async deleteItemFromCategory(@Param('category') category: ShopCategory, @Param('itemId', ParseIntPipe) itemId: number) {
+  @Delete('shopping-lists/:category/items')
+  async deleteItemsFromCategoryBulk(@Param('category') category: ShopCategory, @Request() req: ExtendedRequest<{
+    ids: number[]
+  }>) {
     const shoppingList = await this.getListForCategory(category)
 
-    const itemToDelete = shoppingList.items.find(item => item.id === itemId)
-    shoppingList.items = shoppingList.items.filter(item => item !== itemToDelete)
+    shoppingList.items = shoppingList.items.filter(item => !req.body.ids.includes(item.id))
     await this.shoppingListRepository.save(shoppingList)
   }
 

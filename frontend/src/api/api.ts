@@ -1,66 +1,68 @@
-import axios, { AxiosRequestConfig } from 'axios'
+import axios from 'axios'
 import { AuthStatus } from '../services/auth-provider.tsx'
 import { ListItem, ShopCategory } from '../types/types.ts'
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST
 
+
+const axiosInstance = axios.create({
+  withCredentials: true
+})
+
 export const login = async (username: string, password: string): Promise<AuthStatus> => {
-  return axios.post(`${ backendHost }/api/auth/login`, {username, password}, config).then(response => response.data)
+  return axiosInstance.post(`${ backendHost }/api/auth/login`, {username, password}).then(response => response.data)
 }
 
 export const logout = async () => {
-  return axios.post(`${ backendHost }/api/auth/logout`, {}, config).then(response => response.data)
+  return axiosInstance.post(`${ backendHost }/api/auth/logout`, {}).then(response => response.data)
 }
 
 export const getAuthStatus = async (): Promise<AuthStatus> => {
-  return axios.get(`${ backendHost }/api/auth`, config).then(response => response.data)
+  return axiosInstance.get(`${ backendHost }/api/auth`).then(response => response.data)
 }
 
-export const getItemsForCategory = async (category: ShopCategory): Promise<{items: ListItem[]}> => {
-  return axios.get(`${ backendHost }/api/shopping-lists/${ category }`, config).then(response => response.data)
+export const getItemsForCategory = async (category: ShopCategory): Promise<{ items: ListItem[] }> => {
+  return axiosInstance.get(`${ backendHost }/api/shopping-lists/${ category }`).then(response => response.data)
 }
 
 export const createNewItemForCategory = async (name: string, category: ShopCategory) => {
-  return axios.post(`${ backendHost }/api/shopping-lists/${ category }/items`, {item: {name}}, config).then(response => response.data)
+  return axiosInstance.post(`${ backendHost }/api/shopping-lists/${ category }/items`, {item: {name}}).then(response => response.data)
 }
 
-export const addStaplesToCategoryList = (stapleIdsToAdd: number[], category: ShopCategory)=> {
-  return axios.post(`${ backendHost }/api/shopping-lists/${ category }/staples`, {ids: stapleIdsToAdd}, config).then(response => response.data)
+export const addStaplesToCategoryList = (stapleIdsToAdd: number[], category: ShopCategory) => {
+  return axiosInstance.post(`${ backendHost }/api/shopping-lists/${ category }/staples`, {ids: stapleIdsToAdd}).then(response => response.data)
 }
 
-export const removeItemFromCategory = async (itemId: number, category:ShopCategory) => {
-  return axios.delete(`${ backendHost }/api/shopping-lists/${ category }/items/${ itemId }`, config).then(response => response.data)
+export const deleteItemsFromCategoryBulk = async (itemIds: number[], category: ShopCategory) => {
+  return axiosInstance.delete(`${ backendHost }/api/shopping-lists/${ category }/items`, {
+    data: {ids: itemIds}
+  }).then(response => response.data)
 }
 
 export const getStaples = async (category: ShopCategory): Promise<ListItem[]> => {
-  return axios.get(`${ backendHost }/api/staples`, {params: {category}, ...config}).then(response => response.data)
+  return axiosInstance.get(`${ backendHost }/api/staples`, {params: {category}}).then(response => response.data)
 }
 
 export const createStaple = async (stapleName: string, category: ShopCategory) => {
-  return axios.post(`${ backendHost }/api/staples`, {
+  return axiosInstance.post(`${ backendHost }/api/staples`, {
     staple: {
       name: stapleName,
       category
     }
-  }, config).then(response => response.data)
+  }).then(response => response.data)
 }
 export const deleteStaple = async (stapleId: number) => {
-  return axios.delete(`${ backendHost }/api/staples/${ stapleId }`, config).then(response => response.data)
+  return axiosInstance.delete(`${ backendHost }/api/staples/${ stapleId }`).then(response => response.data)
 }
 
 export const onlineStatus = async () => {
-  return axios.get(`${ backendHost }/api/onlinestatus`, config)
+  return axiosInstance.get(`${ backendHost }/api/onlinestatus`)
 }
 
-export const getMealsForWeek = (week: number, year: number): Promise<{meals: string[], checks: boolean[]}> => {
-  return axios.get(`${ backendHost }/api/meals/${week}-${year}`, config).then(response => response.data)
+export const getMealsForWeek = (week: number, year: number): Promise<{ meals: string[], checks: boolean[] }> => {
+  return axiosInstance.get(`${ backendHost }/api/meals/${ week }-${ year }`).then(response => response.data)
 }
 
 export const saveMealsForWeek = (week: number, year: number, meals: string[], checks: boolean[]): Promise<void> => {
-  return axios.post(`${ backendHost }/api/meals/${week}-${year}`, {meals, checks}, config)
-}
-
-
-const config: AxiosRequestConfig = {
-  withCredentials: true
+  return axiosInstance.post(`${ backendHost }/api/meals/${ week }-${ year }`, {meals, checks})
 }

@@ -5,7 +5,7 @@ import {
   createNewItemForCategory,
   getItemsForCategory,
   getStaples,
-  removeItemFromCategory
+  deleteItemsFromCategoryBulk
 } from '../api/api.ts'
 import { CheckedItem, getCheckedItemIdsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
 import useOnlineStatus from '../hooks/useOnlineStatus.ts'
@@ -62,11 +62,11 @@ const EditLists = () => {
 
   const removeItems = async (toRemoveIds: number[]) => {
     try {
-      await Promise.allSettled(toRemoveIds.map(id => removeItemFromCategory(id, selectedCategory)))
+      await deleteItemsFromCategoryBulk(toRemoveIds, selectedCategory)
       setListItems(listItems.filter(item => !toRemoveIds.includes(item.id)))
       setAddedStaples(addedStaples.filter(staple => !toRemoveIds.includes(staple.id)))
       updateCheckedItems(checkedItems.filter(item => !toRemoveIds.includes(item.id)))
-      console.log('Item removed')
+      console.log('Items removed')
     } catch (error) {
       console.error('There was a problem removing the item', error)
     }
