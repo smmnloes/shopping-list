@@ -185,7 +185,7 @@ form input {
 
 .header {
     text-align: right;
-    padding: 15px;
+    padding: 25px;
     font-size: 15px;
 }
 
@@ -419,4 +419,5 @@ td.mealDoneCheck {
     font-size: 0.7rem;
     text-align: center;
     padding: 15px;
+    margin-bottom: 15px;
 }
