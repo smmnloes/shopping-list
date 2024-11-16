@@ -7,12 +7,28 @@
     --color-shadow: rgb(64, 76, 90);
 }
 
-
 body {
     font-family: 'Calibri', sans-serif;
     color: var(--color-font);
     font-size: 20px;
     background-color: var(--color-background);
+    height: 100vh;
+    margin: 0;
+}
+
+
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.container {
+    flex-grow: 1;
+    width: 90vw;
+    text-align: center;
+    margin: auto;
+    max-width: 550px;
 }
 
 input, textarea {
@@ -34,12 +50,6 @@ button {
     box-shadow: 2px 2px 5px var(--color-shadow);
 }
 
-.container {
-    width: 90vw;
-    text-align: center;
-    margin: auto;
-    max-width: 550px;
-}
 
 .listContainer {
     margin-bottom: 25px;
@@ -88,7 +98,7 @@ button {
     width: 20px;
 }
 
-.deleteButton.disabled img   {
+.deleteButton.disabled img {
     filter: grayscale(100%) brightness(3.5);
 }
 
@@ -175,7 +185,7 @@ form input {
 
 .header {
     text-align: right;
-    padding: 10px;
+    padding: 15px;
     font-size: 15px;
 }
 
@@ -403,4 +413,10 @@ td.mealDoneCheck {
 
 .strike-through {
     text-decoration: line-through;
+}
+
+.footer {
+    font-size: 0.7rem;
+    text-align: center;
+    padding: 15px;
 }
