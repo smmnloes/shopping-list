@@ -32,6 +32,7 @@ const useQueryParamState = <T, >(paramName: string, initialValue: T, deserialize
     console.log('Setting query param')
     queryParams.set(paramName, String(newValue))
     navigate(`${ location.pathname }?${ queryParams.toString() }`, {replace: true})
+    setParamInternal(newValue)
   }
 
 

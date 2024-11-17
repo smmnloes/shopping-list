@@ -115,7 +115,7 @@ const EditLists = () => {
 
   const handleEditStaples = () => {
     const queryParams = new URLSearchParams({'selectedCategory': selectedCategory})
-    navigate(`/staples?${ queryParams.toString() }`, {replace: true})
+    navigate(`/staples?${ queryParams.toString() }`)
   }
 
   const EditableCheckableListItem = ({index, item}: { index: number, item: ListItem }) => {
@@ -166,7 +166,7 @@ const EditLists = () => {
             <div className="modalSelectBtnContainer">
               <button onClick={ () => setSelectedStaples(availableStaples) }>Alle</button>
               <button onClick={ () => setSelectedStaples([]) }>Keiner</button>
-              <button onClick={ handleEditStaples  }>Edit</button>
+              <button onClick={ handleEditStaples }>Edit</button>
             </div>
             <div className="listContainer">
               { availableStaples.length === 0 ? ('Keine Staples angelegt.') :
