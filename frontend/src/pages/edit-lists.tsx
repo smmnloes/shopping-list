@@ -8,7 +8,8 @@ import {
   deleteItemsFromCategoryBulk
 } from '../api/api.ts'
 import { CheckedItem, getCheckedItemIdsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
-import useOnlineStatus from '../hooks/useOnlineStatus.ts'
+import useOnlineStatus from '../hooks/use-online-status.ts'
+import { useNavigate } from 'react-router-dom'
 
 
 const EditLists = () => {
@@ -26,10 +27,13 @@ const EditLists = () => {
   const [ selectedStaples, setSelectedStaples ] = useState<ListItem[]>([])
 
   const isOnline = useOnlineStatus()
+  const navigate = useNavigate()
 
   useEffect(() => {
     (async () => {
       try {
+        const staples = await getStaples(selectedCategory)
+        setAvailableStaples(staples)
         setCheckedItems(getCheckedItemIdsFromLocal())
         const {items} = await getItemsForCategory(selectedCategory)
         setAddedStaples(items.filter(item => item.isStaple))
@@ -39,6 +43,15 @@ const EditLists = () => {
       }
     })()
   }, [ selectedCategory ])
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search)
+    const isModalOpen = queryParams.get('modalvisible') === 'true'
+    setModalVisible(isModalOpen)
+
+    const selectedCategoryParam = queryParams.get('selectedcategory')
+    setSelectedCategory(selectedCategoryParam as ShopCategory ?? ShopCategory.GROCERY)
+  }, [ location.search ])
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
@@ -73,14 +86,22 @@ const EditLists = () => {
   }
 
   const handleOpenModal = async () => {
-    const staples = await getStaples(selectedCategory)
-    setAvailableStaples(staples)
-    setModalVisible(true)
+    updateQueryParam('modalvisible', String(true))
   }
 
   const handleModalClose = () => {
-    setModalVisible(false)
     setSelectedStaples([])
+    updateQueryParam('modalvisible', String(false))
+  }
+
+  const updateQueryParam = (param: string, value: string) => {
+    const queryParams = new URLSearchParams(location.search);
+    queryParams.set(param, value);
+    navigate(`${location.pathname}?${queryParams.toString()}`, { replace: true });
+  }
+
+  const changeSelectedCategory = (category: ShopCategory) => {
+    updateQueryParam('selectedcategory', category)
   }
 
   const handleStapleSelected = (item: ListItem) => {
@@ -92,7 +113,7 @@ const EditLists = () => {
     await addStaplesToCategoryList(staplesToAdd.map(staple => staple.id), selectedCategory)
     setAddedStaples([ ...addedStaples, ...staplesToAdd ])
     setSelectedStaples([])
-    setModalVisible(false)
+    handleModalClose()
   }
 
   const handleCheckedItemsOnChange = (event: ChangeEvent<HTMLInputElement>, itemId: number) => {
@@ -134,7 +155,7 @@ const EditLists = () => {
       <div className="shopCategoryContainer">
         { Object.entries(configForCategory).map(([ category, config ], index) =>
           (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }` } key={ index }><img
-            alt={ category } onClick={ () => setSelectedCategory(category as ShopCategory) }
+            alt={ category } onClick={ () => changeSelectedCategory(category as ShopCategory) }
             src={ config.iconPath }/></div>)
         ) }
       </div>
@@ -150,7 +171,7 @@ const EditLists = () => {
           </button>
         </div>
         <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
-          if ((e.target as any).id === 'modal-overlay') setModalVisible(false)
+          if ((e.target as any).id === 'modal-overlay') handleModalClose()
         } }>
           <div className="modal">
             <span className="close-btn" onClick={ handleModalClose }>&times;</span>
@@ -158,6 +179,7 @@ const EditLists = () => {
             <div className="modalSelectBtnContainer">
               <button onClick={ () => setSelectedStaples(availableStaples) }>Alle</button>
               <button onClick={ () => setSelectedStaples([]) }>Keiner</button>
+              <button onClick={ () => navigate('/staples', {state: {selectedCategory}}) }>Edit</button>
             </div>
             <div className="listContainer">
               { availableStaples.length === 0 ? ('Keine Staples angelegt.') :

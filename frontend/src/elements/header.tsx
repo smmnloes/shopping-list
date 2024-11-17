@@ -1,7 +1,7 @@
 import { AuthStatus, useAuth } from '../services/auth-provider.tsx'
 import { logout } from '../api/api.ts'
 import { useNavigate } from 'react-router-dom'
-import useOnlineStatus from '../hooks/useOnlineStatus.ts'
+import useOnlineStatus from '../hooks/use-online-status.ts'
 
 function Header() {
   const {authStatus, setAuthStatus} = useAuth()

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
 import { createStaple, deleteStaple, getStaples } from '../api/api.ts'
-import useOnlineStatus from '../hooks/useOnlineStatus.ts'
+import useOnlineStatus from '../hooks/use-online-status.ts'
+import { useLocation } from 'react-router-dom'
+
 
 
 const EditStaples = () => {
@@ -9,6 +11,14 @@ const EditStaples = () => {
   const [ newStapleName, setNewStapleName ] = useState<string>('')
   const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>(ShopCategory.GROCERY)
   const isOnline = useOnlineStatus()
+  const location = useLocation();
+
+
+  useEffect(() => {
+    if (location.state?.selectedCategory) {
+      setSelectedCategory(location.state.selectedCategory);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     (async () => {

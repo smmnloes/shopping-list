@@ -2,7 +2,7 @@ import { addWeeks, endOfWeek, getWeek, getYear, startOfWeek } from 'date-fns'
 import { memo, useEffect, useState } from 'react'
 import { getMealsForWeek, saveMealsForWeek } from '../api/api.ts'
 import objectHash from 'object-hash'
-import useOnlineStatus from '../hooks/useOnlineStatus.ts'
+import useOnlineStatus from '../hooks/use-online-status.ts'
 
 const getDateRangeForWeek = (week: number): [ Date, Date ] => {
   const firstDayOfYear = new Date(getYear(new Date(), {}), 0, 1)
