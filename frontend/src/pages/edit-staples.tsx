@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
 import { createStaple, deleteStaple, getStaples } from '../api/api.ts'
 import useOnlineStatus from '../hooks/use-online-status.ts'
+import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import { useLocation } from 'react-router-dom'
-
 
 
 const EditStaples = () => {
@@ -11,30 +11,25 @@ const EditStaples = () => {
   const [ newStapleName, setNewStapleName ] = useState<string>('')
   const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>(ShopCategory.GROCERY)
   const isOnline = useOnlineStatus()
-  const location = useLocation();
+  const location = useLocation()
 
-
-  useEffect(() => {
-    if (location.state?.selectedCategory) {
-      setSelectedCategory(location.state.selectedCategory);
-    }
-  }, [location.state]);
 
   useEffect(() => {
     (async () => {
       try {
-        const items = await getStaples(selectedCategory)
-        console.log('Staples fetched')
-        setStaples(items)
+        const queryParams = new URLSearchParams(location.search)
+        const selectedCategory = queryParams.get(SELECTED_CATEGORY) as ShopCategory
+        if (selectedCategory) {
+          const items = await getStaples(selectedCategory)
+          console.log('Staples fetched')
+          setSelectedCategory(selectedCategory)
+          setStaples(items)
+        }
       } catch (error) {
         console.error('Error fetching staples', error)
       }
     })()
-  }, [ selectedCategory ])
-
-  useEffect(() => {
-    console.log('Selected category changed to:', selectedCategory)
-  }, [ selectedCategory ])
+  }, [])
 
 
   const handleSubmit = async (event: any) => {
@@ -66,11 +61,9 @@ const EditStaples = () => {
     <div>
       <h1>Staples</h1>
       <div className="shopCategoryContainer">
-        { Object.entries(configForCategory).map(([ category, config ], index) =>
-          (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }` } key={ index }><img
-            alt={ category } onClick={ () => setSelectedCategory(category as ShopCategory) }
-            src={ config.iconPath }/></div>)
-        ) }
+        <div className={ `shopCategoryIcon` }><img
+          alt={ selectedCategory }
+          src={ configForCategory[selectedCategory].iconPath }/></div>
       </div>
       <div className="listAndInput">
         <div className="listContainer">

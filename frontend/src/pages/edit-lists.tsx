@@ -10,10 +10,13 @@ import {
 import { CheckedItem, getCheckedItemIdsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
 import useOnlineStatus from '../hooks/use-online-status.ts'
 import { useNavigate } from 'react-router-dom'
+import useQueryParamState from '../hooks/use-query-param-state.tsx'
+import { booleanFromString } from '../util/boolean.ts'
+import { MODAL_VISIBLE, SELECTED_CATEGORY } from '../constants/query-params.ts'
 
 
 const EditLists = () => {
-  const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>(ShopCategory.GROCERY)
+  const [ selectedCategory, setSelectedCategory ] = useQueryParamState<ShopCategory>(SELECTED_CATEGORY, ShopCategory.GROCERY)
 
   const [ listItems, setListItems ] = useState<ListItem[]>([])
   const [ addedStaples, setAddedStaples ] = useState<ListItem[]>([])
@@ -21,7 +24,7 @@ const EditLists = () => {
 
   const [ newItemName, setNewItemName ] = useState<string>('')
 
-  const [ modalVisible, setModalVisible ] = useState<boolean>(false)
+  const [ modalVisible, setModalVisible ] = useQueryParamState<boolean>(MODAL_VISIBLE, false, booleanFromString)
 
   const [ availableStaples, setAvailableStaples ] = useState<ListItem[]>([])
   const [ selectedStaples, setSelectedStaples ] = useState<ListItem[]>([])
@@ -44,14 +47,7 @@ const EditLists = () => {
     })()
   }, [ selectedCategory ])
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search)
-    const isModalOpen = queryParams.get('modalvisible') === 'true'
-    setModalVisible(isModalOpen)
 
-    const selectedCategoryParam = queryParams.get('selectedcategory')
-    setSelectedCategory(selectedCategoryParam as ShopCategory ?? ShopCategory.GROCERY)
-  }, [ location.search ])
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
@@ -85,23 +81,9 @@ const EditLists = () => {
     }
   }
 
-  const handleOpenModal = async () => {
-    updateQueryParam('modalvisible', String(true))
-  }
-
   const handleModalClose = () => {
     setSelectedStaples([])
-    updateQueryParam('modalvisible', String(false))
-  }
-
-  const updateQueryParam = (param: string, value: string) => {
-    const queryParams = new URLSearchParams(location.search);
-    queryParams.set(param, value);
-    navigate(`${location.pathname}?${queryParams.toString()}`, { replace: true });
-  }
-
-  const changeSelectedCategory = (category: ShopCategory) => {
-    updateQueryParam('selectedcategory', category)
+    setModalVisible(false)
   }
 
   const handleStapleSelected = (item: ListItem) => {
@@ -131,6 +113,11 @@ const EditLists = () => {
     await removeItems(checkedItems.filter(item => item.category === selectedCategory).map(item => item.id))
   }
 
+  const handleEditStaples = () => {
+    const queryParams = new URLSearchParams({'selectedCategory': selectedCategory})
+    navigate(`/staples?${ queryParams.toString() }`, {replace: true})
+  }
+
   const EditableCheckableListItem = ({index, item}: { index: number, item: ListItem }) => {
     const isItemChecked = (itemId: number) => !!checkedItems.find(item => item.id === itemId)
 
@@ -155,13 +142,13 @@ const EditLists = () => {
       <div className="shopCategoryContainer">
         { Object.entries(configForCategory).map(([ category, config ], index) =>
           (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }` } key={ index }><img
-            alt={ category } onClick={ () => changeSelectedCategory(category as ShopCategory) }
+            alt={ category } onClick={ () => setSelectedCategory(category as ShopCategory) }
             src={ config.iconPath }/></div>)
         ) }
       </div>
       <div className="listAndInput">
         <div className="listTopControlsContainer">
-          <button className="openModalBtn" onClick={ handleOpenModal } disabled={ !isOnline }><img src="/stapler.svg"
+          <button className="openModalBtn" onClick={ () => setModalVisible(true) } disabled={ !isOnline }><img src="/stapler.svg"
                                                                                                    alt="modal-open"/><span
             className="stapleAddSign"> + </span>
           </button>
@@ -179,7 +166,7 @@ const EditLists = () => {
             <div className="modalSelectBtnContainer">
               <button onClick={ () => setSelectedStaples(availableStaples) }>Alle</button>
               <button onClick={ () => setSelectedStaples([]) }>Keiner</button>
-              <button onClick={ () => navigate('/staples', {state: {selectedCategory}}) }>Edit</button>
+              <button onClick={ handleEditStaples  }>Edit</button>
             </div>
             <div className="listContainer">
               { availableStaples.length === 0 ? ('Keine Staples angelegt.') :

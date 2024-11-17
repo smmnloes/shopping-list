@@ -1,0 +1,1 @@
+export const booleanFromString = (stringValue: string): boolean => stringValue === 'true'
