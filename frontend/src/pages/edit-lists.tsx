@@ -1,18 +1,11 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
-import {
-  addStaplesToCategoryList,
-  createNewItemForCategory,
-  getItemsForCategory,
-  getStaples,
-  deleteItemsFromCategoryBulk
-} from '../api/api.ts'
+import { createNewItemForCategory, deleteItemsFromCategoryBulk, getItemsForCategory } from '../api/api.ts'
 import { CheckedItem, getCheckedItemIdsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
 import useOnlineStatus from '../hooks/use-online-status.ts'
-import { useNavigate } from 'react-router-dom'
 import useQueryParamState from '../hooks/use-query-param-state.tsx'
-import { booleanFromString } from '../util/boolean.ts'
-import { MODAL_VISIBLE, SELECTED_CATEGORY } from '../constants/query-params.ts'
+import { SELECTED_CATEGORY } from '../constants/query-params.ts'
+import SelectStapleModal from './select-staple-modal.tsx'
 
 
 const EditLists = () => {
@@ -24,19 +17,15 @@ const EditLists = () => {
 
   const [ newItemName, setNewItemName ] = useState<string>('')
 
-  const [ modalVisible, setModalVisible ] = useQueryParamState<boolean>(MODAL_VISIBLE, false, booleanFromString)
-
-  const [ availableStaples, setAvailableStaples ] = useState<ListItem[]>([])
-  const [ selectedStaples, setSelectedStaples ] = useState<ListItem[]>([])
 
   const isOnline = useOnlineStatus()
-  const navigate = useNavigate()
 
   useEffect(() => {
+    if (!selectedCategory) {
+      return
+    }
     (async () => {
       try {
-        const staples = await getStaples(selectedCategory)
-        setAvailableStaples(staples)
         setCheckedItems(getCheckedItemIdsFromLocal())
         const {items} = await getItemsForCategory(selectedCategory)
         setAddedStaples(items.filter(item => item.isStaple))
@@ -48,10 +37,9 @@ const EditLists = () => {
   }, [ selectedCategory ])
 
 
-
   const handleSubmit = async (event: any) => {
     event.preventDefault()
-    if (!newItemName) {
+    if (!newItemName || !selectedCategory) {
       return
     }
     try {
@@ -70,6 +58,9 @@ const EditLists = () => {
   }
 
   const removeItems = async (toRemoveIds: number[]) => {
+    if (!selectedCategory) {
+      return
+    }
     try {
       await deleteItemsFromCategoryBulk(toRemoveIds, selectedCategory)
       setListItems(listItems.filter(item => !toRemoveIds.includes(item.id)))
@@ -81,24 +72,10 @@ const EditLists = () => {
     }
   }
 
-  const handleModalClose = () => {
-    setSelectedStaples([])
-    setModalVisible(false)
-  }
-
-  const handleStapleSelected = (item: ListItem) => {
-    setSelectedStaples(selectedStaples.includes(item) ? selectedStaples.filter(staple => staple !== item) : ([ ...selectedStaples, item ]))
-  }
-
-  const handleModalAddButton = async () => {
-    const staplesToAdd = selectedStaples.filter(staple => !addedStaples.some(addedStaple => addedStaple.id === staple.id))
-    await addStaplesToCategoryList(staplesToAdd.map(staple => staple.id), selectedCategory)
-    setAddedStaples([ ...addedStaples, ...staplesToAdd ])
-    setSelectedStaples([])
-    handleModalClose()
-  }
-
   const handleCheckedItemsOnChange = (event: ChangeEvent<HTMLInputElement>, itemId: number) => {
+    if (!selectedCategory) {
+      return
+    }
     let newCheckedItems = [ ...checkedItems ]
     const checked = event.target.checked
     if (checked) {
@@ -113,10 +90,6 @@ const EditLists = () => {
     await removeItems(checkedItems.filter(item => item.category === selectedCategory).map(item => item.id))
   }
 
-  const handleEditStaples = () => {
-    const queryParams = new URLSearchParams({'selectedCategory': selectedCategory})
-    navigate(`/staples?${ queryParams.toString() }`)
-  }
 
   const EditableCheckableListItem = ({index, item}: { index: number, item: ListItem }) => {
     const isItemChecked = (itemId: number) => !!checkedItems.find(item => item.id === itemId)
@@ -148,40 +121,12 @@ const EditLists = () => {
       </div>
       <div className="listAndInput">
         <div className="listTopControlsContainer">
-          <button className="openModalBtn" onClick={ () => setModalVisible(true) } disabled={ !isOnline }><img src="/stapler.svg"
-                                                                                                   alt="modal-open"/><span
-            className="stapleAddSign"> + </span>
-          </button>
+          <SelectStapleModal selectedCategory={ selectedCategory } addedStaples={ addedStaples }
+                             setAddedStaples={ setAddedStaples }/>
           <button className="clearCheckedItems" onClick={ handleClearCheckedItems } disabled={ !isOnline }><img
             src="/clear-all.svg"
             alt="clear-checked-items"/>
           </button>
-        </div>
-        <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
-          if ((e.target as any).id === 'modal-overlay') handleModalClose()
-        } }>
-          <div className="modal">
-            <span className="close-btn" onClick={ handleModalClose }>&times;</span>
-            <h2>Staples auswählen</h2>
-            <div className="modalSelectBtnContainer">
-              <button onClick={ () => setSelectedStaples(availableStaples) }>Alle</button>
-              <button onClick={ () => setSelectedStaples([]) }>Keiner</button>
-              <button onClick={ handleEditStaples }>Edit</button>
-            </div>
-            <div className="listContainer">
-              { availableStaples.length === 0 ? ('Keine Staples angelegt.') :
-                availableStaples.map((item, index) =>
-                  (<div key={ index } className="listElementContainer">
-                      <div
-                        onClick={ () => handleStapleSelected(item) }
-                        className={ `listElement ${ selectedStaples.some(staple => staple.id === item.id) ? 'selectedStaple' : '' }` }>
-                        { item.name }
-                      </div>
-                    </div>
-                  )) }
-            </div>
-            <button className="modalAddBtn" onClick={ handleModalAddButton }>Hinzufügen</button>
-          </div>
         </div>
         <div className="listContainer">
           { addedStaples.length === 0 ? ('Noch keine Staples hinzugefügt.') :
