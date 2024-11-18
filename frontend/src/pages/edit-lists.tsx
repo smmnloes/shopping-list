@@ -3,7 +3,7 @@ import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
 import { createNewItemForCategory, deleteItemsFromCategoryBulk, getItemsForCategory } from '../api/api.ts'
 import { CheckedItem, getCheckedItemIdsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
 import useOnlineStatus from '../hooks/use-online-status.ts'
-import useQueryParamState from '../hooks/use-query-param-state.tsx'
+import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import SelectStapleModal from './select-staple-modal.tsx'
 

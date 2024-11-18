@@ -1,7 +1,7 @@
 import { ListItem, ShopCategory } from '../types/types.ts'
 import { addStaplesToCategoryList, getStaples } from '../api/api.ts'
 import { useNavigate } from 'react-router-dom'
-import useQueryParamState from '../hooks/use-query-param-state.tsx'
+import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { MODAL_VISIBLE } from '../constants/query-params.ts'
 import { booleanFromString } from '../util/boolean.ts'
 import { useEffect, useState } from 'react'
