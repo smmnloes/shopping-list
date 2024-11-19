@@ -2,7 +2,7 @@
 npm version minor
 git push
 
-ssh -t ubuntu@3.73.126.153 << 'EOF'
+ssh -t ubuntu@mloesch.it << 'EOF'
 #!/bin/bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
