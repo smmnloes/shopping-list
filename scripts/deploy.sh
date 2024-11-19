@@ -10,7 +10,7 @@ export NVM_DIR="$HOME/.nvm"
 cd /var/www/shopping-list
 git pull
 
-npm install
+npm run install
 npm run build
 
 sudo systemctl daemon-reload
