@@ -5,6 +5,7 @@ import '../styles/quill/quill.snow.scss'
 const Notes = () => {
   const [ value, setValue ] = useState('asdölfkjasödlkfasöldfjk')
 
+  console.log(value)
 
   const modules = {
       toolbar: [
