@@ -56,7 +56,7 @@ const EditStaples = () => {
 
   return (
     <div>
-      <h1>Staples</h1>
+      <h1>Staples bearbeiten</h1>
       <div className="shopCategoryContainer">
         <div className={ `shopCategoryIcon` }><img
           alt={ selectedCategory }
