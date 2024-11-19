@@ -10,6 +10,7 @@ import { AuthProvider } from './services/auth-provider.tsx'
 import EditStaples from './pages/edit-staples.tsx'
 import './main.css'
 import MealPlan from './pages/meal-plan.tsx'
+import Notes from './pages/notes.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -40,6 +41,11 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/meal-plan" element={
               <PrivateRoute>
                 <MealPlan/>
+              </PrivateRoute>
+            }/>
+            <Route path="/notes" element={
+              <PrivateRoute>
+                <Notes/>
               </PrivateRoute>
             }/>
           </Routes>
