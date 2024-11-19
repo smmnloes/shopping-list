@@ -80,7 +80,7 @@ const EditStaples = () => {
         </div>
         <form className="addItemForm" onSubmit={ handleSubmit }>
           <input type="text" onChange={ e => setNewStapleName(e.target.value) }/>
-          <button className="addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
+          <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
         </form>
       </div>
     </div>

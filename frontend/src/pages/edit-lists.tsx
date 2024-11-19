@@ -121,7 +121,7 @@ const EditLists = () => {
         <div className="listTopControlsContainer">
           <SelectStapleModal selectedCategory={ selectedCategory } addedStaples={ addedStaples }
                              setAddedStaples={ setAddedStaples }/>
-          <button className="clearCheckedItems" onClick={ handleClearCheckedItems } disabled={ !isOnline }><img
+          <button className="clearCheckedItems my-button" onClick={ handleClearCheckedItems } disabled={ !isOnline }><img
             src="/clear-all.svg"
             alt="clear-checked-items"/>
           </button>
@@ -141,7 +141,7 @@ const EditLists = () => {
         }
         <form className="addItemForm" onSubmit={ handleSubmit }>
           <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
-          <button className="addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
+          <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
         </form>
       </div>
     </div>

@@ -62,7 +62,7 @@ const SelectStapleModal = ({selectedCategory, addedStaples, setAddedStaples}: Se
 
   return (
     <div>
-      <button className="openModalBtn" onClick={ () => setModalVisible(true) } disabled={ !isOnline }><img
+      <button className="my-button openModalBtn" onClick={ () => setModalVisible(true) } disabled={ !isOnline }><img
         src="/stapler.svg"
         alt="modal-open"/><span
         className="stapleAddSign"> + </span>
@@ -74,11 +74,11 @@ const SelectStapleModal = ({selectedCategory, addedStaples, setAddedStaples}: Se
           <span className="close-btn" onClick={ handleModalClose }>&times;</span>
           <h2>Staples auswählen</h2>
           <div className="modalSelectBtnContainer">
-            <button onClick={ () => {
+            <button className="my-button" onClick={ () => {
               setSelectedStaples(selectedStaples.length > 0 ? [] : availableStaples)
             } }>Alle / Keine
             </button>
-            <button onClick={ handleEditStaples }>Bearbeiten</button>
+            <button className="my-button" onClick={ handleEditStaples }>Bearbeiten</button>
           </div>
           <div className="listContainer">
             { availableStaples.length === 0 ? ('Keine Staples angelegt.') :
@@ -92,7 +92,7 @@ const SelectStapleModal = ({selectedCategory, addedStaples, setAddedStaples}: Se
                   </div>
                 )) }
           </div>
-          <button className="modalAddBtn" onClick={ handleModalAddButton }>Hinzufügen</button>
+          <button className="my-button modalAddBtn" onClick={ handleModalAddButton }>Hinzufügen</button>
         </div>
       </div>
     </div>

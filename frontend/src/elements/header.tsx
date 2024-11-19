@@ -28,7 +28,7 @@ function Header() {
           du bist offline
         </div>
         <div>{ authenticatedView(authStatus) }</div>
-        { authStatus?.authenticated && (<button onClick={ handleLogout }>Logout</button>) }
+        { authStatus?.authenticated && (<button className="my-button" onClick={ handleLogout }>Logout</button>) }
       </header>
     </>
   )

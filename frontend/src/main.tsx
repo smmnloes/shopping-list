@@ -8,14 +8,12 @@ import EditLists from './pages/edit-lists.tsx'
 import Layout from './elements/layout.tsx'
 import { AuthProvider } from './services/auth-provider.tsx'
 import EditStaples from './pages/edit-staples.tsx'
-import './main.css'
+import './styles/main.css'
 import MealPlan from './pages/meal-plan.tsx'
 import Notes from './pages/notes.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-
-
     <BrowserRouter>
       <AuthProvider>
         <Layout>

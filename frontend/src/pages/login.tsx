@@ -32,7 +32,7 @@ function Login() {
           <input id="userName" type="text" value={ username } onChange={ (e) => setUsername(e.target.value) }/>
           <label htmlFor="password">Passwort:</label>
           <input id="password" type="password" value={ password } onChange={ (e) => setPassword(e.target.value) }/>
-          <button className="loginButton" type="submit" onClick={ onClick }>Anmelden</button>
+          <button className="my-button loginButton" type="submit" onClick={ onClick }>Anmelden</button>
         </form>
 
         { message && <p>{ message }</p> }

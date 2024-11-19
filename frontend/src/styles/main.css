@@ -35,13 +35,13 @@ input, textarea {
     font-size: 16px;
 }
 
-button:disabled {
+.my-button:disabled {
     background-color: #cccccc;
     color: #666666;
     cursor: not-allowed;
 }
 
-button {
+.my-button {
     background-color: var(--color-highlight);
     color: var(--color-font);
     border-radius: 7px;
