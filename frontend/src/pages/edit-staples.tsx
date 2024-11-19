@@ -3,22 +3,19 @@ import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
 import { createStaple, deleteStaple, getStaples } from '../api/api.ts'
 import useOnlineStatus from '../hooks/use-online-status.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
-import { useLocation } from 'react-router-dom'
+import useQueryParamState from '../hooks/use-query-param-state.ts'
 
 
 const EditStaples = () => {
   const [ staples, setStaples ] = useState<ListItem[]>([])
   const [ newStapleName, setNewStapleName ] = useState<string>('')
-  const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>(ShopCategory.GROCERY)
+  const [ selectedCategory, setSelectedCategory ] = useQueryParamState<ShopCategory>(SELECTED_CATEGORY, ShopCategory.GROCERY)
   const isOnline = useOnlineStatus()
-  const location = useLocation()
 
 
   useEffect(() => {
     (async () => {
       try {
-        const queryParams = new URLSearchParams(location.search)
-        const selectedCategory = queryParams.get(SELECTED_CATEGORY) as ShopCategory
         if (selectedCategory) {
           const items = await getStaples(selectedCategory)
           console.log('Staples fetched')
@@ -29,12 +26,12 @@ const EditStaples = () => {
         console.error('Error fetching staples', error)
       }
     })()
-  }, [])
+  }, [selectedCategory])
 
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
-    if (!newStapleName) {
+    if (!newStapleName || !selectedCategory) {
       return
     }
     try {
@@ -63,7 +60,7 @@ const EditStaples = () => {
       <div className="shopCategoryContainer">
         <div className={ `shopCategoryIcon` }><img
           alt={ selectedCategory }
-          src={ configForCategory[selectedCategory].iconPath }/></div>
+          src={ selectedCategory ? configForCategory[selectedCategory].iconPath : '' }/></div>
       </div>
       <div className="listAndInput">
         <div className="listContainer">

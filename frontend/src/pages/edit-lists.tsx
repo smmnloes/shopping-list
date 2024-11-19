@@ -21,9 +21,7 @@ const EditLists = () => {
   const isOnline = useOnlineStatus()
 
   useEffect(() => {
-    if (!selectedCategory) {
-      return
-    }
+    selectedCategory &&
     (async () => {
       try {
         setCheckedItems(getCheckedItemIdsFromLocal())
