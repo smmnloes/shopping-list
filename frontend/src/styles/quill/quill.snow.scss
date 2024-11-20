@@ -6,13 +6,19 @@
  * Copyright (c) 2013, salesforce.com
  */
 #quill {
-  height: 100%;
   text-align: left;
+  flex-grow: 1;
+
+
 
   .quill {
     display: flex;
     flex-direction: column;
     height: 100%;
+
+
+    box-shadow: 2px 2px 5px var(--color-shadow);
+    border-radius: 10px;
 
     .ql-container,.ql-toolbar {
       background: white;

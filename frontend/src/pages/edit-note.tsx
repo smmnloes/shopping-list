@@ -47,7 +47,7 @@ export const EditNote = () => {
     ]
 
   return (
-    <div>
+    <div className="editor-wrapper">
     <div id="quill">
       <ReactQuill theme="snow" value={ noteContent } modules={ modules } formats={ formats }
                   onChange={ handleOnChange }/>
