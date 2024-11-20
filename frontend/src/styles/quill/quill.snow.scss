@@ -13,7 +13,10 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: white;
+
+    .ql-container,.ql-toolbar {
+      background: white;
+    }
   }
 
   .ql-container {
