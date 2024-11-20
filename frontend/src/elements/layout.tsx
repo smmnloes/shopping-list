@@ -10,8 +10,8 @@ const Layout = ({children}: LayoutProps) => {
   return (
     <>
       <Header/>
-      <div className="container">
-        <main>{ children }</main>
+      <div className="content">
+        { children }
       </div>
       <Footer/>
     </>

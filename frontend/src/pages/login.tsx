@@ -26,7 +26,7 @@ function Login() {
   return (
     <>
       <h1>Anmeldung</h1>
-      <div className="container">
+      <div className="content">
         <form className="loginForm" onSubmit={ e => e.preventDefault() }>
           <label htmlFor="userName">Nutzername:</label>
           <input id="userName" type="text" value={ username } onChange={ (e) => setUsername(e.target.value) }/>
