@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { AuthStatus } from '../services/auth-provider.tsx'
-import { ListItem, ShopCategory } from '../types/types.ts'
+import { ListItem, Note, NoteOverview, ShopCategory } from '../types/types.ts'
 import axiosRetry from 'axios-retry'
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST
@@ -67,4 +67,22 @@ export const getMealsForWeek = (week: number, year: number): Promise<{ meals: st
 
 export const saveMealsForWeek = (week: number, year: number, meals: string[], checks: boolean[]): Promise<void> => {
   return axiosInstance.post(`${ backendHost }/api/meals/${ week }-${ year }`, {meals, checks})
+}
+
+
+export const getNotes = (): Promise<{ notes: NoteOverview[] }> => {
+  return axiosInstance.get(`${ backendHost }/api/notes`).then(response => response.data)
+}
+
+export const getNote = (id: number): Promise<Note> => {
+  return axiosInstance.get(`${ backendHost }/api/notes/${ id }`).then(response => response.data)
+}
+
+export const newNote = (): Promise<{ id: number }> => {
+  return axiosInstance.post(`${ backendHost }/api/notes`).then(response => response.data)
+}
+
+
+export const saveNote = (id: number, content: string): Promise<void> => {
+  return axiosInstance.post(`${ backendHost }/api/notes/${ id }`, {content}).then(response => response.data)
 }

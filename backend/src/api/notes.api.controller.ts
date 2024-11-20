@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common'
+import { Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -21,9 +21,15 @@ export class NotesApiController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('notes/:id')
+  async getNote(@Param('id', ParseIntPipe) id: number): Promise<Note> {
+    return this.notesRepository.findOneOrFail({where: {id}})
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('notes')
-  async createNote(@Request() {body: {}, user: {username}}: ExtendedRequest<{}>): Promise<number> {
-    return this.notesRepository.save(new Note(username)).then(saved => saved.id)
+  async createNote(@Request() {body: {}, user: {username}}: ExtendedRequest<{}>): Promise<{ id: number }> {
+    return this.notesRepository.save(new Note(username)).then(({id}) => ({id}))
   }
 
   @UseGuards(JwtAuthGuard)
@@ -38,6 +44,7 @@ export class NotesApiController {
 
 
 export type NoteOverview = {
+  id: number
   title: string
   createdAt: Date
   lastUpdatedAt: Date

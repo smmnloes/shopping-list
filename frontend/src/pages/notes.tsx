@@ -1,34 +1,41 @@
-import { useState } from 'react'
-import ReactQuill from 'react-quill-new'
-import '../styles/quill/quill.snow.scss'
+import { useEffect, useState } from 'react'
+import { getNotes, newNote } from '../api/api.ts'
+import { useNavigate } from 'react-router-dom'
+import { NoteOverview } from '../types/types.ts'
+
 
 const Notes = () => {
-  const [ value, setValue ] = useState('asdölfkjasödlkfasöldfjk')
+  const [ notes, setNotes ] = useState<NoteOverview[]>([])
 
-  console.log(value)
+  const navigate = useNavigate()
 
-  const modules = {
-      toolbar: [
-        [ {'header': [ 1, 2, false ]} ],
-        [ 'bold', 'italic', 'underline', 'strike', 'blockquote' ],
-        [ {'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'} ],
-        [ 'link', 'image' ],
-        [ 'clean' ]
-      ],
-    },
+  useEffect(() => {
+    (async () => getNotes().then(response => setNotes(response.notes)))()
+  }, [])
 
-    formats = [
-      'header',
-      'bold', 'italic', 'underline', 'strike', 'blockquote',
-      'list', 'bullet', 'indent',
-      'link', 'image'
-    ]
+  const newNoteHandler = async () => {
+    const id = await newNote().then(response => response.id)
+    navigate(`/notes/${ id }`)
+  }
 
   return (
-    <div id="quill">
-      <ReactQuill theme="snow" value={ value } modules={ modules } formats={ formats } onChange={ setValue }/>
+    <div>
+      <div className="listContainer">
+        { notes.length === 0 ? 'Noch keine Notizen angelegt...' :
+          notes.map((note, index) => (
+            <div key={ index } className="listElementContainer">
+              <div className="listElement" onClick={() => navigate(`/notes/${note.id}`)}>
+                <div className="label ">{ note.title }</div>
+              </div>
+            </div>
+          )) }
+      </div>
+      <div className="notesListControls">
+        <button className="my-button noteListNewButton" onClick={ newNoteHandler }>Neu</button>
+      </div>
     </div>
   )
+
 }
 
 export default Notes

@@ -11,6 +11,7 @@ import EditStaples from './pages/edit-staples.tsx'
 import './styles/main.scss'
 import MealPlan from './pages/meal-plan.tsx'
 import Notes from './pages/notes.tsx'
+import { EditNote } from './pages/edit-note.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -44,6 +45,11 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/notes" element={
               <PrivateRoute>
                 <Notes/>
+              </PrivateRoute>
+            }/>
+            <Route path="/notes/:id" element={
+              <PrivateRoute>
+                <EditNote/>
               </PrivateRoute>
             }/>
           </Routes>

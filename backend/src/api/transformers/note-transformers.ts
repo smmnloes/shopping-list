@@ -3,6 +3,7 @@ import { NoteOverview } from '../notes.api.controller'
 
 export const transformNoteToOverview = (note: Note): NoteOverview => {
   return {
+    id: note.id,
     createdAt: note.createdAt,
     createdBy: note.createdBy,
     lastUpdatedAt: note.lastUpdatedAt,
