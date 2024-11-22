@@ -12,14 +12,16 @@ export const transformNoteToOverview = (note: Note): NoteOverview => {
 }
 
 export const extractTitleFromContent = (html: string): string => {
-    // Use a regular expression to find the first HTML tag
-    const match = html.match(/<(\w+)\b[^>]*>(.*?)<\/\1>/);
+  // Use a regular expression to find the first HTML tag
+  const match = html.match(/<(\w+)\b[^>]*>(.*?)<\/\1>/)
 
-    if (match && match[2]) {
-      // Return the inner text of the first HTML tag without any inner tags
-      return match[2].replace(/<[^>]+>/g, '');
-    }
+  const DEFAULT_TITLE = 'Ohne Titel'
+  if (match && match[2]) {
+    // Return the inner text of the first HTML tag without any inner tags
+    const innerTagsRemoved = match[2].replace(/<[^>]+>/g, '')
+    return innerTagsRemoved || DEFAULT_TITLE
+  }
 
   // Return fallback string if no valid HTML tag is found
-  return 'Titel';
+  return DEFAULT_TITLE
 }
