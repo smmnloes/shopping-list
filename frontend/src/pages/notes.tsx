@@ -25,7 +25,7 @@ const Notes = () => {
           notes.map((note, index) => (
             <div key={ index } className="listElementContainer">
               <div className="listElement" onClick={() => navigate(`/notes/${note.id}`)}>
-                <div className="label ">{ note.title }</div>
+                <div className="label">{ note.title }</div>
               </div>
             </div>
           )) }
