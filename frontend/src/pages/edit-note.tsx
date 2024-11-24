@@ -35,7 +35,8 @@ export const EditNote = () => {
   const modules = {
       toolbar: {
         container: [
-          [ {'header': [ 1, 2, false ]},
+          [
+            {'header': [ 1, 2, false ]},
             'bold', 'italic', 'underline', 'strike',
             {'list': 'ordered'}, {'list': 'bullet'}, {'list': 'check'},
             {'indent': '-1'}, {'indent': '+1'},
