@@ -6,6 +6,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   build: {
     sourcemap: false,
+    minify: 'esbuild',
+    chunkSizeWarningLimit: 2000,
   },
   plugins: [ react(), VitePWA({
     registerType: 'autoUpdate',
