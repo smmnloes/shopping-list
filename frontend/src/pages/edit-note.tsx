@@ -24,8 +24,7 @@ export const EditNote = () => {
   }, [])
 
   const handleOnChange = async (value: string, delta: DeltaStatic) => {
-    value = await postImageInsertProcessing(value, delta)
-    setNoteContent(value)
+    setNoteContent(await postImageInsertProcessing(value, delta))
   }
 
 
@@ -36,22 +35,20 @@ export const EditNote = () => {
   const modules = {
       toolbar: {
         container: [
-          [ {'header': [ 1, 2, false ]} ],
-          [ 'bold', 'italic', 'underline', 'strike', 'blockquote' ],
-          [ {'color': []}, {'background': []} ],
-          [ {'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'} ],
-          [ 'link', 'image' ],
-          [ 'clean' ],
+          [ {'header': [ 1, 2, false ]},
+            'bold', 'italic', 'underline', 'strike',
+            {'list': 'ordered'}, {'list': 'bullet'}, {'list': 'check'},
+            {'indent': '-1'}, {'indent': '+1'},
+            'image' ],
         ],
       }
     },
 
     formats = [
       'header',
-      'bold', 'italic', 'underline', 'strike', 'blockquote',
-      'color', 'background',
+      'bold', 'italic', 'underline', 'strike',
       'list', 'indent',
-      'link', 'image'
+      'image'
     ]
 
   return (

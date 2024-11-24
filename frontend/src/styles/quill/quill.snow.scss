@@ -132,6 +132,10 @@
     content: '\2611'
   }
 
+  .ql-editor li[data-list=checked] {
+    text-decoration: line-through;
+  }
+
   .ql-editor li[data-list=unchecked] > .ql-ui:before {
     content: '\2610'
   }
@@ -1092,6 +1096,13 @@
     border-top: 0
   }
 
+  .ql-toolbar.ql-snow {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+
   .ql-snow .ql-tooltip {
     background-color: #fff;
     border: 1px solid #ccc;
@@ -1175,5 +1186,3 @@
     border: 1px solid #ccc
   }
 }
-
-/*# sourceMappingURL=quill.snow.css.map*/
