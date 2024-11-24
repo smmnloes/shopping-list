@@ -2,7 +2,6 @@
   "version": "1.9.0",
   "scripts": {
     "install": "npm --prefix backend install && npm --prefix frontend install",
-    "ci": "npm --prefix backend ci && npm --prefix frontend ci",
     "build": "npm --prefix backend run build && npm --prefix frontend run build:prod"
   }
 }
