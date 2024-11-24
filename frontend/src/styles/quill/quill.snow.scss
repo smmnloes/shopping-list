@@ -113,7 +113,7 @@
 
   .ql-editor li > .ql-ui:before {
     display: inline-block;
-    margin-left: -1.5em;
+    margin-left: -1.75em;
     margin-right: .3em;
     text-align: right;
     white-space: nowrap;
@@ -121,20 +121,24 @@
   }
 
   .ql-editor li[data-list=checked] > .ql-ui, .ql-editor li[data-list=unchecked] > .ql-ui {
-    color: #777
+    color: #777;
+    transform: scale(1.5);
   }
 
   .ql-editor li[data-list=bullet] > .ql-ui:before {
     content: '\2022'
   }
 
-  .ql-editor li[data-list=checked] > .ql-ui:before {
-    content: '\2611'
-  }
+
 
   .ql-editor li[data-list=checked] {
     text-decoration: line-through;
+
+    > .ql-ui:before {
+      content: '\2611';
+    }
   }
+
 
   .ql-editor li[data-list=unchecked] > .ql-ui:before {
     content: '\2610'
