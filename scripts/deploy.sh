@@ -13,6 +13,8 @@ npm run build:prod
 # Backend
 ssh -t ubuntu@mloesch.it << 'EOF'
 #!/bin/bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 cd /var/www/shopping-list/backend
 git pull
