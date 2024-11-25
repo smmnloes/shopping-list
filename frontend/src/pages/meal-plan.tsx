@@ -1,18 +1,20 @@
-import { addWeeks, endOfWeek, getWeek, getYear, startOfWeek } from 'date-fns'
+import { addWeeks, endOfWeek, getWeek, getYear, startOfWeek, WeekOptions } from 'date-fns'
 import { memo, useEffect, useState } from 'react'
 import { getMealsForWeek, saveMealsForWeek } from '../api/api.ts'
 import objectHash from 'object-hash'
 import useOnlineStatus from '../hooks/use-online-status.ts'
 
+const COMMON_WEEK_OPTIONS: WeekOptions = {weekStartsOn: 1}
+
 const getDateRangeForWeek = (week: number): [ Date, Date ] => {
   const firstDayOfYear = new Date(getYear(new Date(), {}), 0, 1)
-  const firstMonday = startOfWeek(firstDayOfYear, {weekStartsOn: 1})
+  const firstMonday = startOfWeek(firstDayOfYear, COMMON_WEEK_OPTIONS)
   const mondayOfGivenWeek = addWeeks(firstMonday, week - 1)
-  const sundayOfGivenWeek = endOfWeek(mondayOfGivenWeek, {weekStartsOn: 1})
+  const sundayOfGivenWeek = endOfWeek(mondayOfGivenWeek, COMMON_WEEK_OPTIONS)
   return [ mondayOfGivenWeek, sundayOfGivenWeek ]
 }
 
-const getCurrentWeek = () => getWeek(new Date())
+const getCurrentWeek = () => getWeek(new Date(), COMMON_WEEK_OPTIONS)
 const getCurrentWeekMonday = () => getDateRangeForWeek(getCurrentWeek())[0]
 
 const MealPlan = memo(() => {
