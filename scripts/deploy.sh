@@ -5,7 +5,7 @@ git push
 # Frontend
 cd ../frontend
 
-npm run install
+npm install
 npm run build:prod
  rsync -av --delete --progress ./dist ubuntu@mloesch.it:/var/www/shopping-list/frontend
 
