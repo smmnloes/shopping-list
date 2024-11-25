@@ -19,7 +19,7 @@ export NVM_DIR="$HOME/.nvm"
 cd /var/www/shopping-list/backend
 git pull
 
-npm run install
+npm install
 npm run build
 
 sudo systemctl daemon-reload
