@@ -2,7 +2,7 @@
 npm version minor
 git push
 
-# Frontend
+# Frontend - built locally, building it on server crashes it
 cd ../frontend
 
 npm install
@@ -10,7 +10,7 @@ npm run build:prod
  rsync -av --delete --progress ./dist ubuntu@mloesch.it:/var/www/shopping-list/frontend
 
 
-# Backend
+# Backend - built on server
 ssh -t ubuntu@mloesch.it << 'EOF'
 #!/bin/bash
 export NVM_DIR="$HOME/.nvm"
