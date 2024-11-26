@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import ReactQuill, { DeltaStatic } from 'react-quill-new'
 import '../styles/quill/quill.snow.scss'
-import { getNote, saveNote } from '../api/api.ts'
-import { useParams } from 'react-router-dom'
+import { deleteNote, getNote, saveNote } from '../api/api.ts'
+import { useNavigate, useParams } from 'react-router-dom'
 import { postImageInsertProcessing } from '../utils/image-processing.ts'
 
 enum SAVE_STATE {
@@ -15,6 +15,8 @@ export const EditNote = () => {
   const [ noteContent, setNoteContent ] = useState<string>('')
 
   const [saveState, setSaveState] = useState<SAVE_STATE>(SAVE_STATE.SAVED)
+
+  const navigate = useNavigate()
 
   const noteIdParam = useParams<{ id: string }>().id
   if (!noteIdParam) {
@@ -40,6 +42,11 @@ export const EditNote = () => {
     setSaveState(SAVE_STATE.SAVING)
     await saveNote(noteId, noteContent)
     setSaveState(SAVE_STATE.SAVED)
+  }
+
+  const handleDeleteNote = async () => {
+    await deleteNote(noteId)
+    navigate('/notes')
   }
 
   const modules = {
@@ -69,7 +76,7 @@ export const EditNote = () => {
           <button className="my-button" onClick={ handleSaveNote }>Speichern</button>
           <span className="saveState">{saveState}</span>
         </div>
-        <button className="my-button">Löschen</button>
+        <button className="my-button" onClick={handleDeleteNote}>Löschen</button>
       </div>
       <div id="quill">
         <ReactQuill theme="snow" value={ noteContent } modules={ modules } formats={ formats }

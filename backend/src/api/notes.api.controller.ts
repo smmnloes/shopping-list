@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common'
+import { Controller, Delete, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -34,10 +34,16 @@ export class NotesApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('notes/:id')
-  async saveNote(@Param('id') id: number, @Request() {body: {content}, user: {username}}: ExtendedRequest<{
+  async saveNote(@Param('id', ParseIntPipe) id: number, @Request() {body: {content}, user: {username}}: ExtendedRequest<{
     content: string
   }>): Promise<void> {
     await this.notesRepository.update(id, {content, lastUpdatedBy: username, lastUpdatedAt: new Date()})
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('notes/:id')
+  async deleteNote(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    await this.notesRepository.delete(id)
   }
 
 }

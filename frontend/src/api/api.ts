@@ -82,7 +82,10 @@ export const newNote = (): Promise<{ id: number }> => {
   return axiosInstance.post(`${ backendHost }/api/notes`).then(response => response.data)
 }
 
-
 export const saveNote = (id: number, content: string): Promise<void> => {
   return axiosInstance.post(`${ backendHost }/api/notes/${ id }`, {content}).then(response => response.data)
+}
+
+export const deleteNote = (id: number): Promise<void> => {
+  return axiosInstance.delete(`${ backendHost }/api/notes/${ id }`).then(response => response.data)
 }
