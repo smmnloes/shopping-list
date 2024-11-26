@@ -81,7 +81,7 @@
 
 
   .ql-editor ol {
-    padding-left: 1.5em
+    padding-left: 0.5em
   }
 
 
@@ -122,9 +122,7 @@
     width: 1.2em
   }
 
-  .ql-editor li[data-list=checked] > .ql-ui, .ql-editor li[data-list=unchecked] > .ql-ui {
-    pointer-events: none;
-    transform: scale(1.5);
+  .ql-editor li[data-list=checked] > .ql-ui:before, .ql-editor li[data-list=unchecked] > .ql-ui {
   }
 
   .ql-ui:before {
@@ -140,7 +138,7 @@
     text-decoration: line-through;
 
     > .ql-ui:before {
-      content: '\2611';
+      content: '\2713';
     }
   }
 
