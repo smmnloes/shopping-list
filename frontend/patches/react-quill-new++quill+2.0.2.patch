@@ -1,14 +1,15 @@
 diff --git a/node_modules/react-quill-new/node_modules/quill/formats/list.js b/node_modules/react-quill-new/node_modules/quill/formats/list.js
-index f0ba12e..01b5250 100644
+index f0ba12e..31bf304 100644
 --- a/node_modules/react-quill-new/node_modules/quill/formats/list.js
 +++ b/node_modules/react-quill-new/node_modules/quill/formats/list.js
-@@ -20,6 +20,9 @@ class ListItem extends Block {
-     super(scroll, domNode);
-     const ui = domNode.ownerDocument.createElement('span');
-     const listEventHandler = e => {
-+      if (e.type === 'touchstart'){
-+        e.preventDefault();
-+      }
-       if (!scroll.isEnabled()) return;
-       const format = this.statics.formats(domNode, scroll);
-       if (format === 'checked') {
+@@ -30,8 +30,8 @@ class ListItem extends Block {
+         e.preventDefault();
+       }
+     };
+-    ui.addEventListener('mousedown', listEventHandler);
+-    ui.addEventListener('touchstart', listEventHandler);
++    ui.addEventListener('click', listEventHandler);
++    ui.addEventListener('touchend', listEventHandler);
+     this.attachUI(ui);
+   }
+   format(name, value) {
