@@ -266,6 +266,7 @@ form input {
   &.visible {
     display: flex;
   }
+  z-index: 999;
 }
 
 .modal {
@@ -284,10 +285,6 @@ form input {
   .listContainer {
     overflow-y: auto;
     width: 90%;
-  }
-
-  button {
-
   }
 }
 
@@ -426,4 +423,26 @@ td.mealDoneCheck {
 
 .saveControls button {
   margin-right: 15px;
+}
+
+.deleteModal {
+  background-color: var(--color-background);
+  padding: 20px 20px 0 20px;
+  border-radius: 5px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  position: relative;
+}
+
+.deleteModalButtons {
+  padding: 15px;
+
+  button {
+    margin: 10px;
+    width: 60px;
+  }
+}
+
+.saveState {
+  font-size: 15px;
 }

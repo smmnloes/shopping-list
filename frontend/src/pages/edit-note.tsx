@@ -8,13 +8,14 @@ import { postImageInsertProcessing } from '../utils/image-processing.ts'
 enum SAVE_STATE {
   SAVED = 'gespeichert',
   UNSAVED = 'nicht gespeichert',
-  SAVING= 'speichert...'
+  SAVING = 'speichert...'
 }
 
 export const EditNote = () => {
   const [ noteContent, setNoteContent ] = useState<string>('')
 
-  const [saveState, setSaveState] = useState<SAVE_STATE>(SAVE_STATE.SAVED)
+  const [ saveState, setSaveState ] = useState<SAVE_STATE>(SAVE_STATE.SAVED)
+  const [ modalVisible, setModalVisible ] = useState<boolean>(false)
 
   const navigate = useNavigate()
 
@@ -74,9 +75,21 @@ export const EditNote = () => {
       <div className="editorControls">
         <div className="saveControls">
           <button className="my-button" onClick={ handleSaveNote }>Speichern</button>
-          <span className="saveState">{saveState}</span>
+          <span className="saveState">{ saveState }</span>
         </div>
-        <button className="my-button" onClick={handleDeleteNote}>Löschen</button>
+        <button className="my-button" onClick={ () => setModalVisible(true) }>Löschen</button>
+        <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
+          if ((e.target as any).id === 'modal-overlay') setModalVisible(false)
+        } }>
+          <div className="deleteModal">
+            <span>Notiz wirklich löschen?</span>
+            <div className="deleteModalButtons">
+              <button className="my-button" onClick={ handleDeleteNote }>Ja</button>
+              <button className="my-button" onClick={ () => setModalVisible(false) }>Nein</button>
+            </div>
+
+          </div>
+        </div>
       </div>
       <div id="quill">
         <ReactQuill theme="snow" value={ noteContent } modules={ modules } formats={ formats }
