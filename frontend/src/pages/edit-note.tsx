@@ -5,9 +5,16 @@ import { getNote, saveNote } from '../api/api.ts'
 import { useParams } from 'react-router-dom'
 import { postImageInsertProcessing } from '../utils/image-processing.ts'
 
+enum SAVE_STATE {
+  SAVED = 'gespeichert',
+  UNSAVED = 'nicht gespeichert',
+  SAVING= 'speichert...'
+}
 
 export const EditNote = () => {
   const [ noteContent, setNoteContent ] = useState<string>('')
+
+  const [saveState, setSaveState] = useState<SAVE_STATE>(SAVE_STATE.SAVED)
 
   const noteIdParam = useParams<{ id: string }>().id
   if (!noteIdParam) {
@@ -25,11 +32,14 @@ export const EditNote = () => {
 
   const handleOnChange = async (value: string, delta: DeltaStatic) => {
     setNoteContent(await postImageInsertProcessing(value, delta))
+    setSaveState(SAVE_STATE.UNSAVED)
   }
 
 
   const handleSaveNote = async () => {
+    setSaveState(SAVE_STATE.SAVING)
     await saveNote(noteId, noteContent)
+    setSaveState(SAVE_STATE.SAVED)
   }
 
   const modules = {
@@ -54,11 +64,17 @@ export const EditNote = () => {
 
   return (
     <div className="editor-wrapper">
+      <div className="editorControls">
+        <div className="saveControls">
+          <button className="my-button" onClick={ handleSaveNote }>Speichern</button>
+          <span className="saveState">{saveState}</span>
+        </div>
+        <button className="my-button">Löschen</button>
+      </div>
       <div id="quill">
         <ReactQuill theme="snow" value={ noteContent } modules={ modules } formats={ formats }
                     onChange={ handleOnChange }/>
       </div>
-      <button className="my-button note-save-button" onClick={ handleSaveNote }>Speichern</button>
     </div>
   )
 }

@@ -31,7 +31,7 @@ const Notes = () => {
           )) }
       </div>
       <div className="notesListControls">
-        <button className="my-button noteListNewButton" onClick={ newNoteHandler }>Neu</button>
+        <button className="my-button noteListNewButton" onClick={ newNoteHandler }>Neue Notiz anlegen</button>
       </div>
     </div>
   )

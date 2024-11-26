@@ -44,6 +44,7 @@ form input {
 }
 
 .my-button {
+  padding: 7px;
   background-color: var(--color-highlight);
   color: var(--color-font);
   border-radius: 7px;
@@ -108,7 +109,6 @@ form input {
 }
 
 .addButton {
-  padding: 7px;
   font-size: 20px;
 
   &.small {
@@ -187,7 +187,6 @@ form input {
   font-size: 15px;
 
   button {
-    padding: 5px;
     margin-top: 5px;
   }
 }
@@ -221,8 +220,8 @@ form input {
   img {
     height: 2em;
     filter: grayscale(100%) brightness(6) invert(5%);
-
     mix-blend-mode: hard-light;
+    padding-top: 5px;
   }
 
   &.selected {
@@ -237,7 +236,6 @@ form input {
   justify-content: space-between;
 
   button {
-    padding: 5px;
     margin: 10px;
   }
 
@@ -289,8 +287,6 @@ form input {
   }
 
   button {
-    padding: 7px;
-    font-size: 16px;
 
   }
 }
@@ -417,6 +413,17 @@ td.mealDoneCheck {
   flex-direction: column;
 }
 
-.note-save-button {
-  margin-top: 20px;
+.editorControls {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+
+  >* {
+    margin: 5px;
+  }
+
+}
+
+.saveControls button {
+  margin-right: 15px;
 }

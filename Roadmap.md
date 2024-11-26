@@ -1,3 +1,3 @@
 use pnpm
-remember selection of category after back button
-pfeile bei meal plan sehen scheiße aus auf mobile -> svg nutzen
+Better buttons for notes + delete button (fancy css animations for save, dirty indicator)
+evaluate use of deltas instead of sending whole content (images!)
