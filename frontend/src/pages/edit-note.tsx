@@ -6,9 +6,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { postImageInsertProcessing } from '../utils/image-processing.ts'
 
 enum SAVE_STATE {
-  SAVED = 'gespeichert',
-  UNSAVED = 'nicht gespeichert',
-  SAVING = 'speichert...'
+  SAVED = '/checkmark-circle.svg',
+  UNSAVED = '/circle-cross.svg',
+  SAVING = 'saving'
 }
 
 export const EditNote = () => {
@@ -41,8 +41,12 @@ export const EditNote = () => {
 
   const handleSaveNote = async () => {
     setSaveState(SAVE_STATE.SAVING)
-    await saveNote(noteId, noteContent)
-    setSaveState(SAVE_STATE.SAVED)
+    try {
+      await saveNote(noteId, noteContent)
+      setSaveState(SAVE_STATE.SAVED)
+    } catch (e) {
+      setSaveState(SAVE_STATE.UNSAVED)
+    }
   }
 
   const handleDeleteNote = async () => {
@@ -74,10 +78,15 @@ export const EditNote = () => {
     <div className="editor-wrapper">
       <div className="editorControls">
         <div className="saveControls">
-          <button className="my-button" onClick={ handleSaveNote }>Speichern</button>
-          <span className="saveState">{ saveState }</span>
+          <button className="my-button saveIcon" onClick={ handleSaveNote }><img src="/save.svg"
+                                                                                 alt="speichern"/>
+            { saveState === SAVE_STATE.SAVING ? (<div className="spinner"></div>) : (<img src={ saveState }
+                                                                                          alt="saveState"/>) }
+          </button>
+
         </div>
-        <button className="my-button" onClick={ () => setModalVisible(true) }>Löschen</button>
+        <button className="my-button deleteButton" onClick={ () => setModalVisible(true) }><img src="/paper-bin.svg"
+                                                                                                alt="löschen"/></button>
         <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
           if ((e.target as any).id === 'modal-overlay') setModalVisible(false)
         } }>

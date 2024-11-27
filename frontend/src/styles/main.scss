@@ -443,6 +443,14 @@ td.mealDoneCheck {
   }
 }
 
-.saveState {
-  font-size: 15px;
+.saveStateIcon {
+  width: 20px;
+  height: 20px;
+  filter:  drop-shadow(2px 1px 1px rgb(64, 76, 90, 0.6));
+}
+
+.saveIcon > * {
+  height: 20px;
+  width: 20px;
+  margin: 0 4px;
 }
