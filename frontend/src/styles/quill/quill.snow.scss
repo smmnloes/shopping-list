@@ -28,7 +28,7 @@
     box-sizing: border-box;
     border-radius: 0 0 10px 10px;
     font-family: Helvetica, Arial, sans-serif;
-    font-size: 20px;
+    font-size: 16px;
     height: 100%;
     margin: 0;
     position: relative
@@ -713,6 +713,7 @@
 
     > * {
       margin: 5px;
+      padding: 3px;
     }
   }
 
@@ -834,7 +835,7 @@
     color: #444;
     display: inline-block;
     float: left;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 500;
     height: 24px;
     position: relative;
@@ -844,9 +845,9 @@
   .ql-snow .ql-picker-label {
     cursor: pointer;
     display: inline-block;
-    height: 100%;
-    padding-left: 5px;
+    padding-left: 2px;
     padding-right: 2px;
+    margin-top: -2px;
     position: relative;
     width: 100%
   }
@@ -887,7 +888,7 @@
 
   .ql-snow .ql-picker.ql-expanded .ql-picker-options {
     display: block;
-    margin-top: -1px;
+    margin-top: 2px;
     top: 100%;
     z-index: 1
   }
@@ -941,7 +942,9 @@
   }
 
   .ql-snow .ql-picker.ql-header {
-    width: 98px
+    width: 142px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
   }
 
   .ql-snow .ql-picker.ql-header .ql-picker-label::before, .ql-snow .ql-picker.ql-header .ql-picker-item::before {
@@ -953,11 +956,11 @@
   }
 
   .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
-    content: 'Heading 2'
+    content: 'Überschrift 1'
   }
 
   .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
-    content: 'Heading 3'
+    content: 'Überschrift 2'
   }
 
   .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {

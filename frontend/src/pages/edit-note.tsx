@@ -57,12 +57,8 @@ export const EditNote = () => {
   const modules = {
       toolbar: {
         container: [
-          [
-            {'header': [ 1, 2, false ]},
-            'bold', 'italic', 'underline', 'strike',
-            {'list': 'ordered'}, {'list': 'bullet'}, {'list': 'check'},
-            {'indent': '-1'}, {'indent': '+1'},
-            'image' ],
+          [ {'header': [ 2, 3, false ]}, 'bold', 'italic', 'underline', 'strike' ],
+          [ {'list': 'ordered'}, {'list': 'bullet'}, {'list': 'check'}, {'indent': '-1'}, {'indent': '+1'}, 'image' ],
         ],
       }
     },
@@ -78,8 +74,8 @@ export const EditNote = () => {
     <div className="editor-wrapper">
       <div className="editorControls">
         <div className="saveControls">
-          <button className="my-button saveIcon" onClick={ handleSaveNote }><img src="/save.svg"
-                                                                                 alt="speichern"/>
+          <button className="my-button saveButton" onClick={ handleSaveNote }><img src="/save.svg"
+                                                                                   alt="speichern"/>
             { saveState === SAVE_STATE.SAVING ? (<div className="spinner"></div>) : (<img src={ saveState }
                                                                                           alt="saveState"/>) }
           </button>

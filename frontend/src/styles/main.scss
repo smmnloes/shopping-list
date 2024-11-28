@@ -21,14 +21,16 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 96vw;
+  margin: auto;
 }
 
 .content {
   flex-grow: 1;
-  width: 90vw;
   text-align: center;
-  margin: auto;
   max-width: 550px;
+  width: 100%;
+  margin: auto;
 }
 
 input, textarea {
@@ -183,8 +185,9 @@ form input {
 
 .header {
   text-align: right;
-  padding: 25px;
   font-size: 15px;
+  margin-bottom: 50px;
+  padding: 20px;
 
   button {
     margin-top: 5px;
@@ -443,14 +446,15 @@ td.mealDoneCheck {
   }
 }
 
-.saveStateIcon {
-  width: 20px;
-  height: 20px;
-  filter:  drop-shadow(2px 1px 1px rgb(64, 76, 90, 0.6));
-}
 
-.saveIcon > * {
-  height: 20px;
-  width: 20px;
-  margin: 0 4px;
+
+.saveButton {
+  display: flex;
+  flex-direction: row;
+
+  > * {
+    height: 20px;
+    width: 20px;
+    margin: 0 4px;
+  }
 }
