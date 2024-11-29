@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
 import { getAuthStatus } from '../api/api.ts'
+import { useLocation } from 'react-router-dom'
 
 interface AuthContextProps {
   authStatus: AuthStatus | null
@@ -11,23 +11,23 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined)
 
 export const AuthProvider = ({children}: { children: ReactNode }) => {
   const [ authStatus, setAuthStatus ] = useState<AuthStatus | null>(null)
-  const location = useLocation();
+  const {pathname} = useLocation()
 
   useEffect(() => {
-    const fetchAuthStatus = async () => {
+    (async () => {
       const status = await getAuthStatus().catch(_ => ({authenticated: false}))
       setAuthStatus(status)
-    }
-
-    fetchAuthStatus()
-  }, [location])
+    })()
+  }, [ pathname ])
 
   return (
-    <AuthContext.Provider value={{ authStatus,
-    setAuthStatus }}>
-  {children}
-  </AuthContext.Provider>
-)
+    <AuthContext.Provider value={ {
+      authStatus,
+      setAuthStatus
+    } }>
+      { children }
+    </AuthContext.Provider>
+  )
 }
 
 export const useAuth = () => {
