@@ -184,10 +184,11 @@ form input {
 }
 
 .header {
-  text-align: right;
+  display: flex;
+  justify-content: end;
   font-size: 15px;
-  margin-bottom: 50px;
-  padding: 20px;
+  padding: 20px 10px;
+  margin-bottom: 30px;
 
   button {
     margin-top: 5px;
@@ -355,7 +356,7 @@ form input {
   background-color: var(--color-list-item);
   border-collapse: collapse;
   box-shadow: 2px 2px 5px var(--color-shadow);
-  width: 90%;
+  width: 100%;
 
   td {
     padding: 10px;
@@ -457,4 +458,40 @@ td.mealDoneCheck {
     width: 20px;
     margin: 0 4px;
   }
+}
+
+.userMenu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.userMenuContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity 0.3s linear,opacity 0.3s linear;
+  margin-top: 10px;
+
+  > * {
+    margin: 5px;
+  }
+}
+
+.userCircle {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 50%;
+  font-size: 28px;
+  color: #fff;
+  text-align: center;
+  background: var(--color-highlight);
+  border: 2px solid white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.usernameDisplay {
+text-align: center;
 }

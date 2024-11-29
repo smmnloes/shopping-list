@@ -1,19 +1,22 @@
-import { AuthStatus, useAuth } from '../services/auth-provider.tsx'
+import { useAuth } from '../services/auth-provider.tsx'
 import { logout } from '../api/api.ts'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import useOnlineStatus from '../hooks/use-online-status.ts'
+import { useEffect, useState } from 'react'
 
 function Header() {
   const {authStatus, setAuthStatus} = useAuth()
   const navigate = useNavigate()
-  const authenticatedView = (authStatus: AuthStatus | null): string => {
-    if (authStatus === null) {
-      return 'checking...'
-    }
-    return authStatus.authenticated ? `angemeldet als ${ authStatus.username }` : 'nicht angemeldet'
-  }
+  const location = useLocation()
 
-  const isOnline = useOnlineStatus();
+  const [ userMenuExpanded, setUserMenuExpanded ] = useState<boolean>(false)
+
+  useEffect(() => {
+    setUserMenuExpanded(false)
+  }, [location.pathname])
+
+
+  const isOnline = useOnlineStatus()
 
   const handleLogout = async () => {
     await logout()
@@ -24,11 +27,18 @@ function Header() {
   return (
     <>
       <header className="header">
-        <div className="offline-banner" hidden={isOnline}>
+        <div className="offline-banner" hidden={ isOnline }>
           du bist offline
         </div>
-        <div>{ authenticatedView(authStatus) }</div>
-        { authStatus?.authenticated && (<button className="my-button" onClick={ handleLogout }>Logout</button>) }
+        <div className="userMenu" style={{ visibility: authStatus?.authenticated ? 'visible' : 'hidden' }}>
+          <div className="userCircle"
+               onClick={ () => setUserMenuExpanded(!userMenuExpanded) }>{ authStatus?.username?.charAt(0).toUpperCase() }</div>
+          <div className="userMenuContent" style={ {opacity: userMenuExpanded && authStatus?.authenticated ? 1 : 0} }>
+            <div className="usernameDisplay">angemeldet als<br/><b>{ authStatus?.username }</b></div>
+            <button className="my-button" onClick={ handleLogout }>abmelden</button>
+          </div>
+        </div>
+
       </header>
     </>
   )
