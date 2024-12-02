@@ -9,7 +9,7 @@ function Header() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [ userMenuExpanded, setUserMenuExpanded ] = useState<boolean>(false)
+  const [ userMenuExpanded, setUserMenuExpanded ] = useState<boolean>(true)
 
   useEffect(() => {
     setUserMenuExpanded(false)
@@ -34,7 +34,7 @@ function Header() {
           <div className="userCircle"
                onClick={ () => setUserMenuExpanded(!userMenuExpanded) }>{ authStatus?.username?.charAt(0).toUpperCase() }</div>
           <div className="userMenuContent" style={ {opacity: userMenuExpanded && authStatus?.authenticated ? 1 : 0} }>
-            <div className="usernameDisplay">angemeldet als<br/><b>{ authStatus?.username }</b></div>
+            <div className="usernameDisplay">angemeldet als <b>{ authStatus?.username }</b></div>
             <button className="my-button" onClick={ handleLogout }>abmelden</button>
           </div>
         </div>

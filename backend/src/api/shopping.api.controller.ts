@@ -1,15 +1,4 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  NotFoundException,
-  Param,
-  ParseIntPipe,
-  Post,
-  Query,
-  Request,
-  UseGuards
-} from '@nestjs/common'
+import { Controller, Delete, Get, Param, ParseIntPipe, Post, Query, Request, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { In, Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
@@ -33,7 +22,10 @@ export class ShoppingApiController {
   private async getListForCategory(category: ShopCategory): Promise<ShoppingList> {
     const shoppingLists = await this.shoppingListRepository.find({where: {shopCategory: category}})
     if (shoppingLists.length === 0) {
-      throw new NotFoundException(`No list for category ${ category } found`)
+      console.error(`No list for category ${ category } found, creating one`)
+      const newList = new ShoppingList('SYSTEM', category, [])
+      await this.shoppingListRepository.save(newList)
+      return newList
     }
     if (shoppingLists.length > 1) {
       console.error(`More than 1 list found for category ${ category }. Picking first one`)

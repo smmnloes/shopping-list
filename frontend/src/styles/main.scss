@@ -13,6 +13,7 @@ body {
   font-size: 20px;
   background-color: var(--color-background);
   height: 100vh;
+  width: 100vw;
   margin: 0;
 }
 
@@ -21,7 +22,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 96vw;
+  width: 96%;
   margin: auto;
 }
 
@@ -202,8 +203,7 @@ form input {
   display: flex;
   justify-content: end;
   font-size: 15px;
-  padding: 20px 0;
-  margin-bottom: 30px;
+  margin-bottom: 70px;
 
   button {
     margin-top: 5px;
@@ -253,6 +253,7 @@ form input {
 .listTopControlsContainer {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 10px;
 
   button {
     margin: 10px;
@@ -477,9 +478,10 @@ td.mealDoneCheck {
 
 .userMenu {
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse;
   align-items: center;
-
+  margin-top: 10px;
+  margin-right: 10px;
 }
 
 .userMenuContent {
@@ -487,17 +489,17 @@ td.mealDoneCheck {
   flex-direction: column;
   align-items: center;
   transition: opacity 0.3s;
-  margin-top: 10px;
+  margin-right: 10px;
 
   > * {
-    margin: 5px;
+    padding: 5px;
   }
 }
 
 .userCircle {
   width: 40px;
   height: 40px;
-  line-height: 40px;
+  line-height: 45px;
   border-radius: 50%;
   font-size: 28px;
   color: #fff;
