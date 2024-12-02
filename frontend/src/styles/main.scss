@@ -127,7 +127,9 @@ form input {
 
 
 .navContainer {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   * {
     padding: 5px;
@@ -135,17 +137,30 @@ form input {
 }
 
 .navElement {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+
+  width: 150px;
+  height: 150px;
+
+  border: 3px solid var(--color-background);
+  box-shadow: 2px 1px 3px rgb(100, 100, 100, 0.8);
+  border-radius: 30px;
+
+
   img {
     height: 4em;
     width: 4em;
-    padding: 20px;
-    filter: drop-shadow(2px 2px 1px rgb(64, 76, 90, 0.6));
+    padding: 10px;
   }
+
 
   &.small img {
     height: 3.7em;
     width: 3.7em;
   }
+
 }
 
 
