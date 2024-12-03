@@ -92,8 +92,8 @@ const EditLists = () => {
   const EditableCheckableListItem = ({index, item}: { index: number, item: ListItem }) => {
     const isItemChecked = (itemId: number) => !!checkedItems.find(item => item.id === itemId)
 
-    return <div key={ index } className="listElementContainer">
-      <div className="listElement">
+    return (
+        <div key={index} className="listElement">
         <div className="listItemCheckBox"><input type="checkbox"
                                                  checked={ isItemChecked(item.id) }
                                                  onChange={ (event) => handleCheckedItemsOnChange(event, item.id) }/>
@@ -104,7 +104,7 @@ const EditLists = () => {
                                                                                 alt="delete item"/>
         </div>
       </div>
-    </div>
+    )
   }
 
   return (
@@ -127,7 +127,7 @@ const EditLists = () => {
           </button>
         </div>
         <div className="listContainer">
-          { addedStaples.length === 0 ? ('Noch keine Staples hinzugefügt.') :
+          {addedStaples.length === 0 ? (<div className="noElementsMessage">Noch keine Staples hinzugefügt.</div>) :
             addedStaples.map((item, index) =>
               (<EditableCheckableListItem key={ index } index={ index } item={ item }/>)
             ) }

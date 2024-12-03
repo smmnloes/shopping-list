@@ -52,8 +52,7 @@ form input {
   color: var(--color-font);
   border-radius: 7px;
   outline: none;
-  border: none;
-  box-shadow: 2px 2px 5px var(--color-shadow);
+  border: 1px solid white;
 
   &:disabled {
     background-color: #cccccc;
@@ -65,27 +64,20 @@ form input {
 
 .listContainer {
   margin-bottom: 25px;
-  border-radius: 20px;
+  border-radius: 15px;
   border: white solid 2px;
-  padding: 5px;
-}
-
-.listElementContainer {
-  display: flex;
-  justify-content: center;
-  padding: 5px;
 }
 
 .listElement {
   background-color: var(--color-list-item);
   padding: 10px;
-  width: 94%;
 
   display: flex;
   flex-direction: row;
 
   border-radius: 10px;
-  box-shadow: 2px 2px 5px var(--color-shadow);
+  margin: 5px;
+
 
   .label {
     width: 90%;
@@ -145,8 +137,7 @@ form input {
   width: 150px;
   height: 150px;
 
-  border: 3px solid var(--color-background);
-  box-shadow: 2px 1px 3px rgb(100, 100, 100, 0.8);
+  border: 3px solid white;
   border-radius: 30px;
 
 
@@ -246,6 +237,7 @@ form input {
   &.selected {
     background-color: var(--color-highlight);
     border-radius: 7px;
+    border: 2px solid white;
   }
 }
 
@@ -254,10 +246,6 @@ form input {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
-
-  button {
-    margin: 10px;
-  }
 
   img {
     height: 30px;
@@ -347,7 +335,7 @@ form input {
   img {
     width: 35px;
     margin: 0 20px;
-    filter: invert(1) brightness(10) drop-shadow(3px 3px 2px rgba(64, 76, 90, 0.5));
+
 
     &.rotated {
       transform: rotate(180deg);
@@ -370,9 +358,8 @@ form input {
   border-radius: 16px;
   overflow: hidden;
   background-color: var(--color-list-item);
-  border-collapse: collapse;
-  box-shadow: 2px 2px 5px var(--color-shadow);
   width: 95%;
+  border: 2px solid white;
 
   td {
     padding: 10px;
@@ -497,18 +484,21 @@ td.mealDoneCheck {
 }
 
 .userCircle {
-  width: 40px;
-  height: 40px;
-  line-height: 45px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
   border-radius: 50%;
   font-size: 28px;
-  color: #fff;
+  color: black;
   text-align: center;
   background: var(--color-highlight);
   border: 2px solid white;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .usernameDisplay {
 text-align: center;
+}
+
+.noElementsMessage {
+  margin: 10px;
 }

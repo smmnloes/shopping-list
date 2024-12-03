@@ -20,8 +20,9 @@ const Notes = () => {
 
   return (
     <div>
+        <h1>Notizen</h1>
       <div className="listContainer">
-        { notes.length === 0 ? 'Noch keine Notizen angelegt...' :
+          { notes.length === 0 ? (<div className='noElementsMessage'>Noch keine Notizen angelegt...</div>) :
           notes.map((note, index) => (
             <div key={ index } className="listElementContainer">
               <div className="listElement" onClick={ () => navigate(`/notes/${ note.id }`) }>
@@ -31,7 +32,7 @@ const Notes = () => {
           )) }
       </div>
       <div className="notesListControls">
-        <button className="my-button noteListNewButton" onClick={ newNoteHandler }>Neue Notiz anlegen</button>
+        <button className="my-button noteListNewButton" onClick={ newNoteHandler }>Neue Notiz</button>
       </div>
     </div>
   )

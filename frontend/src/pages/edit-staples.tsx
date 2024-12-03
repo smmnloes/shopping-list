@@ -64,7 +64,7 @@ const EditStaples = () => {
       </div>
       <div className="listAndInput">
         <div className="listContainer">
-          { staples.length === 0 ? 'Noch keine Staples angelegt...' :
+          { staples.length === 0 ? (<div className="noElementsMessage">Noch keine Staples angelegt...</div>) :
             staples.map((item, index) => (
               <div key={ index } className="listElementContainer">
                 <div className="listElement">
