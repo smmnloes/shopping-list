@@ -6,9 +6,21 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { postImageInsertProcessing } from '../utils/image-processing.ts'
 
 enum SAVE_STATE {
-  SAVED = '/checkmark-circle.svg',
-  UNSAVED = '/circle-cross.svg',
-  SAVING = 'saving'
+  SAVED,
+  UNSAVED,
+  SAVING
+}
+
+const iconForSaveState = {
+  [SAVE_STATE.SAVED]: '/checkmark-circle.svg',
+  [SAVE_STATE.UNSAVED]: '/circle-cross.svg',
+  [SAVE_STATE.SAVING]: '---'
+}
+
+const classForSaveState = {
+  [SAVE_STATE.SAVED]: 'saved',
+  [SAVE_STATE.UNSAVED]: 'unsaved',
+  [SAVE_STATE.SAVING]: 'saving'
 }
 
 export const EditNote = () => {
@@ -31,7 +43,7 @@ export const EditNote = () => {
       const {content} = await getNote(noteId)
       setNoteContent(content)
     })()
-  }, [])
+  }, [noteId])
 
   const handleOnChange = async (value: string, delta: DeltaStatic) => {
     setNoteContent(await postImageInsertProcessing(value, delta))
@@ -74,10 +86,11 @@ export const EditNote = () => {
     <div className="editor-wrapper">
       <div className="editorControls">
         <div className="saveControls">
-          <button className="my-button saveButton" onClick={ handleSaveNote }><img src="/save.svg"
-                                                                                   alt="speichern"/>
-            { saveState === SAVE_STATE.SAVING ? (<div className="spinner"></div>) : (<img src={ saveState }
-                                                                                          alt="saveState"/>) }
+          <button className={`my-button saveButton ${classForSaveState[saveState]}`} onClick={handleSaveNote}><img
+              src="/save.svg"
+              alt="speichern"/>
+            {saveState === SAVE_STATE.SAVING ? (<div className="spinner"></div>) : (
+                <img src={iconForSaveState[saveState]} alt="saveState"/>)}
           </button>
 
         </div>

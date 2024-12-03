@@ -461,6 +461,16 @@ td.mealDoneCheck {
     width: 20px;
     margin: 0 4px;
   }
+
+  &.saved {
+    background-color: #c6fbc6
+  }
+  &.unsaved {
+    background-color: #f8b8ae
+  }
+  &.saving {
+    background-color: #fbf5bc
+  }
 }
 
 .userMenu {
