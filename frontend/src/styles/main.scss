@@ -42,7 +42,7 @@ input, textarea {
 form input {
   border-radius: 7px;
   outline: none;
-  border: var(--color-font) solid 1px;
+  border-style: none;
   padding: 8px;
 }
 
@@ -63,9 +63,7 @@ form input {
 
 
 .listContainer {
-  margin-bottom: 25px;
   border-radius: 15px;
-  border: white solid 2px;
 }
 
 .listElement {
@@ -76,7 +74,8 @@ form input {
   flex-direction: row;
 
   border-radius: 10px;
-  margin: 5px;
+  margin: 5px auto;
+  border: 1px solid white;
 
 
   .label {
@@ -133,11 +132,12 @@ form input {
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
-
+  border: 1px solid white;
   width: 150px;
   height: 150px;
 
-  border: 3px solid white;
+
+  background-color: var(--color-highlight);
   border-radius: 30px;
 
 
@@ -145,6 +145,7 @@ form input {
     height: 4em;
     width: 4em;
     padding: 10px;
+    filter: invert(1);
   }
 
 
@@ -175,6 +176,7 @@ form input {
 .addItemForm {
   display: flex;
   justify-content: space-between;
+  margin-top: 25px;
 
   input {
     width: 60%;
@@ -188,6 +190,11 @@ form input {
 .listAndInput {
   padding: 5px;
   margin-top: 20px;
+
+  hr {
+    width: 50%;
+    margin: 25px auto;
+  }
 }
 
 .header {
@@ -237,7 +244,7 @@ form input {
   &.selected {
     background-color: var(--color-highlight);
     border-radius: 7px;
-    border: 2px solid white;
+    border: 1px solid white;
   }
 }
 
@@ -359,7 +366,7 @@ form input {
   overflow: hidden;
   background-color: var(--color-list-item);
   width: 95%;
-  border: 2px solid white;
+  border: 1px solid white;
 
   td {
     padding: 10px;
@@ -408,6 +415,7 @@ td.mealDoneCheck {
   font-size: 0.7rem;
   text-align: center;
   padding: 15px;
+  margin-top: 40px;
   margin-bottom: 15px;
 }
 

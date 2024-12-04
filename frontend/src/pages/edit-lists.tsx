@@ -21,17 +21,18 @@ const EditLists = () => {
   const isOnline = useOnlineStatus()
 
   useEffect(() => {
-    selectedCategory &&
-    (async () => {
-      try {
-        setCheckedItems(getCheckedItemIdsFromLocal())
-        const {items} = await getItemsForCategory(selectedCategory)
-        setAddedStaples(items.filter(item => item.isStaple))
-        setListItems(items.filter(item => !item.isStaple))
-      } catch (error) {
-        console.error('Error fetching list items', error)
-      }
-    })()
+    if(selectedCategory) {
+      (async () => {
+        try {
+          setCheckedItems(getCheckedItemIdsFromLocal())
+          const {items} = await getItemsForCategory(selectedCategory)
+          setAddedStaples(items.filter(item => item.isStaple))
+          setListItems(items.filter(item => !item.isStaple))
+        } catch (error) {
+          console.error('Error fetching list items', error)
+        }
+      })()
+    }
   }, [ selectedCategory ])
 
 
@@ -132,6 +133,7 @@ const EditLists = () => {
               (<EditableCheckableListItem key={ index } index={ index } item={ item }/>)
             ) }
         </div>
+        <hr/>
         { listItems.length > 0 &&
           (<div className="listContainer">
             { listItems.map((item, index) =>
