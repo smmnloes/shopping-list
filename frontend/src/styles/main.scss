@@ -229,10 +229,6 @@ form input {
   justify-content: end;
   font-size: 15px;
   margin-bottom: 70px;
-
-  button {
-    margin-top: 5px;
-  }
 }
 
 .offline-banner {
@@ -529,7 +525,7 @@ td.mealDoneCheck {
   color: black;
   text-align: center;
   background: var(--color-highlight);
-  border: 2px solid white;
+  border: 1px solid white;
 }
 
 .usernameDisplay {
