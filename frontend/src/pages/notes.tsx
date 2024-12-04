@@ -4,6 +4,16 @@ import { useNavigate } from 'react-router-dom'
 import { NoteOverview } from '../types/types.ts'
 
 
+const formatDate = (date: Date): string => {
+    console.log(typeof date)
+    return `${date.toLocaleDateString(undefined, {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+    })}`
+}
+
+
 const Notes = () => {
   const [ notes, setNotes ] = useState<NoteOverview[]>([])
 
@@ -26,7 +36,13 @@ const Notes = () => {
           notes.map((note, index) => (
             <div key={ index } className="listElementContainer">
               <div className="listElement" onClick={ () => navigate(`/notes/${ note.id }`) }>
-                <div className="label">{ note.title }</div>
+                  <div className="noteContainer">
+                      <div className="noteTitle">{note.title}</div>
+                      <div className="noteDetails">
+                          <div><b>erstellt:</b> {formatDate(new Date(note.createdAt))} ({note.createdBy})</div>
+                          <div><b>zuletzt geändert:</b> {formatDate(new Date(note.lastUpdatedAt))} ({note.lastUpdatedBy})</div>
+                      </div>
+                  </div>
               </div>
             </div>
           )) }

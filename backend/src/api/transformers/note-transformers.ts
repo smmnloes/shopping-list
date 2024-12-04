@@ -7,6 +7,7 @@ export const transformNoteToOverview = (note: Note): NoteOverview => {
     createdAt: note.createdAt,
     createdBy: note.createdBy,
     lastUpdatedAt: note.lastUpdatedAt,
+    lastUpdatedBy: note.lastUpdatedBy,
     title: extractTitleFromContent(note.content)
   }
 }

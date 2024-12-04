@@ -20,8 +20,8 @@ export const configForCategory = {
 
 export type Note = {
   id: number
-  createdAt: Date
-  lastUpdatedAt: Date
+  createdAt: string
+  lastUpdatedAt: string
   lastUpdatedBy: string
   createdBy: string
   content: string
@@ -30,8 +30,9 @@ export type Note = {
 export type NoteOverview = {
   id: number
   title: string
-  createdAt: Date
-  lastUpdatedAt: Date
+  createdAt: string
+  lastUpdatedAt: string
+  lastUpdatedBy: string
   createdBy: string
 }
 

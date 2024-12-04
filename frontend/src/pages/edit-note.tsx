@@ -13,7 +13,7 @@ enum SAVE_STATE {
 
 const iconForSaveState = {
   [SAVE_STATE.SAVED]: '/checkmark-circle.svg',
-  [SAVE_STATE.UNSAVED]: '/circle-cross.svg',
+  [SAVE_STATE.UNSAVED]: '/alert.svg',
   [SAVE_STATE.SAVING]: '---'
 }
 

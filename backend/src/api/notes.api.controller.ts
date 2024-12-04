@@ -28,7 +28,7 @@ export class NotesApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('notes')
-  async createNote(@Request() {body: {}, user: {username}}: ExtendedRequest<{}>): Promise<{ id: number }> {
+  async createNote(@Request() {body: {}, user: {username}}: ExtendedRequest<any>): Promise<{ id: number }> {
     return this.notesRepository.save(new Note(username)).then(({id}) => ({id}))
   }
 
@@ -54,5 +54,6 @@ export type NoteOverview = {
   title: string
   createdAt: Date
   lastUpdatedAt: Date
+  lastUpdatedBy: string
   createdBy: string
 }
