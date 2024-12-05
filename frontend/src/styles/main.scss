@@ -283,7 +283,7 @@ form input {
 .listTopControlsContainer {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 
   img {
     height: 30px;
@@ -464,7 +464,7 @@ td.mealDoneCheck {
   justify-content: space-between;
 }
 
-.deleteModal {
+.choiceModal {
   background-color: var(--color-background);
   padding: 20px 20px 0 20px;
   border-radius: 5px;
@@ -473,7 +473,7 @@ td.mealDoneCheck {
   position: relative;
 }
 
-.deleteModalButtons {
+.choiceModalButtons {
   padding: 15px;
 
   button {

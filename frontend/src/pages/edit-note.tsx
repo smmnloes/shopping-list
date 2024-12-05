@@ -99,9 +99,9 @@ export const EditNote = () => {
         <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
           if ((e.target as any).id === 'modal-overlay') setModalVisible(false)
         } }>
-          <div className="deleteModal">
+          <div className="choiceModal">
             <span>Notiz wirklich löschen?</span>
-            <div className="deleteModalButtons">
+            <div className="choiceModalButtons">
               <button className="my-button" onClick={ handleDeleteNote }>Ja</button>
               <button className="my-button" onClick={ () => setModalVisible(false) }>Nein</button>
             </div>

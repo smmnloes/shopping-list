@@ -61,6 +61,10 @@ export const onlineStatus = async () => {
   return axiosInstance.get(`${ backendHost }/api/onlinestatus`)
 }
 
+export const getServerVersion = async (): Promise<string> => {
+  return axiosInstance.get(`${ backendHost }/api/version`).then(response => response.data)
+}
+
 export const getMealsForWeek = (week: number, year: number): Promise<{ meals: string[], checks: boolean[] }> => {
   return axiosInstance.get(`${ backendHost }/api/meals/${ week }-${ year }`).then(response => response.data)
 }
