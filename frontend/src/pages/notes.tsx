@@ -31,7 +31,7 @@ const Notes = () => {
   return (
     <div>
         <h1>Notizen</h1>
-      <div className="listContainer">
+      <div className="listContainer notes">
           { notes.length === 0 ? (<div className='noElementsMessage'>Noch keine Notizen angelegt...</div>) :
           notes.map((note, index) => (
             <div key={ index } className="listElementContainer">

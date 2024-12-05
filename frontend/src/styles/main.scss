@@ -67,6 +67,14 @@ form input {
 
 .listContainer {
   border-radius: 15px;
+
+  &.notes {
+    width: 90%;
+    margin: auto;
+    > * {
+      margin: 15px auto;
+    }
+  }
 }
 
 .listElement {
@@ -451,7 +459,7 @@ td.mealDoneCheck {
 }
 
 .editorControls {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   display: flex;
   justify-content: space-between;
 }
