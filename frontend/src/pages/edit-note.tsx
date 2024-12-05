@@ -63,7 +63,7 @@ export const EditNote = () => {
 
   const handleDeleteNote = async () => {
     await deleteNote(noteId)
-    navigate('/notes')
+    navigate(-1)
   }
 
   const modules = {
