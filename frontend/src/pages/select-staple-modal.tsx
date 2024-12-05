@@ -24,12 +24,13 @@ const SelectStapleModal = ({selectedCategory, addedStaples, setAddedStaples}: Se
   const isOnline = useOnlineStatus()
 
   useEffect(() => {
-    selectedCategory &&
+    if (selectedCategory) {
     (async () => {
       console.log(`Loading staples for ${ selectedCategory }`)
       const staples = await getStaples(selectedCategory)
       setAvailableStaples(staples)
     })()
+    }
   }, [ selectedCategory ])
 
   const handleEditStaples = () => {
@@ -81,7 +82,7 @@ const SelectStapleModal = ({selectedCategory, addedStaples, setAddedStaples}: Se
             <button className="my-button" onClick={ handleEditStaples }>Bearbeiten</button>
           </div>
           <div className="listContainer">
-            { availableStaples.length === 0 ? ('Keine Staples angelegt.') :
+            {availableStaples.length === 0 ? (<div className="noElementsMessage">Keine Staples angelegt.</div>) :
               availableStaples.map((item, index) =>
                 (<div key={ index } className="listElementContainer">
                     <div
