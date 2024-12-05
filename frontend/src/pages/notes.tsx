@@ -13,14 +13,18 @@ const formatDate = (date: Date): string => {
     })}`
 }
 
+const sortNotesByCreatedDescending = (notes: NoteOverview[]) => [...notes.sort(
+    (noteA, noteB) => new Date(noteB.createdAt).getTime() - new Date(noteA.createdAt).getTime()
+)]
 
 const Notes = () => {
   const [ notes, setNotes ] = useState<NoteOverview[]>([])
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    (async () => getNotes().then(response => setNotes(response.notes)))()
+    useEffect(() => {
+        (async () => getNotes()
+            .then(response => setNotes(sortNotesByCreatedDescending(response.notes))))()
   }, [])
 
   const newNoteHandler = async () => {
