@@ -97,6 +97,13 @@ form input {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  &.newElement {
+    background-color: var(--color-highlight);
+    text-align: center;
+    display: block;
+    border: 1px dashed white;
+  }
 }
 
 .deleteButton {
