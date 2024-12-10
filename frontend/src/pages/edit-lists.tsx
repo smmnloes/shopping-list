@@ -21,13 +21,11 @@ const EditLists = () => {
   const isOnline = useOnlineStatus()
 
   useEffect(() => {
-    if(selectedCategory) {
+    if (selectedCategory) {
       (async () => {
         try {
           setCheckedItems(getCheckedItemIdsFromLocal())
-          const {items} = await getItemsForCategory(selectedCategory)
-          setAddedStaples(items.filter(item => item.isStaple))
-          setListItems(items.filter(item => !item.isStaple))
+          await refreshItems(selectedCategory)
         } catch (error) {
           console.error('Error fetching list items', error)
         }
@@ -36,14 +34,20 @@ const EditLists = () => {
   }, [ selectedCategory ])
 
 
+  const refreshItems = async (selectedCategory: ShopCategory) => {
+    const {items} = await getItemsForCategory(selectedCategory)
+    setAddedStaples(items.filter(item => item.isStaple))
+    setListItems(items.filter(item => !item.isStaple))
+  }
+
   const handleSubmit = async (event: any) => {
     event.preventDefault()
     if (!newItemName || !selectedCategory) {
       return
     }
     try {
-      const newItem: ListItem = await createNewItemForCategory(newItemName, selectedCategory)
-      setListItems([ ...listItems, newItem ])
+      await createNewItemForCategory(newItemName, selectedCategory)
+      await refreshItems(selectedCategory)
       setNewItemName('')
       event.target.reset()
     } catch (error) {
@@ -62,8 +66,7 @@ const EditLists = () => {
     }
     try {
       await deleteItemsFromCategoryBulk(toRemoveIds, selectedCategory)
-      setListItems(listItems.filter(item => !toRemoveIds.includes(item.id)))
-      setAddedStaples(addedStaples.filter(staple => !toRemoveIds.includes(staple.id)))
+      await refreshItems(selectedCategory)
       updateCheckedItems(checkedItems.filter(item => !toRemoveIds.includes(item.id)))
       console.log('Items removed')
     } catch (error) {
@@ -94,7 +97,7 @@ const EditLists = () => {
     const isItemChecked = (itemId: number) => !!checkedItems.find(item => item.id === itemId)
 
     return (
-        <div key={index} className="listElement">
+      <div key={ index } className="listElement">
         <div className="listItemCheckBox"><input type="checkbox"
                                                  checked={ isItemChecked(item.id) }
                                                  onChange={ (event) => handleCheckedItemsOnChange(event, item.id) }/>
@@ -121,14 +124,15 @@ const EditLists = () => {
       <div className="listAndInput">
         <div className="listTopControlsContainer">
           <SelectStapleModal selectedCategory={ selectedCategory } addedStaples={ addedStaples }
-                             setAddedStaples={ setAddedStaples }/>
-          <button className="clearCheckedItems my-button" onClick={ handleClearCheckedItems } disabled={ !isOnline }><img
-            src="/clear-all.svg"
-            alt="clear-checked-items"/>
+                             onModalClose={ () => selectedCategory && refreshItems(selectedCategory) }/>
+          <button className="clearCheckedItems my-button" onClick={ handleClearCheckedItems } disabled={ !isOnline }>
+            <img
+              src="/clear-all.svg"
+              alt="clear-checked-items"/>
           </button>
         </div>
         <div className="listContainer">
-          {addedStaples.length === 0 ? (<div className="noElementsMessage">Noch keine Staples hinzugefügt.</div>) :
+          { addedStaples.length === 0 ? (<div className="noElementsMessage">Noch keine Staples hinzugefügt.</div>) :
             addedStaples.map((item, index) =>
               (<EditableCheckableListItem key={ index } index={ index } item={ item }/>)
             ) }

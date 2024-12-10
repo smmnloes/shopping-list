@@ -17,10 +17,8 @@ const EditStaples = () => {
     (async () => {
       try {
         if (selectedCategory) {
-          const items = await getStaples(selectedCategory)
-          console.log('Staples fetched')
+          refreshStaples(selectedCategory)
           setSelectedCategory(selectedCategory)
-          setStaples(items)
         }
       } catch (error) {
         console.error('Error fetching staples', error)
@@ -28,6 +26,10 @@ const EditStaples = () => {
     })()
   }, [selectedCategory])
 
+  const refreshStaples = async (selectedCategory: ShopCategory) => {
+    const staples = await getStaples(selectedCategory)
+    setStaples(staples)
+  }
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
@@ -35,8 +37,8 @@ const EditStaples = () => {
       return
     }
     try {
-      const newItem: ListItem = await createStaple(newStapleName, selectedCategory)
-      setStaples([ ...staples, newItem ])
+      await createStaple(newStapleName, selectedCategory)
+      await refreshStaples(selectedCategory)
       setNewStapleName('')
       event.target.reset()
     } catch (error) {
@@ -45,10 +47,12 @@ const EditStaples = () => {
   }
 
   const removeStaple = async (stapleId: number) => {
+    if (!selectedCategory) {
+      return
+    }
     try {
       await deleteStaple(stapleId)
-      setStaples(staples.filter(staple => staple.id !== stapleId))
-      console.log('Item removed')
+      await refreshStaples(selectedCategory)
     } catch (error) {
       console.error('There was a problem removing the staple', error)
     }

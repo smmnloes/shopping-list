@@ -8,12 +8,12 @@ import { useEffect, useState } from 'react'
 import useOnlineStatus from '../hooks/use-online-status.ts'
 
 interface SelectStapleModalProps {
-  selectedCategory?: ShopCategory
-  addedStaples: ListItem[]
-  setAddedStaples: React.Dispatch<React.SetStateAction<ListItem[]>>
+  selectedCategory?: ShopCategory,
+  addedStaples: ListItem[],
+  onModalClose?: Function
 }
 
-const SelectStapleModal = ({selectedCategory, addedStaples, setAddedStaples}: SelectStapleModalProps) => {
+const SelectStapleModal = ({selectedCategory, addedStaples, onModalClose}: SelectStapleModalProps) => {
   const navigate = useNavigate()
 
   const [ modalVisible, setModalVisible ] = useQueryParamState<boolean>(MODAL_VISIBLE, false, booleanFromString)
@@ -25,11 +25,11 @@ const SelectStapleModal = ({selectedCategory, addedStaples, setAddedStaples}: Se
 
   useEffect(() => {
     if (selectedCategory) {
-    (async () => {
-      console.log(`Loading staples for ${ selectedCategory }`)
-      const staples = await getStaples(selectedCategory)
-      setAvailableStaples(staples)
-    })()
+      (async () => {
+        console.log(`Loading staples for ${ selectedCategory }`)
+        const staples = await getStaples(selectedCategory)
+        setAvailableStaples(staples)
+      })()
     }
   }, [ selectedCategory ])
 
@@ -44,6 +44,10 @@ const SelectStapleModal = ({selectedCategory, addedStaples, setAddedStaples}: Se
   const handleModalClose = () => {
     setSelectedStaples([])
     setModalVisible(false)
+
+    if (onModalClose) {
+      onModalClose()
+    }
   }
 
   const handleStapleSelected = (item: ListItem) => {
@@ -56,8 +60,6 @@ const SelectStapleModal = ({selectedCategory, addedStaples, setAddedStaples}: Se
     }
     const staplesToAdd = selectedStaples.filter(staple => !addedStaples.some(addedStaple => addedStaple.id === staple.id))
     await addStaplesToCategoryList(staplesToAdd.map(staple => staple.id), selectedCategory)
-    setAddedStaples([ ...addedStaples, ...staplesToAdd ])
-    setSelectedStaples([])
     handleModalClose()
   }
 
@@ -82,7 +84,7 @@ const SelectStapleModal = ({selectedCategory, addedStaples, setAddedStaples}: Se
             <button className="my-button" onClick={ handleEditStaples }>Bearbeiten</button>
           </div>
           <div className="listContainer">
-            {availableStaples.length === 0 ? (<div className="noElementsMessage">Keine Staples angelegt.</div>) :
+            { availableStaples.length === 0 ? (<div className="noElementsMessage">Keine Staples angelegt.</div>) :
               availableStaples.map((item, index) =>
                 (<div key={ index } className="listElementContainer">
                     <div
