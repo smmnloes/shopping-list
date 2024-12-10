@@ -83,7 +83,7 @@ const MealPlan = memo(() => {
   }
 
   return (<div>
-      <h1>Meal Plan</h1>
+      <h2>Meal Plan</h2>
       <div className="kwSelect">
         <div className="weekButtons">
           <img src="/arrow-circle-left.svg" alt="previous week"
