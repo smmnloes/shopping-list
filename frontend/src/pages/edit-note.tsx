@@ -42,6 +42,7 @@ export const EditNote = () => {
     (async () => {
       const {content} = await getNote(noteId)
       setNoteContent(content)
+      setSaveState(SAVE_STATE.SAVED)
     })()
   }, [noteId])
 
@@ -52,6 +53,9 @@ export const EditNote = () => {
 
 
   const handleSaveNote = async () => {
+    if(saveState !== SAVE_STATE.UNSAVED) {
+      return
+    }
     setSaveState(SAVE_STATE.SAVING)
     try {
       await saveNote(noteId, noteContent)
