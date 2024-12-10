@@ -5,7 +5,6 @@ import { NoteOverview } from '../types/types.ts'
 
 
 const formatDate = (date: Date): string => {
-    console.log(typeof date)
     return `${date.toLocaleDateString(undefined, {
         day: '2-digit',
         month: '2-digit',

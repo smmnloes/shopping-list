@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import ReactQuill, { DeltaStatic } from 'react-quill-new'
+import ReactQuill, { DeltaStatic, EmitterSource } from 'react-quill-new'
 import '../styles/quill/quill.snow.scss'
 import { deleteNote, getNote, saveNote } from '../api/api.ts'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -42,13 +42,14 @@ export const EditNote = () => {
     (async () => {
       const {content} = await getNote(noteId)
       setNoteContent(content)
-      setSaveState(SAVE_STATE.SAVED)
     })()
   }, [noteId])
 
-  const handleOnChange = async (value: string, delta: DeltaStatic) => {
+  const handleOnChange = async (value: string, delta: DeltaStatic, source: EmitterSource) => {
     setNoteContent(await postImageInsertProcessing(value, delta))
-    setSaveState(SAVE_STATE.UNSAVED)
+    if (source === 'user') {
+      setSaveState(SAVE_STATE.UNSAVED)
+    }
   }
 
 
