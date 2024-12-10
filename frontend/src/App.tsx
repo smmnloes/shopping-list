@@ -4,7 +4,6 @@ function App() {
 
   return (
     <>
-        <nav>
           <div className="navContainer">
               <div className="navElement small">
                   <Link to="/edit-lists"><img src="/shopping-list-icon.svg"
@@ -24,7 +23,6 @@ function App() {
                   <span>Notizen</span>
               </div>
           </div>
-        </nav>
     </>
   )
 }
