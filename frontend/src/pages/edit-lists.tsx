@@ -110,7 +110,7 @@ const EditLists = () => {
 
   return (
     <div>
-      <h2>Einkaufsliste</h2>
+      <h1>Einkaufsliste</h1>
       <div className="shopCategoryContainer">
         { Object.entries(configForCategory).map(([ category, config ], index) =>
           (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }` } key={ index }><img

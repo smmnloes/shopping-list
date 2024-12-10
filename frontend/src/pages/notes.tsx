@@ -34,7 +34,7 @@ const Notes = () => {
 
   return (
     <div>
-        <h2>Notizen</h2>
+        <h1>Notizen</h1>
       <div className="listContainer notes">
           <div className="listElement newElement" onClick={newNoteHandler}>Neue Notiz</div>
           {notes.map((note, index) => (
