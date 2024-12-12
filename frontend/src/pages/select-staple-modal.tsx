@@ -26,7 +26,6 @@ const SelectStapleModal = ({selectedCategory, addedStaples, onModalClose}: Selec
   useEffect(() => {
     if (selectedCategory) {
       (async () => {
-        console.log(`Loading staples for ${ selectedCategory }`)
         const staples = await getStaples(selectedCategory)
         setAvailableStaples(staples)
       })()
