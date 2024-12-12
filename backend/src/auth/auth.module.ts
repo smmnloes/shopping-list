@@ -7,9 +7,12 @@ import { DatabaseModule } from '../data/database.module'
 import { LocalStrategy } from './local.strategy'
 import { JwtStrategy } from './jwt.strategy'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { User } from '../data/entities/user'
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([ User ]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ ConfigModule ],

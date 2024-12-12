@@ -1,4 +1,15 @@
-import { Controller, Get, HttpCode, HttpStatus, Post, Request, Response, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Request,
+  Response,
+  UnauthorizedException,
+  UseGuards
+} from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LocalAuthGuard } from './guards/local.guard'
 import { Response as ExpressResponse } from 'express'
@@ -15,7 +26,7 @@ export class AuthController {
   @Get()
   @UseGuards(JwtAuthGuard)
   async getAuthStatus(@Request() req: ExtendedRequest<void>): Promise<AuthStatus> {
-    return {authenticated: true, username: req.user.username}
+    return {authenticated: true, username: req.user.name}
   }
 
   @Post('login')
@@ -31,7 +42,18 @@ export class AuthController {
         maxAge: expirationMs,
         sameSite: 'lax'
       })
-    res.send({authenticated: true, username: req.user.username}).status(200)
+    res.send({authenticated: true, username: req.user.name}).status(200)
+  }
+
+  @Post('register')
+  async register(@Body() registerRequest: {
+    credentials: LoginCredentials,
+    registrationSecret: string
+  }): Promise<void> {
+    if (registerRequest.registrationSecret !== this.configService.get<string>('REGISTRATION_SECRET')) {
+      throw new UnauthorizedException('Incorrect registration secret')
+    }
+    await this.authService.register(registerRequest.credentials)
   }
 
   @Post('logout')
@@ -48,6 +70,13 @@ export class AuthController {
     res.status(200).send()
   }
 }
+
+
+export class LoginCredentials {
+  readonly username: string
+  readonly password: string
+}
+
 
 export type AuthStatus = {
   authenticated: boolean,

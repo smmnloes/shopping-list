@@ -28,16 +28,16 @@ export class NotesApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('notes')
-  async createNote(@Request() {body: {}, user: {username}}: ExtendedRequest<any>): Promise<{ id: number }> {
-    return this.notesRepository.save(new Note(username)).then(({id}) => ({id}))
+  async createNote(@Request() {body: {}, user: {name}}: ExtendedRequest<any>): Promise<{ id: number }> {
+    return this.notesRepository.save(new Note(name)).then(({id}) => ({id}))
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('notes/:id')
-  async saveNote(@Param('id', ParseIntPipe) id: number, @Request() {body: {content}, user: {username}}: ExtendedRequest<{
+  async saveNote(@Param('id', ParseIntPipe) id: number, @Request() {body: {content}, user: {name}}: ExtendedRequest<{
     content: string
   }>): Promise<void> {
-    await this.notesRepository.update(id, {content, lastUpdatedBy: username, lastUpdatedAt: new Date()})
+    await this.notesRepository.update(id, {content, lastUpdatedBy: name, lastUpdatedAt: new Date()})
   }
 
   @UseGuards(JwtAuthGuard)

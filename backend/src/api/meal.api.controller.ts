@@ -26,7 +26,7 @@ export class MealApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('meals/:weekyear')
-  async saveMealsForWeek(@Param('weekyear') weekYear: string, @Request() {body: {meals, checks}, user: {username}}: ExtendedRequest<{
+  async saveMealsForWeek(@Param('weekyear') weekYear: string, @Request() {body: {meals, checks}, user: {name}}: ExtendedRequest<{
     meals: string[], checks: boolean[]
   }>): Promise<void> {
     const toSave = await this.mealPlanRepository.findOne({where: {weekYear}}).then(result => {
@@ -35,7 +35,7 @@ export class MealApiController {
         result.checks = checks
         return result
       } else {
-        return new MealPlan(username, weekYear, meals, checks)
+        return new MealPlan(name, weekYear, meals, checks)
       }
     })
     await this.mealPlanRepository.save(toSave)
