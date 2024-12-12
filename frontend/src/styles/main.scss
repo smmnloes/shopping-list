@@ -201,12 +201,16 @@ form input {
 .loginForm {
   display: flex;
   flex-direction: column;
-  padding: 35px;
+  padding: 20px;
   width: 70%;
   margin: auto;
 
   input {
     margin-bottom: 20px;
+  }
+
+  button {
+    margin-top: 15px;
   }
 
   label {
@@ -547,4 +551,11 @@ text-align: center;
 
 .noElementsMessage {
   margin: 10px;
+}
+
+.feedbackMessagesContainer {
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
+  color: var(--color-error)
 }

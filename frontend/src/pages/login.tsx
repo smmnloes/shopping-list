@@ -1,13 +1,13 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { login } from '../api/api.ts'
 import { useState } from 'react'
-import { AxiosError } from 'axios'
+import { isAxiosError } from 'axios'
 import { useAuth } from '../services/auth-provider.tsx'
 
 function Login() {
   const [ username, setUsername ] = useState('')
   const [ password, setPassword ] = useState('')
-  const [ message, setMessage ] = useState('')
+  const [ messages, setMessages ] = useState<string[]>([])
   const navigate = useNavigate()
   const {setAuthStatus} = useAuth()
 
@@ -16,16 +16,25 @@ function Login() {
       const authStatus = await login(username, password)
       setAuthStatus(authStatus)
       navigate('/')
-    } catch (error: unknown) {
-      console.log((error as AxiosError).message)
-      setMessage('Ungültiges Passwort!')
+    } catch (error: any) {
+      if (isAxiosError(error)) {
+        switch (error.response?.status) {
+          case 401:
+            setMessages([ 'Ungültiges Passwort' ])
+            break
+          default:
+            setMessages([ 'Es ist ein Fehler aufgetreten' ])
+        }
+      } else {
+        setMessages([ 'Es ist ein Fehler aufgetreten' ])
+      }
     }
   }
 
 
   return (
     <>
-      <h1>Anmeldung</h1>
+      <h2>Anmeldung</h2>
       <div className="content">
         <form className="loginForm" onSubmit={ e => e.preventDefault() }>
           <label htmlFor="userName">Nutzername:</label>
@@ -33,10 +42,13 @@ function Login() {
           <label htmlFor="password">Passwort:</label>
           <input id="password" type="password" value={ password } onChange={ (e) => setPassword(e.target.value) }/>
           <button className="my-button loginButton" type="submit" onClick={ onClick }>Anmelden</button>
+          <button className="my-button loginButton" onClick={ () => navigate('/register') }>Registrieren</button>
         </form>
 
-        { message && <p>{ message }</p> }
-        <NavLink to='/register'>Registrieren</NavLink>
+        <div className="feedbackMessagesContainer">
+          { messages.map((message, index) => (<span key={ index }>{ message }</span>)) }
+        </div>
+
       </div>
     </>
   )
