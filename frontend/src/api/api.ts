@@ -11,6 +11,10 @@ const axiosInstance = axios.create({
 })
 axiosRetry(axiosInstance, {retries: 3, retryDelay: axiosRetry.exponentialDelay})
 
+export const register = async (registrationReq: {credentials: {username: string, password: string}, registrationSecret: string}): Promise<AuthStatus> => {
+  return axiosInstance.post(`${ backendHost }/api/auth/register`, registrationReq).then(response => response.data)
+}
+
 export const login = async (username: string, password: string): Promise<AuthStatus> => {
   return axiosInstance.post(`${ backendHost }/api/auth/login`, {username, password}).then(response => response.data)
 }

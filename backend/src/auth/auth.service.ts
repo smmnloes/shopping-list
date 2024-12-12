@@ -27,17 +27,19 @@ export class AuthService {
     }
   }
 
-  async login(userInformation: UserInformation) {
+  async login(userInformation: UserInformation): Promise<JWT> {
     return this.jwtService.sign(userInformation)
   }
 
-  async register({username, password}: LoginCredentials): Promise<void> {
+  async register({username, password}: LoginCredentials): Promise<JWT> {
     if (await this.userCredentialsRepository.exists({where: {name: username}})) {
       throw new HttpException('Username already exists', HttpStatus.CONFLICT)
     }
     const salt = await genSalt(10)
     const password_hashed = await hash(password, salt)
-    await this.userCredentialsRepository.insert({name: username, password_hashed})
+    const {id, name} = await this.userCredentialsRepository.save({name: username, password_hashed})
+    const userInfo: UserInformation = {id, name}
+    return this.jwtService.sign(userInfo)
   }
 }
 
@@ -45,3 +47,5 @@ export type UserInformation = {
   id: number,
   name: string
 }
+
+type JWT = string

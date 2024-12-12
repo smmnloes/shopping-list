@@ -13,6 +13,7 @@ import './styles/spinner.scss'
 import MealPlan from './pages/meal-plan.tsx'
 import Notes from './pages/notes.tsx'
 import { EditNote } from './pages/edit-note.tsx'
+import Register from './pages/register.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -27,6 +28,9 @@ createRoot(document.getElementById('root')!).render(
             }/>
             <Route path="/login" element={
               <Login/>
+            }/>
+            <Route path="/register" element={
+              <Register/>
             }/>
             <Route path="/edit-lists" element={
               <PrivateRoute>
