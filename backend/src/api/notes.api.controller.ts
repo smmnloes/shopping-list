@@ -1,4 +1,14 @@
-import { Controller, Delete, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Request,
+  UnauthorizedException,
+  UseGuards
+} from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -19,12 +29,12 @@ export class NotesApiController {
   @UseGuards(JwtAuthGuard)
   @Get('notes')
   async getAllNotes(): Promise<{ notes: NoteOverview[] }> {
-    return this. notesRepository.find().then(results => ({ notes: results.map(transformNoteToOverview) }))
+    return this.notesRepository.find().then(results => ({ notes: results.map(transformNoteToOverview) }))
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('notes/:id')
-  async getNote(@Param('id', ParseIntPipe) id: number): Promise<Note> {
+  async getNote(@Param('id', ParseIntPipe) id: number): Promise<NoteDetails> {
     return this.notesRepository.findOneOrFail({ where: { id } })
   }
 
@@ -53,14 +63,27 @@ export class NotesApiController {
     await this.notesRepository.delete(id)
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('notes/:id/visibility')
+  async setNoteVisibility(@Param('id', ParseIntPipe) noteId: number, @Request() {
+    body: { visible },
+    user: { id: userId }
+  }: ExtendedRequest<{
+    visible: boolean
+  }>): Promise<void> {
+    const note = await this.notesRepository.findOneOrFail({ where: { id: noteId } })
+    if (userId !== note.createdBy.id) {
+      throw new UnauthorizedException('Only the user that created the note can change the visibility')
+    }
+    note.publiclyVisible = visible
+    await this.notesRepository.save(note)
+  }
 }
 
 
-export type NoteOverview = {
-  id: number
+export type NoteOverview = Pick<Note, 'id' | 'createdAt' | 'lastUpdatedAt'> & {
   title: string
-  createdAt: Date
-  lastUpdatedAt: Date
-  lastUpdatedBy: string
   createdBy: string
+  lastUpdatedBy: string
 }
+export type NoteDetails = Pick<Note, 'id' | 'content' | 'publiclyVisible'>

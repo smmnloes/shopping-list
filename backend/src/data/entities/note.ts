@@ -6,16 +6,24 @@ export class Note {
 
   @PrimaryGeneratedColumn()
   id: number
+
   @Column()
   createdAt: Date
+
   @Column()
   lastUpdatedAt: Date
+
   @ManyToOne(() => User, { eager: true })
   lastUpdatedBy: User
+
   @ManyToOne(() => User, { eager: true })
   createdBy: User
+
   @Column()
   content: string
+
+  @Column({ nullable: true })
+  publiclyVisible: boolean
 
   constructor(createdBy: User) {
     this.createdBy = createdBy
@@ -23,5 +31,6 @@ export class Note {
     this.lastUpdatedAt = this.createdAt
     this.lastUpdatedBy = createdBy
     this.content = ''
+    this.publiclyVisible = false
   }
 }

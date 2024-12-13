@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { AuthStatus } from '../services/auth-provider.tsx'
-import { ListItem, Note, NoteOverview, ShopCategory } from '../types/types.ts'
+import { ListItem, NoteDetails, NoteOverview, ShopCategory } from '../types/types.ts'
 import axiosRetry from 'axios-retry'
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST
@@ -85,7 +85,7 @@ export const getNotes = (): Promise<{ notes: NoteOverview[] }> => {
   return axiosInstance.get(`${ backendHost }/api/notes`).then(response => response.data)
 }
 
-export const getNote = (id: number): Promise<Note> => {
+export const getNote = (id: number): Promise<NoteDetails> => {
   return axiosInstance.get(`${ backendHost }/api/notes/${ id }`).then(response => response.data)
 }
 
@@ -99,4 +99,8 @@ export const saveNote = (id: number, content: string): Promise<void> => {
 
 export const deleteNote = (id: number): Promise<void> => {
   return axiosInstance.delete(`${ backendHost }/api/notes/${ id }`).then(response => response.data)
+}
+
+export const setNoteVisibility = (id: number, visible: boolean): Promise<void> => {
+  return axiosInstance.post(`${ backendHost }/api/notes/${ id }/visibility`, { visible }).then(response => response.data)
 }

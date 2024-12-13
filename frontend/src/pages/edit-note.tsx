@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import ReactQuill, { DeltaStatic, EmitterSource } from 'react-quill-new'
 import '../styles/quill/quill.snow.scss'
-import { deleteNote, getNote, saveNote } from '../api/api.ts'
+import { deleteNote, getNote, saveNote, setNoteVisibility } from '../api/api.ts'
 import { useNavigate, useParams } from 'react-router-dom'
 import { postImageInsertProcessing } from '../utils/image-processing.ts'
 
@@ -28,6 +28,7 @@ export const EditNote = () => {
 
   const [ saveState, setSaveState ] = useState<SAVE_STATE>(SAVE_STATE.SAVED)
   const [ modalVisible, setModalVisible ] = useState<boolean>(false)
+  const [ publiclyVisible, setPubliclyVisible ] = useState<boolean>(false)
 
   const navigate = useNavigate()
 
@@ -40,8 +41,9 @@ export const EditNote = () => {
 
   useEffect(() => {
     (async () => {
-      const { content } = await getNote(noteId)
+      const {content, publiclyVisible} = await getNote(noteId)
       setNoteContent(content)
+      setPubliclyVisible(publiclyVisible)
     })()
   }, [ noteId ])
 
@@ -71,6 +73,12 @@ export const EditNote = () => {
     navigate(-1)
   }
 
+  const handlePublicButton = async () => {
+    const newPubliclyVisible = !publiclyVisible
+    await setNoteVisibility(noteId, newPubliclyVisible)
+    setPubliclyVisible(newPubliclyVisible)
+  }
+
   const modules = {
       toolbar: {
         container: [
@@ -97,8 +105,8 @@ export const EditNote = () => {
             { saveState === SAVE_STATE.SAVING ? (<div className="spinner"></div>) : (
               <img src={ iconForSaveState[saveState] } alt="saveState"/>) }
           </button>
-
         </div>
+        <button className="my-button" onClick={handlePublicButton}>{ `Öffentlich? ${String(publiclyVisible)}` }</button>
         <button className="my-button deleteButton" onClick={ () => setModalVisible(true) }><img src="/paper-bin.svg"
                                                                                                 alt="löschen"/></button>
         <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {

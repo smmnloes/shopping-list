@@ -6,8 +6,6 @@ export interface ListItem {
   isStaple: boolean
 }
 
-export type ListWithItems = { id: number, category: ShopCategory, items: ListItem[] }
-
 export enum ShopCategory {
   GROCERY = 'GROCERY',
   DRUG_STORE = 'DRUG_STORE'
@@ -18,13 +16,10 @@ export const configForCategory = {
   [ShopCategory.DRUG_STORE]: { iconPath: '/dm_logo.svg' }
 }
 
-export type Note = {
+export type NoteDetails = {
   id: number
-  createdAt: string
-  lastUpdatedAt: string
-  lastUpdatedBy: string
-  createdBy: string
   content: string
+  publiclyVisible: boolean
 }
 
 export type NoteOverview = {
@@ -35,4 +30,3 @@ export type NoteOverview = {
   lastUpdatedBy: string
   createdBy: string
 }
-
