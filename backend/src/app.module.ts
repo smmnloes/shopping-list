@@ -5,7 +5,8 @@ import { ApiModule } from './api/api.module'
 @Module({
   imports: [ ConfigModule.forRoot({
     isGlobal: true,
-    envFilePath: process.env.NODE_ENV ? `.env.${ process.env.NODE_ENV }` : '.env'
+    envFilePath: [`.env.${ process.env.NODE_ENV }`, '.env'],
+    expandVariables: true,
   }), ApiModule ],
   controllers: [],
   providers: [],
