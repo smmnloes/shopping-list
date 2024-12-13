@@ -1,4 +1,4 @@
-import { Controller, Get, NotFoundException, Param, Request, Post, UseGuards } from '@nestjs/common'
+import { Controller, Get, NotFoundException, Param, Post, Request, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -16,20 +16,23 @@ export class MealApiController {
   @UseGuards(JwtAuthGuard)
   @Get('meals/:weekyear')
   async getMealsForWeek(@Param('weekyear') weekYear: string): Promise<{ meals: string[], checks: boolean[] }> {
-    const result = await this.mealPlanRepository.findOne({where: {weekYear}})
+    const result = await this.mealPlanRepository.findOne({ where: { weekYear } })
     if (result === null) {
       throw new NotFoundException('Meal plan not found')
     } else {
-      return {meals: result.meals, checks: result.checks}
+      return { meals: result.meals, checks: result.checks }
     }
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('meals/:weekyear')
-  async saveMealsForWeek(@Param('weekyear') weekYear: string, @Request() {body: {meals, checks}, user: {name}}: ExtendedRequest<{
+  async saveMealsForWeek(@Param('weekyear') weekYear: string, @Request() {
+    body: { meals, checks },
+    user: { name }
+  }: ExtendedRequest<{
     meals: string[], checks: boolean[]
   }>): Promise<void> {
-    const toSave = await this.mealPlanRepository.findOne({where: {weekYear}}).then(result => {
+    const toSave = await this.mealPlanRepository.findOne({ where: { weekYear } }).then(result => {
       if (result) {
         result.meals = meals
         result.checks = checks

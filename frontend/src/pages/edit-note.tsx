@@ -40,10 +40,10 @@ export const EditNote = () => {
 
   useEffect(() => {
     (async () => {
-      const {content} = await getNote(noteId)
+      const { content } = await getNote(noteId)
       setNoteContent(content)
     })()
-  }, [noteId])
+  }, [ noteId ])
 
   const handleOnChange = async (value: string, delta: DeltaStatic, source: EmitterSource) => {
     setNoteContent(await postImageInsertProcessing(value, delta))
@@ -54,7 +54,7 @@ export const EditNote = () => {
 
 
   const handleSaveNote = async () => {
-    if(saveState !== SAVE_STATE.UNSAVED) {
+    if (saveState !== SAVE_STATE.UNSAVED) {
       return
     }
     setSaveState(SAVE_STATE.SAVING)
@@ -74,8 +74,8 @@ export const EditNote = () => {
   const modules = {
       toolbar: {
         container: [
-          [ {'header': [ 2, 3, false ]}, 'bold', 'italic', 'underline', 'strike' ],
-          [ {'list': 'ordered'}, {'list': 'bullet'}, {'list': 'check'}, {'indent': '-1'}, {'indent': '+1'}, 'image' ],
+          [ { 'header': [ 2, 3, false ] }, 'bold', 'italic', 'underline', 'strike' ],
+          [ { 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }, { 'indent': '-1' }, { 'indent': '+1' }, 'image' ],
         ],
       }
     },
@@ -91,11 +91,11 @@ export const EditNote = () => {
     <div className="editor-wrapper">
       <div className="editorControls">
         <div className="saveControls">
-          <button className={`my-button saveButton ${classForSaveState[saveState]}`} onClick={handleSaveNote}><img
-              src="/save.svg"
-              alt="speichern"/>
-            {saveState === SAVE_STATE.SAVING ? (<div className="spinner"></div>) : (
-                <img src={iconForSaveState[saveState]} alt="saveState"/>)}
+          <button className={ `my-button saveButton ${ classForSaveState[saveState] }` } onClick={ handleSaveNote }><img
+            src="/save.svg"
+            alt="speichern"/>
+            { saveState === SAVE_STATE.SAVING ? (<div className="spinner"></div>) : (
+              <img src={ iconForSaveState[saveState] } alt="saveState"/>) }
           </button>
 
         </div>

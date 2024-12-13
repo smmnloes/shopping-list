@@ -9,13 +9,13 @@ interface AuthContextProps {
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined)
 
-export const AuthProvider = ({children}: { children: ReactNode }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [ authStatus, setAuthStatus ] = useState<AuthStatus | null>(null)
-  const {pathname} = useLocation()
+  const { pathname } = useLocation()
 
   useEffect(() => {
     (async () => {
-      const status = await getAuthStatus().catch(_ => ({authenticated: false}))
+      const status = await getAuthStatus().catch(_ => ({ authenticated: false }))
       setAuthStatus(status)
     })()
   }, [ pathname ])

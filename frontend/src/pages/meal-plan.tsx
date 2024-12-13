@@ -4,7 +4,7 @@ import { getMealsForWeek, saveMealsForWeek } from '../api/api.ts'
 import objectHash from 'object-hash'
 import useOnlineStatus from '../hooks/use-online-status.ts'
 
-const COMMON_WEEK_OPTIONS: WeekOptions = {weekStartsOn: 1}
+const COMMON_WEEK_OPTIONS: WeekOptions = { weekStartsOn: 1 }
 
 const getDateRangeForWeek = (week: number): [ Date, Date ] => {
   const firstDayOfYear = new Date(getYear(new Date(), {}), 0, 1)
@@ -31,12 +31,12 @@ const MealPlan = memo(() => {
 
   const isOnline = useOnlineStatus()
 
-  const generateSavedState = () => objectHash({mealsForWeek, mealDoneChecks})
+  const generateSavedState = () => objectHash({ mealsForWeek, mealDoneChecks })
 
   useEffect(() => {
     (async () => {
       try {
-        const {meals, checks} = await getMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday))
+        const { meals, checks } = await getMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday))
         setMealsForWeek(meals)
         setMealDoneChecks(checks)
 
@@ -63,7 +63,7 @@ const MealPlan = memo(() => {
     return `${ weekStart.toLocaleDateString(undefined, {
       day: '2-digit',
       month: '2-digit'
-    }) } - ${ weekEnd.toLocaleDateString(undefined, {day: '2-digit', month: '2-digit'}) }`
+    }) } - ${ weekEnd.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit' }) }`
   }
 
   const handleSave = async () => {

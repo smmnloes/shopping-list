@@ -26,7 +26,7 @@ export class AuthController {
   @Get()
   @UseGuards(JwtAuthGuard)
   async getAuthStatus(@Request() req: ExtendedRequest<void>): Promise<AuthStatus> {
-    return {authenticated: true, username: req.user.name}
+    return { authenticated: true, username: req.user.name }
   }
 
   @Post('login')
@@ -49,18 +49,6 @@ export class AuthController {
     this.sendResponseWithAuthStatusAndJWTCookie(res, jwt, registerRequest.credentials.username)
   }
 
-  private sendResponseWithAuthStatusAndJWTCookie(res: ExpressResponse<AuthStatus>, jwt: string, username: string) {
-    const expirationMs = this.configService.get<number>('AUTH_EXPIRATION_PERIOD_DAYS') * 24 * 60 * 60 * 1000
-    res.cookie('jwt', jwt,
-      {
-        httpOnly: true,
-        secure: true,
-        maxAge: expirationMs,
-        sameSite: 'lax'
-      })
-    res.send({authenticated: true, username}).status(200)
-  }
-
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -73,6 +61,18 @@ export class AuthController {
         sameSite: 'lax'
       })
     res.status(200).send()
+  }
+
+  private sendResponseWithAuthStatusAndJWTCookie(res: ExpressResponse<AuthStatus>, jwt: string, username: string) {
+    const expirationMs = this.configService.get<number>('AUTH_EXPIRATION_PERIOD_DAYS') * 24 * 60 * 60 * 1000
+    res.cookie('jwt', jwt,
+      {
+        httpOnly: true,
+        secure: true,
+        maxAge: expirationMs,
+        sameSite: 'lax'
+      })
+    res.send({ authenticated: true, username }).status(200)
   }
 }
 

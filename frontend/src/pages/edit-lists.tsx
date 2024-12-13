@@ -35,7 +35,7 @@ const EditLists = () => {
 
 
   const refreshItems = async (selectedCategory: ShopCategory) => {
-    const {items} = await getItemsForCategory(selectedCategory)
+    const { items } = await getItemsForCategory(selectedCategory)
     setAddedStaples(items.filter(item => item.isStaple))
     setListItems(items.filter(item => !item.isStaple))
   }
@@ -81,7 +81,7 @@ const EditLists = () => {
     let newCheckedItems = [ ...checkedItems ]
     const checked = event.target.checked
     if (checked) {
-      newCheckedItems.push({id: itemId, category: selectedCategory})
+      newCheckedItems.push({ id: itemId, category: selectedCategory })
     } else {
       newCheckedItems = newCheckedItems.filter(item => item.id !== itemId)
     }
@@ -93,7 +93,7 @@ const EditLists = () => {
   }
 
 
-  const EditableCheckableListItem = ({index, item}: { index: number, item: ListItem }) => {
+  const EditableCheckableListItem = ({ index, item }: { index: number, item: ListItem }) => {
     const isItemChecked = (itemId: number) => !!checkedItems.find(item => item.id === itemId)
 
     return (

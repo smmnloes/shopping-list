@@ -14,14 +14,14 @@ export class AuthService {
   }
 
   async validateUser(usernameInput: string, passwordInput: string): Promise<UserInformation> {
-    const storedCredentials = await this.userCredentialsRepository.findBy({name: usernameInput})
+    const storedCredentials = await this.userCredentialsRepository.findBy({ name: usernameInput })
     if (storedCredentials === null || storedCredentials.length !== 1) {
       throw new UnauthorizedException()
     }
-    const {password_hashed, name, id} = storedCredentials[0]
+    const { password_hashed, name, id } = storedCredentials[0]
     const compareResult = await compare(passwordInput, password_hashed)
     if (compareResult === true) {
-      return {name, id}
+      return { name, id }
     } else {
       throw new UnauthorizedException()
     }
@@ -31,14 +31,14 @@ export class AuthService {
     return this.jwtService.sign(userInformation)
   }
 
-  async register({username, password}: LoginCredentials): Promise<JWT> {
-    if (await this.userCredentialsRepository.exists({where: {name: username}})) {
+  async register({ username, password }: LoginCredentials): Promise<JWT> {
+    if (await this.userCredentialsRepository.exists({ where: { name: username } })) {
       throw new HttpException('Username already exists', HttpStatus.CONFLICT)
     }
     const salt = await genSalt(10)
     const password_hashed = await hash(password, salt)
-    const {id, name} = await this.userCredentialsRepository.save({name: username, password_hashed})
-    const userInfo: UserInformation = {id, name}
+    const { id, name } = await this.userCredentialsRepository.save({ name: username, password_hashed })
+    const userInfo: UserInformation = { id, name }
     return this.jwtService.sign(userInfo)
   }
 }

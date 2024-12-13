@@ -1,28 +1,28 @@
-import { useState, useEffect } from 'react';
-import { onlineStatus } from '../api/api';
+import { useEffect, useState } from 'react'
+import { onlineStatus } from '../api/api'
 
 const useOnlineStatus = () => {
-  const [isOnline, setIsOnline] = useState<boolean>(true);
+  const [ isOnline, setIsOnline ] = useState<boolean>(true)
 
   useEffect(() => {
     const checkOnlineStatus = async () => {
       try {
-        const response = await onlineStatus();
-        setIsOnline(response.status === 200);
+        const response = await onlineStatus()
+        setIsOnline(response.status === 200)
       } catch (error) {
-        setIsOnline(false);
+        setIsOnline(false)
       }
-    };
+    }
 
-    checkOnlineStatus();
+    checkOnlineStatus()
 
-    const intervalId = setInterval(checkOnlineStatus, 5000);
+    const intervalId = setInterval(checkOnlineStatus, 5000)
 
     // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
-  }, []);
+    return () => clearInterval(intervalId)
+  }, [])
 
-  return isOnline;
-};
+  return isOnline
+}
 
-export default useOnlineStatus;
+export default useOnlineStatus

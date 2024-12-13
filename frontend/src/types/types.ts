@@ -14,8 +14,8 @@ export enum ShopCategory {
 }
 
 export const configForCategory = {
-  [ShopCategory.GROCERY]: {iconPath: '/rewe_logo.svg'},
-  [ShopCategory.DRUG_STORE]: {iconPath: '/dm_logo.svg'}
+  [ShopCategory.GROCERY]: { iconPath: '/rewe_logo.svg' },
+  [ShopCategory.DRUG_STORE]: { iconPath: '/dm_logo.svg' }
 }
 
 export type Note = {

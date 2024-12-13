@@ -13,7 +13,7 @@ interface SelectStapleModalProps {
   onModalClose?: Function
 }
 
-const SelectStapleModal = ({selectedCategory, addedStaples, onModalClose}: SelectStapleModalProps) => {
+const SelectStapleModal = ({ selectedCategory, addedStaples, onModalClose }: SelectStapleModalProps) => {
   const navigate = useNavigate()
 
   const [ modalVisible, setModalVisible ] = useQueryParamState<boolean>(MODAL_VISIBLE, false, booleanFromString)
@@ -36,7 +36,7 @@ const SelectStapleModal = ({selectedCategory, addedStaples, onModalClose}: Selec
     if (!selectedCategory) {
       return
     }
-    const queryParams = new URLSearchParams({'selectedCategory': selectedCategory})
+    const queryParams = new URLSearchParams({ 'selectedCategory': selectedCategory })
     navigate(`/staples?${ queryParams.toString() }`)
   }
 

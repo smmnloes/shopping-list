@@ -6,6 +6,18 @@ import { ShopCategory } from './common-types'
 export class ListItem {
   @PrimaryGeneratedColumn()
   id: number
+  @Column()
+  createdAt: Date
+  @Column()
+  addedBy: string
+  @Column()
+  name: string
+  @Column()
+  isStaple: boolean = false
+  @Column()
+  shopCategory: ShopCategory
+  @ManyToMany(() => ShoppingList, shoppingList => shoppingList.items)
+  shoppingLists: ShoppingList[]
 
   constructor(addedBy: string, name: string, category: ShopCategory, isStaple = false) {
     this.addedBy = addedBy
@@ -14,22 +26,4 @@ export class ListItem {
     this.isStaple = isStaple
     this.shopCategory = category
   }
-
-  @Column()
-  createdAt: Date
-
-  @Column()
-  addedBy: string
-
-  @Column()
-  name: string
-
-  @Column()
-  isStaple: boolean = false
-
-  @Column()
-  shopCategory: ShopCategory
-
-  @ManyToMany(() => ShoppingList, shoppingList => shoppingList.items)
-  shoppingLists: ShoppingList[]
 }

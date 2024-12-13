@@ -24,7 +24,7 @@ const EditStaples = () => {
         console.error('Error fetching staples', error)
       }
     })()
-  }, [selectedCategory])
+  }, [ selectedCategory ])
 
   const refreshStaples = async (selectedCategory: ShopCategory) => {
     const staples = await getStaples(selectedCategory)

@@ -44,7 +44,7 @@ const useQueryParamState = <T, >(paramName: string, initialValue: T, deserialize
   const setParam = (newValue: T) => {
     const queryParams = getAllQueryParams()
     queryParams.set(paramName, String(newValue))
-    navigate(`${ location.pathname }?${ queryParams.toString() }`, {replace: true})
+    navigate(`${ location.pathname }?${ queryParams.toString() }`, { replace: true })
     setParamInternal(newValue)
   }
 

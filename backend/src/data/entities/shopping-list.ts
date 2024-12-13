@@ -6,6 +6,15 @@ import { ShopCategory } from './common-types'
 export class ShoppingList {
   @PrimaryGeneratedColumn()
   id: number
+  @Column()
+  createdAt: Date
+  @Column()
+  createdBy: string
+  @Column()
+  shopCategory: ShopCategory
+  @ManyToMany(() => ListItem, item => item.shoppingLists, { eager: true, cascade: [ 'insert' ] })
+  @JoinTable()
+  items: ListItem[]
 
   constructor(createdBy: string, category: ShopCategory, initialItems: ListItem[]) {
     this.createdBy = createdBy
@@ -13,17 +22,4 @@ export class ShoppingList {
     this.shopCategory = category
     this.items = initialItems
   }
-
-  @Column()
-  createdAt: Date
-
-  @Column()
-  createdBy: string
-
-  @Column()
-  shopCategory: ShopCategory
-
-  @ManyToMany(() => ListItem, item => item.shoppingLists, {eager: true, cascade: [ 'insert' ]})
-  @JoinTable()
-  items: ListItem[]
 }

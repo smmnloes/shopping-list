@@ -11,14 +11,14 @@ function Register() {
   const [ passwordConfirm, setPasswordConfirm ] = useState('')
   const [ messages, setMessages ] = useState<string[]>([])
   const navigate = useNavigate()
-  const {setAuthStatus} = useAuth()
+  const { setAuthStatus } = useAuth()
 
   const onClick = async () => {
     if (!validate()) {
       return
     }
     try {
-      const authStatus = await register({credentials: {username, password}, registrationSecret})
+      const authStatus = await register({ credentials: { username, password }, registrationSecret })
       setAuthStatus(authStatus)
       navigate('/')
     } catch (error: any) {

@@ -67,6 +67,7 @@ form input {
   &.notes {
     width: 90%;
     margin: auto;
+
     > * {
       margin: 15px auto;
     }
@@ -322,6 +323,7 @@ form input {
   &.visible {
     display: flex;
   }
+
   z-index: 999;
 }
 
@@ -491,7 +493,6 @@ td.mealDoneCheck {
 }
 
 
-
 .saveButton {
   display: flex;
   flex-direction: row;
@@ -506,9 +507,11 @@ td.mealDoneCheck {
   &.saved {
     background-color: #c6fbc6
   }
+
   &.unsaved {
     background-color: #f8b8ae
   }
+
   &.saving {
     background-color: #fbf5bc
   }
@@ -546,7 +549,7 @@ td.mealDoneCheck {
 }
 
 .usernameDisplay {
-text-align: center;
+  text-align: center;
 }
 
 .noElementsMessage {

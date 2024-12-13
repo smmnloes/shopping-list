@@ -16,7 +16,7 @@ export default defineConfig({
     workbox: {
       runtimeCaching: [
         {
-          urlPattern: ({url}) => {
+          urlPattern: ({ url }) => {
             return url.pathname.startsWith('/api') && !url.pathname.includes('onlinestatus')
           },
           handler: 'NetworkFirst',
@@ -28,7 +28,7 @@ export default defineConfig({
               maxAgeSeconds: 24 * 60 * 60, // Cache for 1 day
             },
             cacheableResponse: {
-              statuses: [0, 200],
+              statuses: [ 0, 200 ],
             },
           },
         },

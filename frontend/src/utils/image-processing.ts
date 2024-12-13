@@ -1,7 +1,7 @@
 import { DeltaStatic } from 'react-quill-new'
 import { Image } from 'image-js'
 
-export const postImageInsertProcessing = async(value: string, delta: DeltaStatic) => {
+export const postImageInsertProcessing = async (value: string, delta: DeltaStatic) => {
   const imageInsertOp = delta.ops.find(element => typeof element.insert === 'object' && typeof element.insert.image === 'string')
   if (!imageInsertOp) {
     return value
@@ -28,8 +28,8 @@ export const resizeImageIfNecessary = async (image: Image) => {
   }
 
   if (biggestSideOverThresh === 'width') {
-    return image.resize({preserveAspectRatio: true, width: IMAGE_DIM_THRESH})
+    return image.resize({ preserveAspectRatio: true, width: IMAGE_DIM_THRESH })
   } else {
-    return image.resize({preserveAspectRatio: true, height: IMAGE_DIM_THRESH})
+    return image.resize({ preserveAspectRatio: true, height: IMAGE_DIM_THRESH })
   }
 }

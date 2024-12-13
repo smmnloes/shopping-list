@@ -9,7 +9,7 @@ function Login() {
   const [ password, setPassword ] = useState('')
   const [ messages, setMessages ] = useState<string[]>([])
   const navigate = useNavigate()
-  const {setAuthStatus} = useAuth()
+  const { setAuthStatus } = useAuth()
 
   const onClick = async () => {
     try {

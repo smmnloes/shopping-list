@@ -3,24 +3,24 @@ import { useEffect } from 'react'
 import { useAuth } from '../services/auth-provider.tsx'
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
-  const navigate = useNavigate();
-  const { authStatus } = useAuth();
+  const navigate = useNavigate()
+  const { authStatus } = useAuth()
 
   useEffect(() => {
     if (authStatus && !authStatus.authenticated) {
-      navigate('/login');
+      navigate('/login')
     }
-  }, [authStatus, navigate]);
+  }, [ authStatus, navigate ])
 
   if (authStatus === null) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   if (!authStatus.authenticated) {
-    return null;
+    return null
   }
 
-  return children;
+  return children
 }
 
 export default PrivateRoute

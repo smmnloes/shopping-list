@@ -4,7 +4,7 @@ function Footer() {
   return (
     <>
       <footer className="footer">
-        <div>v{packageJson.version}</div>
+        <div>v{ packageJson.version }</div>
       </footer>
     </>
   )

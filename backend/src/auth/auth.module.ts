@@ -18,7 +18,7 @@ import { User } from '../data/entities/user'
       imports: [ ConfigModule ],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('APP_SECRET'),
-        signOptions: {noTimestamp: true, expiresIn: `${ configService.get<string>('AUTH_EXPIRATION_PERIOD_DAYS') }d`}
+        signOptions: { noTimestamp: true, expiresIn: `${ configService.get<string>('AUTH_EXPIRATION_PERIOD_DAYS') }d` }
       }),
       inject: [ ConfigService ]
     }),
