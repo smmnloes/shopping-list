@@ -2,12 +2,13 @@ import { Note } from '../../data/entities/note'
 import { NoteOverview } from '../notes.api.controller'
 
 export const transformNoteToOverview = (note: Note): NoteOverview => {
+  const UNKNOWN = '???'
   return {
     id: note.id,
     createdAt: note.createdAt,
-    createdBy: note.createdBy,
+    createdBy: note.createdBy?.name ?? UNKNOWN,
     lastUpdatedAt: note.lastUpdatedAt,
-    lastUpdatedBy: note.lastUpdatedBy,
+    lastUpdatedBy: note.lastUpdatedBy?.name ?? UNKNOWN,
     title: extractTitleFromContent(note.content)
   }
 }

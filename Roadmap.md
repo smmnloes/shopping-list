@@ -7,3 +7,6 @@ user based resources:
   actually, were not doing anything with it.
 - when no id is present (old notes), the user will be undefined, we can show ??? in Ui. only way around would be to
   manually edit the db
+
+
+user dotenv instead of config service -> db migrations easier

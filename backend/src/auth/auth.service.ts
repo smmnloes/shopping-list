@@ -43,9 +43,6 @@ export class AuthService {
   }
 }
 
-export type UserInformation = {
-  id: number,
-  name: string
-}
+export type UserInformation = Pick<User, 'id' | 'name'>
 
 type JWT = string

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { User } from './user'
 
 @Entity()
 export class Note {
@@ -9,14 +10,14 @@ export class Note {
   createdAt: Date
   @Column()
   lastUpdatedAt: Date
-  @Column()
-  lastUpdatedBy: string
-  @Column()
-  createdBy: string
+  @ManyToOne(() => User, { eager: true })
+  lastUpdatedBy: User
+  @ManyToOne(() => User, { eager: true })
+  createdBy: User
   @Column()
   content: string
 
-  constructor(createdBy: string) {
+  constructor(createdBy: User) {
     this.createdBy = createdBy
     this.createdAt = new Date()
     this.lastUpdatedAt = this.createdAt

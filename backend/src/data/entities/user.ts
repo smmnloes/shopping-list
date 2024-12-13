@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 export class User {
 
   @PrimaryGeneratedColumn()
-  id: number
+  id: UserId
   @Column()
   name: string
   @Column()
@@ -13,3 +13,5 @@ export class User {
   constructor() {
   }
 }
+
+export type UserId = number

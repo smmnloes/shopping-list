@@ -18,3 +18,8 @@ Content-Type: application/json
   "username": "Max",
   "password": "pass"
 }
+
+
+### Notes
+GET http://localhost:3000/api/notes
+Cookie: jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQmlsbCIsImlkIjoxMCwiZXhwIjoxNzY1NTY5MDAwfQ.xbJNk5y8fZfxRi26c9v99W3n2E5B89QbVnIbnRGaKpE

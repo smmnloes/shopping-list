@@ -9,9 +9,10 @@ import { MealApiController } from './meal.api.controller'
 import { ShoppingApiController } from './shopping.api.controller'
 import { NotesApiController } from './notes.api.controller'
 import { Note } from '../data/entities/note'
+import { User } from '../data/entities/user'
 
 @Module({
-  imports: [ AuthModule, TypeOrmModule.forFeature([ ShoppingList, ListItem, MealPlan, Note ]) ],
+  imports: [ AuthModule, TypeOrmModule.forFeature([ ShoppingList, ListItem, MealPlan, Note, User ]) ],
   controllers: [ ApiController, MealApiController, ShoppingApiController, NotesApiController ],
   providers: [],
   exports: []

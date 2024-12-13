@@ -5,11 +5,13 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { ExtendedRequest } from '../util/request-types'
 import { Note } from '../data/entities/note'
 import { transformNoteToOverview } from './transformers/note-transformers'
+import { User } from '../data/entities/user'
 
 @Controller('api')
 export class NotesApiController {
   constructor(
-    @InjectRepository(Note) readonly notesRepository: Repository<Note>
+    @InjectRepository(Note) readonly notesRepository: Repository<Note>,
+    @InjectRepository(User) readonly userRepository: Repository<User>
   ) {
   }
 
@@ -17,7 +19,7 @@ export class NotesApiController {
   @UseGuards(JwtAuthGuard)
   @Get('notes')
   async getAllNotes(): Promise<{ notes: NoteOverview[] }> {
-    return this.notesRepository.find().then(results => ({ notes: results.map(transformNoteToOverview) }))
+    return this. notesRepository.find().then(results => ({ notes: results.map(transformNoteToOverview) }))
   }
 
   @UseGuards(JwtAuthGuard)
@@ -28,19 +30,21 @@ export class NotesApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('notes')
-  async createNote(@Request() { body: {}, user: { name } }: ExtendedRequest<any>): Promise<{ id: number }> {
-    return this.notesRepository.save(new Note(name)).then(({ id }) => ({ id }))
+  async createNote(@Request() { body: {}, user: { id } }: ExtendedRequest<any>): Promise<{ id: number }> {
+    const user = await this.userRepository.findOneOrFail({ where: { id } })
+    return this.notesRepository.save(new Note(user)).then(({ id }) => ({ id }))
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('notes/:id')
-  async saveNote(@Param('id', ParseIntPipe) id: number, @Request() {
+  async saveNote(@Param('id', ParseIntPipe) noteId: number, @Request() {
     body: { content },
-    user: { name }
+    user: { id: userId }
   }: ExtendedRequest<{
     content: string
   }>): Promise<void> {
-    await this.notesRepository.update(id, { content, lastUpdatedBy: name, lastUpdatedAt: new Date() })
+    const user = await this.userRepository.findOneOrFail({ where: { id: userId } })
+    await this.notesRepository.update(noteId, { content, lastUpdatedBy: user, lastUpdatedAt: new Date() })
   }
 
   @UseGuards(JwtAuthGuard)
