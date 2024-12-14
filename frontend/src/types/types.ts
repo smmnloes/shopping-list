@@ -29,4 +29,5 @@ export type NoteOverview = {
   lastUpdatedAt: string
   lastUpdatedBy: string
   createdBy: string
+  publiclyVisible: boolean
 }

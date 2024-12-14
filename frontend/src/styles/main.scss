@@ -1,9 +1,11 @@
+
 :root {
   --color-font: #2D3142;
   --color-list-item: #d6d2e8;
   --color-background: #EAE8FF;
   --color-highlight: #b0cfed;
-  --color-error: #f19c9c;
+  --color-error: #f8b8ae;
+  --color-green-ok: #c6fbc6;
   --color-shadow: rgb(64, 76, 90);
 }
 
@@ -126,6 +128,15 @@ form input {
 .noteContainer {
   text-align: left;
   width: 100%;
+  position: relative;
+
+  img {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+  }
 }
 
 .noteTitle {
@@ -505,11 +516,11 @@ td.mealDoneCheck {
   }
 
   &.saved {
-    background-color: #c6fbc6
+    background-color: var(--color-green-ok)
   }
 
   &.unsaved {
-    background-color: #f8b8ae
+    background-color: var(--color-error)
   }
 
   &.saving {
@@ -561,4 +572,16 @@ td.mealDoneCheck {
   flex-direction: column;
   font-size: 18px;
   color: var(--color-error)
+}
+
+.visibilityToggle {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+
+  img {
+    height: 30px;
+    width: 30px;
+    margin: 0 5px;
+  }
 }

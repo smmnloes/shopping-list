@@ -40,6 +40,7 @@ const Notes = () => {
           <div key={ index } className="listElementContainer">
             <div className="listElement" onClick={ () => navigate(`/notes/${ note.id }`) }>
               <div className="noteContainer">
+                <img className="visibilityIcon" hidden={ note.publiclyVisible } src="/padlock-locked.svg" alt='Note is private'/>
                 <div className="noteTitle">{ note.title }</div>
                 <div className="noteDetails">
                   <div><b>erstellt:</b> { formatDate(new Date(note.createdAt)) } ({ note.createdBy })</div>

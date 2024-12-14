@@ -28,7 +28,7 @@ export const EditNote = () => {
 
   const [ saveState, setSaveState ] = useState<SAVE_STATE>(SAVE_STATE.SAVED)
   const [ modalVisible, setModalVisible ] = useState<boolean>(false)
-  const [ publiclyVisible, setPubliclyVisible ] = useState<boolean>(false)
+  const [ publiclyVisible, setPubliclyVisible ] = useState<boolean | undefined>()
 
   const navigate = useNavigate()
 
@@ -41,7 +41,7 @@ export const EditNote = () => {
 
   useEffect(() => {
     (async () => {
-      const {content, publiclyVisible} = await getNote(noteId)
+      const { content, publiclyVisible } = await getNote(noteId)
       setNoteContent(content)
       setPubliclyVisible(publiclyVisible)
     })()
@@ -73,8 +73,8 @@ export const EditNote = () => {
     navigate(-1)
   }
 
-  const handlePublicButton = async () => {
-    const newPubliclyVisible = !publiclyVisible
+  const handleVisibilityChanged = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPubliclyVisible = !e.target.checked
     await setNoteVisibility(noteId, newPubliclyVisible)
     setPubliclyVisible(newPubliclyVisible)
   }
@@ -106,7 +106,15 @@ export const EditNote = () => {
               <img src={ iconForSaveState[saveState] } alt="saveState"/>) }
           </button>
         </div>
-        <button className="my-button" onClick={handlePublicButton}>{ `Öffentlich? ${String(publiclyVisible)}` }</button>
+
+        {publiclyVisible !== undefined && (<div className="visibilityToggle">
+          <img src="/padlock-unlocked.svg" alt="publicly visible"/>
+          <label className="switch">
+            <input type="checkbox" checked={ !publiclyVisible } onChange={handleVisibilityChanged }/>
+            <span className="slider round"></span>
+          </label>
+          <img src="/padlock-locked.svg" alt="private note"/>
+        </div>)}
         <button className="my-button deleteButton" onClick={ () => setModalVisible(true) }><img src="/paper-bin.svg"
                                                                                                 alt="löschen"/></button>
         <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {

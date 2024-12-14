@@ -81,7 +81,7 @@ export class NotesApiController {
 }
 
 
-export type NoteOverview = Pick<Note, 'id' | 'createdAt' | 'lastUpdatedAt'> & {
+export type NoteOverview = Pick<Note, 'id' | 'createdAt' | 'lastUpdatedAt' | 'publiclyVisible'> & {
   title: string
   createdBy: string
   lastUpdatedBy: string

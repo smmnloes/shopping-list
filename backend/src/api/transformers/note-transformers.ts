@@ -9,7 +9,8 @@ export const transformNoteToOverview = (note: Note): NoteOverview => {
     createdBy: note.createdBy?.name ?? UNKNOWN,
     lastUpdatedAt: note.lastUpdatedAt,
     lastUpdatedBy: note.lastUpdatedBy?.name ?? UNKNOWN,
-    title: extractTitleFromContent(note.content)
+    title: extractTitleFromContent(note.content),
+    publiclyVisible: note.publiclyVisible
   }
 }
 
