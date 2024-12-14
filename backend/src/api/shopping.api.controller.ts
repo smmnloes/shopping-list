@@ -5,7 +5,7 @@ import { ShoppingList } from '../data/entities/shopping-list'
 import { ListItem } from '../data/entities/list-item'
 import { ExtendedRequest } from '../util/request-types'
 import { InjectRepository } from '@nestjs/typeorm'
-import { ShopCategory } from '../data/entities/common-types'
+import { ShopCategory } from '../data/common-types'
 
 @Controller('api')
 export class ShoppingApiController {
