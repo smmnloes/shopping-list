@@ -26,27 +26,6 @@ export class NotesApiController {
   ) {
   }
 
-  private assertUserReadAccess(note: Note, user: UserInformation) {
-    if (!this.hasUserReadAccess(note, user)) {
-      throw new UnauthorizedException('User has no read access')
-    }
-  }
-
-  private hasUserReadAccess(note: Note, user: UserInformation): boolean {
-    return (note.createdBy.id === user.id) || note.publiclyVisible
-  }
-
-  private assertUserWriteAccess(note: Note, user: UserInformation) {
-    if (!this.hasUserWriteAccess(note, user)) {
-      throw new UnauthorizedException('User has no write access')
-    }
-  }
-
-  private hasUserWriteAccess(note: Note, user: UserInformation): boolean {
-    return (note.createdBy.id === user.id)
-  }
-
-
   @UseGuards(JwtAuthGuard)
   @Get('notes')
   async getAllNotes(@Request() req: ExtendedRequest<void>): Promise<{ notes: NoteOverview[] }> {
@@ -55,12 +34,18 @@ export class NotesApiController {
       .then(results => ({ notes: results.map(transformNoteToOverview) }))
   }
 
+
   @UseGuards(JwtAuthGuard)
   @Get('notes/:id')
   async getNote(@Param('id', ParseIntPipe) id: number, @Request() req: ExtendedRequest<void>): Promise<NoteDetails> {
     const note = await this.notesRepository.findOneOrFail({ where: { id } })
     this.assertUserReadAccess(note, req.user)
-    return note
+    return {
+      id: note.id, content: note.content, publiclyVisible: note.publiclyVisible, permissions: {
+        delete: this.hasUserWriteAccess(note, req.user),
+        changeVisibility: this.hasUserWriteAccess(note, req.user)
+      }
+    }
   }
 
   @UseGuards(JwtAuthGuard)
@@ -107,6 +92,26 @@ export class NotesApiController {
     note.publiclyVisible = visible
     await this.notesRepository.save(note)
   }
+
+  private assertUserReadAccess(note: Note, user: UserInformation) {
+    if (!this.hasUserReadAccess(note, user)) {
+      throw new UnauthorizedException('User has no read access')
+    }
+  }
+
+  private hasUserReadAccess(note: Note, user: UserInformation): boolean {
+    return (note.createdBy.id === user.id) || note.publiclyVisible
+  }
+
+  private assertUserWriteAccess(note: Note, user: UserInformation) {
+    if (!this.hasUserWriteAccess(note, user)) {
+      throw new UnauthorizedException('User has no write access')
+    }
+  }
+
+  private hasUserWriteAccess(note: Note, user: UserInformation): boolean {
+    return (note.createdBy.id === user.id)
+  }
 }
 
 
@@ -115,4 +120,6 @@ export type NoteOverview = Pick<Note, 'id' | 'createdAt' | 'lastUpdatedAt' | 'pu
   createdBy: string
   lastUpdatedBy: string
 }
-export type NoteDetails = Pick<Note, 'id' | 'content' | 'publiclyVisible'>
+export type NoteDetails = Pick<Note, 'id' | 'content' | 'publiclyVisible'> & {
+  permissions: { delete: boolean, changeVisibility: boolean }
+}

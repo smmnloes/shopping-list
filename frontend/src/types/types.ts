@@ -20,6 +20,7 @@ export type NoteDetails = {
   id: number
   content: string
   publiclyVisible: boolean
+  permissions: { delete: boolean, changeVisibility: boolean }
 }
 
 export type NoteOverview = {

@@ -60,6 +60,10 @@ form input {
     background-color: #cccccc;
     color: #666666;
     cursor: not-allowed;
+
+    img {
+      filter: invert(0.5);
+    }
   }
 }
 
@@ -112,7 +116,7 @@ form input {
   }
 
   &.disabled img {
-    filter: grayscale(100%) brightness(3.5);
+    filter: invert(0.5);
   }
 }
 
@@ -583,5 +587,14 @@ td.mealDoneCheck {
     height: 30px;
     width: 30px;
     margin: 0 5px;
+  }
+
+  &.disabled {
+    .slider {
+      filter: grayscale(1) brightness(0.9);
+    }
+    img {
+      filter: invert(0.5);
+    }
   }
 }
