@@ -1,0 +1,1 @@
+scp ubuntu@mloesch.it:/var/www/shopping-list/backend/db/dbfile /mnt/c/Users/Max/Coding/Repos/sqlite-db/prod-db
