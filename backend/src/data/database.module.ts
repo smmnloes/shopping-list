@@ -13,7 +13,7 @@ import { User } from './entities/user'
       type: 'sqlite',
       database: configService.get<string>('DATABASE_PATH'),
       entities: [ ShoppingList, ListItem, MealPlan, Note, User ],
-      synchronize: false
+      synchronize: true
     }),
     inject: [ ConfigService ]
   }) ],

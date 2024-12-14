@@ -24,4 +24,5 @@ npm run build
 
 sudo systemctl daemon-reload
 sudo systemctl restart shopping-list-backend
+npm run migration:run:prod
 EOF
