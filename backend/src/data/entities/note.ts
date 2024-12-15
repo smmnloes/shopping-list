@@ -25,12 +25,16 @@ export class Note {
   @Column({ nullable: true })
   publiclyVisible: boolean
 
-  constructor(createdBy: User) {
+  @Column({default: false})
+  encrypted: boolean
+
+  constructor(createdBy: User, publiclyVisible: boolean, encrypted: boolean) {
     this.createdBy = createdBy
     this.createdAt = new Date()
     this.lastUpdatedAt = this.createdAt
     this.lastUpdatedBy = createdBy
     this.content = ''
-    this.publiclyVisible = false
+    this.publiclyVisible = publiclyVisible
+    this.encrypted = encrypted
   }
 }
