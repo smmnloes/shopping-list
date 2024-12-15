@@ -3,7 +3,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { MealPlan } from '../data/entities/meal-plan'
-import { ExtendedRequest } from '../util/request-types'
+import { ExtendedJWTGuardRequest } from '../util/request-types'
 
 @Controller('api')
 export class MealApiController {
@@ -29,7 +29,7 @@ export class MealApiController {
   async saveMealsForWeek(@Param('weekyear') weekYear: string, @Request() {
     body: { meals, checks },
     user: { name }
-  }: ExtendedRequest<{
+  }: ExtendedJWTGuardRequest<{
     meals: string[], checks: boolean[]
   }>): Promise<void> {
     const toSave = await this.mealPlanRepository.findOne({ where: { weekYear } }).then(result => {

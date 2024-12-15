@@ -9,8 +9,8 @@ export class User {
   name: string
   @Column()
   password_hashed: string
-  @Column()
-  user_data_key_encrypted: string
+  @Column({nullable: true})
+  user_data_key_encrypted?: string
 
   constructor() {
   }

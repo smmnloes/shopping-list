@@ -1,5 +1,7 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'crypto'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class UserKeyService {
   readonly CIPHER_ALGORITHM = 'aes-256-ecb'
   readonly PASSWORD_HASH_ALGORITHM = 'sha256'

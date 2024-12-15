@@ -19,7 +19,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * Gets the decoded jwt payload as input, no need to further validate as long as jwt is valid
    * @param decodedTokenPayload
    */
-  async validate(decodedTokenPayload: UserInformation): Promise<UserInformation> {
+  async validate(decodedTokenPayload: JWTGuardUserData): Promise<JWTGuardUserData> {
     return decodedTokenPayload
   }
 }
+
+export type JWTGuardUserData = UserInformation & { userDataKey: string }

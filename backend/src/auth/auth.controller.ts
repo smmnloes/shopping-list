@@ -15,7 +15,7 @@ import { LocalAuthGuard } from './guards/local.guard'
 import { Response as ExpressResponse } from 'express'
 import { ConfigService } from '@nestjs/config'
 import { JwtAuthGuard } from './guards/jwt.guard'
-import { ExtendedRequest } from '../util/request-types'
+import { ExtendedJWTGuardRequest, ExtendedLocalGuardRequest } from '../util/request-types'
 
 
 @Controller('api/auth')
@@ -25,15 +25,15 @@ export class AuthController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getAuthStatus(@Request() req: ExtendedRequest<void>): Promise<AuthStatus> {
+  async getAuthStatus(@Request() req: ExtendedJWTGuardRequest<void>): Promise<AuthStatus> {
     return { authenticated: true, username: req.user.name }
   }
 
   @Post('login')
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  async login(@Request() req: ExtendedRequest<void>, @Response() res: ExpressResponse<AuthStatus>): Promise<void> {
-    const jwt = await this.authService.login(req.user)
+  async login(@Request() req: ExtendedLocalGuardRequest<void>, @Response() res: ExpressResponse<AuthStatus>): Promise<void> {
+    const jwt = await this.authService.login(req.user, req.user.password)
     this.sendResponseWithAuthStatusAndJWTCookie(res, jwt, req.user.name)
   }
 
@@ -45,8 +45,9 @@ export class AuthController {
     if (registerRequest.registrationSecret !== this.configService.get<string>('REGISTRATION_SECRET')) {
       throw new UnauthorizedException('Incorrect registration secret')
     }
-    const jwt = await this.authService.register(registerRequest.credentials)
-    this.sendResponseWithAuthStatusAndJWTCookie(res, jwt, registerRequest.credentials.username)
+    const userInformation = await this.authService.register(registerRequest.credentials)
+    const jwt = await this.authService.login(userInformation, registerRequest.credentials.password)
+    this.sendResponseWithAuthStatusAndJWTCookie(res, jwt, userInformation.name)
   }
 
   @Post('logout')

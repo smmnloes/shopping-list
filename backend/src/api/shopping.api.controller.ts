@@ -3,7 +3,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { In, Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
 import { ListItem } from '../data/entities/list-item'
-import { ExtendedRequest } from '../util/request-types'
+import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ShopCategory } from '../data/common-types'
 
@@ -17,7 +17,7 @@ export class ShoppingApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists/:category/items')
-  async createNewItemForCategory(@Param('category') category: ShopCategory, @Request() req: ExtendedRequest<{
+  async createNewItemForCategory(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
     item: { name: string }
   }>): Promise<ListItemFrontend> {
     const shoppingList = await this.getListForCategory(category)
@@ -29,7 +29,7 @@ export class ShoppingApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists/:category/staples')
-  async addStaplesToCategoryList(@Param('category') category: ShopCategory, @Request() req: ExtendedRequest<{
+  async addStaplesToCategoryList(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
     ids: string[]
   }>): Promise<void> {
     const shoppingList = await this.getListForCategory(category)
@@ -50,7 +50,7 @@ export class ShoppingApiController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('shopping-lists/:category/items')
-  async deleteItemsFromCategoryBulk(@Param('category') category: ShopCategory, @Request() req: ExtendedRequest<{
+  async deleteItemsFromCategoryBulk(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
     ids: number[]
   }>) {
     const shoppingList = await this.getListForCategory(category)
@@ -68,7 +68,7 @@ export class ShoppingApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('staples')
-  async createStaple(@Request() req: ExtendedRequest<{
+  async createStaple(@Request() req: ExtendedJWTGuardRequest<{
     staple: { name: string, category: ShopCategory }
   }>): Promise<ListItemFrontend> {
     const {

@@ -12,7 +12,7 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import { ExtendedRequest } from '../util/request-types'
+import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { Note } from '../data/entities/note'
 import { transformNoteToOverview } from './transformers/note-transformers'
 import { User } from '../data/entities/user'
@@ -28,7 +28,7 @@ export class NotesApiController {
 
   @UseGuards(JwtAuthGuard)
   @Get('notes')
-  async getAllNotes(@Request() req: ExtendedRequest<void>): Promise<{ notes: NoteOverview[] }> {
+  async getAllNotes(@Request() req: ExtendedJWTGuardRequest<void>): Promise<{ notes: NoteOverview[] }> {
     return this.notesRepository.find()
       .then(results => results.filter(note => this.hasUserReadAccess(note, req.user)))
       .then(results => ({ notes: results.map(transformNoteToOverview) }))
@@ -37,7 +37,7 @@ export class NotesApiController {
 
   @UseGuards(JwtAuthGuard)
   @Get('notes/:id')
-  async getNote(@Param('id', ParseIntPipe) id: number, @Request() req: ExtendedRequest<void>): Promise<NoteDetails> {
+  async getNote(@Param('id', ParseIntPipe) id: number, @Request() req: ExtendedJWTGuardRequest<void>): Promise<NoteDetails> {
     const note = await this.notesRepository.findOneOrFail({ where: { id } })
     this.assertUserReadAccess(note, req.user)
     return {
@@ -50,14 +50,14 @@ export class NotesApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('notes')
-  async createNote(@Request() { body: {}, user: { id } }: ExtendedRequest<any>): Promise<{ id: number }> {
+  async createNote(@Request() { body: {}, user: { id } }: ExtendedJWTGuardRequest<any>): Promise<{ id: number }> {
     const user = await this.userRepository.findOneOrFail({ where: { id } })
     return this.notesRepository.save(new Note(user)).then(({ id }) => ({ id }))
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('notes/:id')
-  async saveNote(@Param('id', ParseIntPipe) noteId: number, @Request() req: ExtendedRequest<{
+  async saveNote(@Param('id', ParseIntPipe) noteId: number, @Request() req: ExtendedJWTGuardRequest<{
     content: string
   }>): Promise<void> {
     const user = await this.userRepository.findOneOrFail({ where: { id: req.user.id } })
@@ -71,7 +71,7 @@ export class NotesApiController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('notes/:id')
-  async deleteNote(@Param('id', ParseIntPipe) id: number, @Request() req: ExtendedRequest<void>): Promise<void> {
+  async deleteNote(@Param('id', ParseIntPipe) id: number, @Request() req: ExtendedJWTGuardRequest<void>): Promise<void> {
     const note = await this.notesRepository.findOneOrFail({ where: { id } })
     this.assertUserWriteAccess(note, req.user)
     await this.notesRepository.delete(id)
@@ -82,7 +82,7 @@ export class NotesApiController {
   async setNoteVisibility(@Param('id', ParseIntPipe) noteId: number, @Request() {
     body: { visible },
     user: { id: userId }
-  }: ExtendedRequest<{
+  }: ExtendedJWTGuardRequest<{
     visible: boolean
   }>): Promise<void> {
     const note = await this.notesRepository.findOneOrFail({ where: { id: noteId } })

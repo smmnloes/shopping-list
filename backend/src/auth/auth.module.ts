@@ -9,6 +9,7 @@ import { JwtStrategy } from './jwt.strategy'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { User } from '../data/entities/user'
+import { UserKeyService } from '../data/crypto/user-key-service'
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { User } from '../data/entities/user'
     DatabaseModule,
     ConfigModule
   ],
-  providers: [ AuthService, LocalStrategy, JwtStrategy ],
+  providers: [ AuthService, LocalStrategy, JwtStrategy, UserKeyService ],
   exports: [],
   controllers: [ AuthController ]
 })

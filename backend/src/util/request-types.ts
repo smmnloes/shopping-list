@@ -1,8 +1,6 @@
 import { Request as Res } from 'express'
-import { UserInformation } from '../auth/auth.service'
+import { JWTGuardUserData } from '../auth/jwt.strategy'
+import { LocalGuardUserData } from '../auth/local.strategy'
 
-export type ExtendedRequest<BodyType> = Res<void, void, BodyType> & UserInfoAddedByPassport
-
-export type UserInfoAddedByPassport = {
-  user: UserInformation
-}
+export type ExtendedJWTGuardRequest<BodyType> = Res<void, void, BodyType> & { user: JWTGuardUserData }
+export type ExtendedLocalGuardRequest<BodyType> = Res<void, void, BodyType> & { user: LocalGuardUserData }
