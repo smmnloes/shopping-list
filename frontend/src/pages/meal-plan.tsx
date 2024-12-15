@@ -1,21 +1,12 @@
-import { addWeeks, endOfWeek, getWeek, getYear, startOfWeek, WeekOptions } from 'date-fns'
+import { addDays, addWeeks, getISOWeekYear, getWeek, GetWeekOptions, getYear, startOfWeek } from 'date-fns'
 import { memo, useEffect, useState } from 'react'
 import { getMealsForWeek, saveMealsForWeek } from '../api/api.ts'
 import objectHash from 'object-hash'
 import useOnlineStatus from '../hooks/use-online-status.ts'
 
-const COMMON_WEEK_OPTIONS: WeekOptions = { weekStartsOn: 1 }
+const COMMON_WEEK_OPTIONS: GetWeekOptions = { weekStartsOn: 1, firstWeekContainsDate: 4  }
 
-const getDateRangeForWeek = (week: number): [ Date, Date ] => {
-  const firstDayOfYear = new Date(getYear(new Date(), {}), 0, 1)
-  const firstMonday = startOfWeek(firstDayOfYear, COMMON_WEEK_OPTIONS)
-  const mondayOfGivenWeek = addWeeks(firstMonday, week - 1)
-  const sundayOfGivenWeek = endOfWeek(mondayOfGivenWeek, COMMON_WEEK_OPTIONS)
-  return [ mondayOfGivenWeek, sundayOfGivenWeek ]
-}
-
-const getCurrentWeek = () => getWeek(new Date(), COMMON_WEEK_OPTIONS)
-const getCurrentWeekMonday = () => getDateRangeForWeek(getCurrentWeek())[0]
+const getCurrentWeekMonday = () => startOfWeek(new Date(), COMMON_WEEK_OPTIONS)
 
 const MealPlan = memo(() => {
   const [ selectedMonday, setSelectedMonday ] = useState<Date>(getCurrentWeekMonday())
@@ -33,14 +24,15 @@ const MealPlan = memo(() => {
 
   const generateSavedState = () => objectHash({ mealsForWeek, mealDoneChecks })
 
+  const getWeekForSelectedMonday = (selectedMonday: Date) => getWeek(selectedMonday, COMMON_WEEK_OPTIONS)
+
   useEffect(() => {
     (async () => {
       try {
-        const { meals, checks } = await getMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday))
+        const { meals, checks } = await getMealsForWeek(getWeekForSelectedMonday(selectedMonday), getYear(selectedMonday))
         setMealsForWeek(meals)
         setMealDoneChecks(checks)
 
-        setRemoteDataFetched(true)
         setLastSavedState(generateSavedState())
         console.log('Meal plan fetched')
       } catch (error) {
@@ -48,6 +40,8 @@ const MealPlan = memo(() => {
         setMealsForWeek(mealsForWeekDefault)
         setMealDoneChecks(mealDoneChecksDefault)
       }
+      setRemoteDataFetched(true)
+
     })()
   }, [ selectedMonday ])
 
@@ -58,8 +52,8 @@ const MealPlan = memo(() => {
   }, [ mealDoneChecks ])
 
 
-  const getDateRangeForWeekFormatted = (week: number): string => {
-    const [ weekStart, weekEnd ] = getDateRangeForWeek(week)
+  const getDateRangeForWeekFormatted = (weekMonday: Date): string => {
+    const [ weekStart, weekEnd ] = [ weekMonday, addDays(weekMonday, 6) ]
     return `${ weekStart.toLocaleDateString(undefined, {
       day: '2-digit',
       month: '2-digit'
@@ -77,7 +71,7 @@ const MealPlan = memo(() => {
       return
     }
     console.log('Saving')
-    await saveMealsForWeek(getWeek(selectedMonday), getYear(selectedMonday), mealsForWeek, mealDoneChecks)
+    await saveMealsForWeek(getWeekForSelectedMonday(selectedMonday), getYear(selectedMonday), mealsForWeek, mealDoneChecks)
     setLastSavedState(currentState)
     console.log('Meals saved')
   }
@@ -90,9 +84,9 @@ const MealPlan = memo(() => {
                onClick={ () => setSelectedMonday(addWeeks(selectedMonday, -1)) }/>
 
           <div className="kwDate">
-            <span>KW { getWeek(selectedMonday).toString().padStart(2, '0') }</span>
-            <span className="dateDisplay"> { getDateRangeForWeekFormatted(getWeek(selectedMonday)) }<br/>
-              { getYear(selectedMonday) }
+            <span>KW { getWeekForSelectedMonday(selectedMonday).toString().padStart(2, '0') }</span>
+            <span className="dateDisplay"> { getDateRangeForWeekFormatted(selectedMonday) }<br/>
+              { getISOWeekYear(selectedMonday) }
               </span>
           </div>
           <img className="rotated" src="/arrow-circle-left.svg" alt="next week"
