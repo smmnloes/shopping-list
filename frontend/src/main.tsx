@@ -11,10 +11,12 @@ import EditStaples from './pages/edit-staples.tsx'
 import './styles/main.scss'
 import './styles/spinner.scss'
 import './styles/toggle-switch.scss'
+import 'leaflet/dist/leaflet.css'
 import MealPlan from './pages/meal-plan.tsx'
 import Notes from './pages/notes.tsx'
 import { EditNote } from './pages/edit-note.tsx'
 import Register from './pages/register.tsx'
+import LocationMap from './pages/location-map.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -32,6 +34,9 @@ createRoot(document.getElementById('root')!).render(
             }/>
             <Route path="/register" element={
               <Register/>
+            }/>
+            <Route path="/location" element={
+              <LocationMap/>
             }/>
             <Route path="/edit-lists" element={
               <PrivateRoute>
