@@ -173,12 +173,13 @@ form input {
 
 
 .navContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
 
+  justify-items: center;
+  align-items: center;
+  margin-top: 75px;
 
   * {
     padding: 5px;
@@ -614,6 +615,6 @@ td.mealDoneCheck {
 
   button {
     width: 30%;
-    margin: 10px auto 0;
+    margin: 20px auto 10px;
   }
 }

@@ -1,6 +1,8 @@
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
-import { icon, LatLngTuple } from 'leaflet'
-import { useState } from 'react'
+import { icon } from 'leaflet'
+import { useEffect, useState } from 'react'
+import { LocationFrontendView } from '../types/types.ts'
+import { getLocation, postLocation } from '../api/api.ts'
 
 const carIcon = icon({
   iconUrl: 'car.png',
@@ -9,13 +11,27 @@ const carIcon = icon({
 })
 
 const LocationMap = () => {
-  const [ location, setLocation ] = useState<LatLngTuple>()
+  const [ location, setLocation ] = useState<LocationFrontendView>()
 
-  const setLocationHandler = () => {
-    navigator.geolocation.getCurrentPosition((location) => {
-      setLocation([ location.coords.latitude, location.coords.longitude ])
+  const setLocationHandler = async () => {
+    navigator.geolocation.getCurrentPosition(async (location) => {
+      console.log(location)
+      const newLocation = await postLocation(location.coords.latitude, location.coords.longitude, 'CAR')
+      setLocation(newLocation)
     }, (error) => console.error(error.message))
   }
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const location = await getLocation('CAR')
+        setLocation(location)
+        console.log(location)
+      } catch (e: any) {
+        console.error(e.message)
+      }
+    })()
+  }, [])
 
   return (
     <div className="mapcontainer">
@@ -27,7 +43,7 @@ const LocationMap = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         { location && (
-          <Marker position={ location } icon={ carIcon }/>) }
+          <Marker position={ { lat: location.lat, lng: location.lng } } icon={ carIcon }/>) }
       </MapContainer>
       <button onClick={ setLocationHandler } className="my-button">Standort setzen</button>
     </div>

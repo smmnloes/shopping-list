@@ -32,3 +32,12 @@ export type NoteOverview = {
   createdBy: string
   publiclyVisible: boolean
 }
+
+
+export type LocationFrontendView = {
+  lat: number
+  lng: number
+  createdAt: Date
+  createdByName: string
+}
+

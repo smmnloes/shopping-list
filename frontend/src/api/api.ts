@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { AuthStatus } from '../services/auth-provider.tsx'
-import { ListItem, NoteDetails, NoteOverview, ShopCategory } from '../types/types.ts'
+import { ListItem, LocationFrontendView, NoteDetails, NoteOverview, ShopCategory } from '../types/types.ts'
 import axiosRetry from 'axios-retry'
 
 const backendHost = import.meta.env.VITE_BACKEND_HOST
@@ -72,35 +72,43 @@ export const getServerVersion = async (): Promise<string> => {
   return axiosInstance.get(`${ backendHost }/api/version`).then(response => response.data)
 }
 
-export const getMealsForWeek = (week: number, year: number): Promise<{ meals: string[], checks: boolean[] }> => {
+export const getMealsForWeek = async (week: number, year: number): Promise<{ meals: string[], checks: boolean[] }> => {
   return axiosInstance.get(`${ backendHost }/api/meals/${ week }-${ year }`).then(response => response.data)
 }
 
-export const saveMealsForWeek = (week: number, year: number, meals: string[], checks: boolean[]): Promise<void> => {
+export const saveMealsForWeek = async (week: number, year: number, meals: string[], checks: boolean[]): Promise<void> => {
   return axiosInstance.post(`${ backendHost }/api/meals/${ week }-${ year }`, { meals, checks })
 }
 
 
-export const getNotes = (): Promise<{ notes: NoteOverview[] }> => {
+export const getNotes = async (): Promise<{ notes: NoteOverview[] }> => {
   return axiosInstance.get(`${ backendHost }/api/notes`).then(response => response.data)
 }
 
-export const getNote = (id: number): Promise<NoteDetails> => {
+export const getNote = async (id: number): Promise<NoteDetails> => {
   return axiosInstance.get(`${ backendHost }/api/notes/${ id }`).then(response => response.data)
 }
 
-export const newNote = (): Promise<{ id: number }> => {
+export const newNote = async (): Promise<{ id: number }> => {
   return axiosInstance.post(`${ backendHost }/api/notes`).then(response => response.data)
 }
 
-export const saveNote = (id: number, content: string): Promise<void> => {
+export const saveNote = async (id: number, content: string): Promise<void> => {
   return axiosInstance.post(`${ backendHost }/api/notes/${ id }`, { content }).then(response => response.data)
 }
 
-export const deleteNote = (id: number): Promise<void> => {
+export const deleteNote = async (id: number): Promise<void> => {
   return axiosInstance.delete(`${ backendHost }/api/notes/${ id }`).then(response => response.data)
 }
 
-export const setNoteVisibility = (id: number, visible: boolean): Promise<void> => {
+export const setNoteVisibility = async (id: number, visible: boolean): Promise<void> => {
   return axiosInstance.post(`${ backendHost }/api/notes/${ id }/visibility`, { visible }).then(response => response.data)
+}
+
+export const postLocation = async (lat: number, lng: number, type: string): Promise<LocationFrontendView> => {
+  return axiosInstance.post(`${ backendHost }/api/locations`, { lat, lng, type }).then(response => response.data)
+}
+
+export const getLocation = async (type: string): Promise<LocationFrontendView> => {
+  return axiosInstance.get(`${ backendHost }/api/locations`, { params: { type } }).then(response => response.data)
 }

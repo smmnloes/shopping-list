@@ -35,8 +35,10 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/register" element={
               <Register/>
             }/>
-            <Route path="/location" element={
-              <LocationMap/>
+            <Route path="/locations" element={
+              <PrivateRoute>
+                <LocationMap/>
+              </PrivateRoute>
             }/>
             <Route path="/edit-lists" element={
               <PrivateRoute>

@@ -22,6 +22,11 @@ function App() {
           </Link>
           <span>Notizen</span>
         </div>
+        <div className="navElement">
+          <Link to="/locations"><img src="/parking.svg" alt="notes"/>
+          </Link>
+          <span>Autostandort</span>
+        </div>
       </div>
     </>
   )

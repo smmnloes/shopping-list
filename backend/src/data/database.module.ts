@@ -6,13 +6,14 @@ import { ConfigService } from '@nestjs/config'
 import { MealPlan } from './entities/meal-plan'
 import { Note } from './entities/note'
 import { User } from './entities/user'
+import { Location } from './entities/location'
 
 @Module({
   imports: [ TypeOrmModule.forRootAsync({
     useFactory: (configService: ConfigService) => ({
       type: 'sqlite',
       database: configService.get<string>('DATABASE_PATH'),
-      entities: [ ShoppingList, ListItem, MealPlan, Note, User ],
+      entities: [ ShoppingList, ListItem, MealPlan, Note, User, Location ],
       synchronize: true
     }),
     inject: [ ConfigService ]
