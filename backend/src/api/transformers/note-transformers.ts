@@ -1,13 +1,13 @@
 import { Note } from '../../data/entities/note'
-import { NoteOverview } from '../notes.api.controller'
+import type { NoteOverview } from '../../../../shared/types/notes'
 
 export const transformNoteToOverview = (note: Note): NoteOverview => {
   const UNKNOWN = '???'
   return {
     id: note.id,
-    createdAt: note.createdAt,
+    createdAt: note.createdAt.toISOString(),
     createdBy: note.createdBy?.name ?? UNKNOWN,
-    lastUpdatedAt: note.lastUpdatedAt,
+    lastUpdatedAt: note.lastUpdatedAt.toISOString(),
     lastUpdatedBy: note.lastUpdatedBy?.name ?? UNKNOWN,
     title: extractTitleFromContent(note.content),
     publiclyVisible: note.publiclyVisible

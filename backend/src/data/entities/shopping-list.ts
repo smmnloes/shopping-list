@@ -1,6 +1,6 @@
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { ListItem } from './list-item'
-import { ShopCategory } from '../common-types'
+import type { ShopCategory } from '../../../../shared/types/shopping'
 
 @Entity()
 export class ShoppingList {

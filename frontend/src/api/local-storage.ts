@@ -1,4 +1,4 @@
-import { ShopCategory } from '../types/types.ts'
+import type { ShopCategory } from '../../../shared/types/shopping.ts'
 
 export type CheckedItem = { id: number, category: ShopCategory }
 

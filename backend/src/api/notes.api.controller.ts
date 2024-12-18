@@ -19,6 +19,7 @@ import { transformNoteToOverview } from './transformers/note-transformers'
 import { User } from '../data/entities/user'
 import { UserInformation } from '../auth/auth.service'
 import { UserKeyService } from '../data/crypto/user-key-service'
+import type { NoteDetails, NoteOverview } from '../../../shared/types/notes'
 
 @Controller('api')
 export class NotesApiController {
@@ -134,14 +135,4 @@ export class NotesApiController {
   private hasUserWriteAccess(note: Note, user: UserInformation): boolean {
     return (note.createdBy.id === user.id)
   }
-}
-
-
-export type NoteOverview = Pick<Note, 'id' | 'createdAt' | 'lastUpdatedAt' | 'publiclyVisible'> & {
-  title: string
-  createdBy: string
-  lastUpdatedBy: string
-}
-export type NoteDetails = Pick<Note, 'id' | 'content' | 'publiclyVisible'> & {
-  permissions: { delete: boolean, changeVisibility: boolean }
 }

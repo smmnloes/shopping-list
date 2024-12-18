@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { getNotes, newNote } from '../api/api.ts'
+import { getNotes, newNote } from '../api/notes.ts'
 import { useNavigate } from 'react-router-dom'
-import { NoteOverview } from '../types/types.ts'
+import type { NoteOverview } from '../../../shared/types/notes.ts'
 
 
 const formatDate = (date: Date): string => {

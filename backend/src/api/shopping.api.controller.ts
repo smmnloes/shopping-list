@@ -5,7 +5,7 @@ import { ShoppingList } from '../data/entities/shopping-list'
 import { ListItem } from '../data/entities/list-item'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { InjectRepository } from '@nestjs/typeorm'
-import { ShopCategory } from '../data/common-types'
+import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping'
 
 @Controller('api')
 export class ShoppingApiController {
@@ -114,6 +114,3 @@ export class ShoppingApiController {
   }
 
 }
-
-
-type ListItemFrontend = { name: string, id: number, isStaple: boolean }

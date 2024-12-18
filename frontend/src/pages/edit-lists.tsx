@@ -1,18 +1,19 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import { configForCategory, ListItem, ShopCategory } from '../types/types.ts'
-import { createNewItemForCategory, deleteItemsFromCategoryBulk, getItemsForCategory } from '../api/api.ts'
+import { configForCategory } from '../types/types.ts'
 import { CheckedItem, getCheckedItemIdsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
 import useOnlineStatus from '../hooks/use-online-status.ts'
 import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import SelectStapleModal from './select-staple-modal.tsx'
+import { createNewItemForCategory, deleteItemsFromCategoryBulk, getItemsForCategory } from '../api/shopping.ts'
+import type {  ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 
 
 const EditLists = () => {
-  const [ selectedCategory, setSelectedCategory ] = useQueryParamState<ShopCategory>(SELECTED_CATEGORY, ShopCategory.GROCERY)
+  const [ selectedCategory, setSelectedCategory ] = useQueryParamState<ShopCategory>(SELECTED_CATEGORY, 'GROCERY')
 
-  const [ listItems, setListItems ] = useState<ListItem[]>([])
-  const [ addedStaples, setAddedStaples ] = useState<ListItem[]>([])
+  const [ listItems, setListItems ] = useState<ListItemFrontend[]>([])
+  const [ addedStaples, setAddedStaples ] = useState<ListItemFrontend[]>([])
   const [ checkedItems, setCheckedItems ] = useState<CheckedItem[]>([])
 
   const [ newItemName, setNewItemName ] = useState<string>('')
@@ -93,7 +94,7 @@ const EditLists = () => {
   }
 
 
-  const EditableCheckableListItem = ({ index, item }: { index: number, item: ListItem }) => {
+  const EditableCheckableListItem = ({ index, item }: { index: number, item: ListItemFrontend }) => {
     const isItemChecked = (itemId: number) => !!checkedItems.find(item => item.id === itemId)
 
     return (

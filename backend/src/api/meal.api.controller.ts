@@ -4,6 +4,7 @@ import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { MealPlan } from '../data/entities/meal-plan'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
+import type { MealsForWeek } from '../../../shared/types/meals'
 
 @Controller('api')
 export class MealApiController {
@@ -15,7 +16,7 @@ export class MealApiController {
 
   @UseGuards(JwtAuthGuard)
   @Get('meals/:weekyear')
-  async getMealsForWeek(@Param('weekyear') weekYear: string): Promise<{ meals: string[], checks: boolean[] }> {
+  async getMealsForWeek(@Param('weekyear') weekYear: string): Promise<MealsForWeek> {
     const result = await this.mealPlanRepository.findOne({ where: { weekYear } })
     if (result === null) {
       throw new NotFoundException('Meal plan not found')
@@ -29,9 +30,7 @@ export class MealApiController {
   async saveMealsForWeek(@Param('weekyear') weekYear: string, @Request() {
     body: { meals, checks },
     user: { name }
-  }: ExtendedJWTGuardRequest<{
-    meals: string[], checks: boolean[]
-  }>): Promise<void> {
+  }: ExtendedJWTGuardRequest<MealsForWeek>): Promise<void> {
     const toSave = await this.mealPlanRepository.findOne({ where: { weekYear } }).then(result => {
       if (result) {
         result.meals = meals

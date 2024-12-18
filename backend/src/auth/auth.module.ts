@@ -27,7 +27,6 @@ import { UserKeyService } from '../data/crypto/user-key-service'
     ConfigModule
   ],
   providers: [ AuthService, LocalStrategy, JwtStrategy, UserKeyService ],
-  exports: [],
   controllers: [ AuthController ]
 })
 export class AuthModule {

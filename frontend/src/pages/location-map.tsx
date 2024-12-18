@@ -1,8 +1,8 @@
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import { icon } from 'leaflet'
 import { useEffect, useState } from 'react'
-import { LocationFrontendView } from '../types/types.ts'
-import { getLocation, postLocation } from '../api/api.ts'
+import { getLocation, postLocation } from '../api/locations.ts'
+import type { LocationFrontendView } from '../../../shared/types/location.ts'
 
 const carIcon = icon({
   iconUrl: 'car.png',

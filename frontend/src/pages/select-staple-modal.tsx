@@ -1,15 +1,15 @@
-import { ListItem, ShopCategory } from '../types/types.ts'
-import { addStaplesToCategoryList, getStaples } from '../api/api.ts'
+import { addStaplesToCategoryList, getStaples } from '../api/shopping.ts'
 import { useNavigate } from 'react-router-dom'
 import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { MODAL_VISIBLE } from '../constants/query-params.ts'
 import { booleanFromString } from '../util/boolean.ts'
 import { useEffect, useState } from 'react'
 import useOnlineStatus from '../hooks/use-online-status.ts'
+import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 
 interface SelectStapleModalProps {
   selectedCategory?: ShopCategory,
-  addedStaples: ListItem[],
+  addedStaples: ListItemFrontend[],
   onModalClose?: Function
 }
 
@@ -18,8 +18,8 @@ const SelectStapleModal = ({ selectedCategory, addedStaples, onModalClose }: Sel
 
   const [ modalVisible, setModalVisible ] = useQueryParamState<boolean>(MODAL_VISIBLE, false, booleanFromString)
 
-  const [ availableStaples, setAvailableStaples ] = useState<ListItem[]>([])
-  const [ selectedStaples, setSelectedStaples ] = useState<ListItem[]>([])
+  const [ availableStaples, setAvailableStaples ] = useState<ListItemFrontend[]>([])
+  const [ selectedStaples, setSelectedStaples ] = useState<ListItemFrontend[]>([])
 
   const isOnline = useOnlineStatus()
 
@@ -49,7 +49,7 @@ const SelectStapleModal = ({ selectedCategory, addedStaples, onModalClose }: Sel
     }
   }
 
-  const handleStapleSelected = (item: ListItem) => {
+  const handleStapleSelected = (item: ListItemFrontend) => {
     setSelectedStaples(selectedStaples.includes(item) ? selectedStaples.filter(staple => staple !== item) : ([ ...selectedStaples, item ]))
   }
 

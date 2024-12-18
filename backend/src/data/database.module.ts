@@ -7,6 +7,7 @@ import { MealPlan } from './entities/meal-plan'
 import { Note } from './entities/note'
 import { User } from './entities/user'
 import { Location } from './entities/location'
+import { UserKeyService } from './crypto/user-key-service'
 
 @Module({
   imports: [ TypeOrmModule.forRootAsync({
@@ -18,7 +19,8 @@ import { Location } from './entities/location'
     }),
     inject: [ ConfigService ]
   }) ],
-  exports: [ TypeOrmModule ]
+  providers: [UserKeyService],
+  exports: [ TypeOrmModule, UserKeyService ]
 })
 export class DatabaseModule {
 }

@@ -5,6 +5,7 @@ import { Location, LocationType } from '../data/entities/location'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { User } from '../data/entities/user'
+import type { LocationFrontendView } from '../../../shared/types/location'
 
 @Controller('api')
 export class LocationsApiController {
@@ -52,12 +53,3 @@ export class LocationsApiController {
   }
 
 }
-
-
-export type LocationFrontendView = {
-  lat: number
-  lng: number
-  createdAt: Date
-  createdByName: string
-}
-

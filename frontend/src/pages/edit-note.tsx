@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import ReactQuill, { DeltaStatic, EmitterSource } from 'react-quill-new'
 import '../styles/quill/quill.snow.scss'
-import { deleteNote, getNote, saveNote, setNoteVisibility } from '../api/api.ts'
+import { deleteNote, getNote, saveNote, setNoteVisibility } from '../api/notes.ts'
 import { useNavigate, useParams } from 'react-router-dom'
 import { postImageInsertProcessing } from '../utils/image-processing.ts'
-import { NoteDetails } from '../types/types.ts'
+import type { NoteDetails } from '../../../shared/types/notes.ts'
 
 enum SAVE_STATE {
   SAVED,
@@ -110,16 +110,18 @@ export const EditNote = () => {
           </button>
         </div>
 
-        {publiclyVisible !== undefined && (<div className={`visibilityToggle ${permissions?.changeVisibility ? '' : 'disabled'}`}>
-          <img src="/padlock-unlocked.svg" alt="publicly visible"/>
-          <label className="switch">
-            <input type="checkbox" checked={ !publiclyVisible } onChange={handleVisibilityChanged }/>
-            <span className="slider round"></span>
-          </label>
-          <img src="/padlock-locked.svg" alt="private note"/>
-        </div>)}
-        <button className="my-button deleteButton" onClick={ () => setModalVisible(true) } disabled={!permissions?.delete}><img src="/paper-bin.svg"
-                                                                                                alt="löschen"/></button>
+        { publiclyVisible !== undefined && (
+          <div className={ `visibilityToggle ${ permissions?.changeVisibility ? '' : 'disabled' }` }>
+            <img src="/padlock-unlocked.svg" alt="publicly visible"/>
+            <label className="switch">
+              <input type="checkbox" checked={ !publiclyVisible } onChange={ handleVisibilityChanged }/>
+              <span className="slider round"></span>
+            </label>
+            <img src="/padlock-locked.svg" alt="private note"/>
+          </div>) }
+        <button className="my-button deleteButton" onClick={ () => setModalVisible(true) }
+                disabled={ !permissions?.delete }><img src="/paper-bin.svg"
+                                                       alt="löschen"/></button>
         <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
           if ((e.target as any).id === 'modal-overlay') setModalVisible(false)
         } }>
