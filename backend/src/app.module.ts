@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { ScheduleModule } from '@nestjs/schedule'
 import { ApiModule } from './api/api.module'
 
 @Module({
@@ -9,7 +8,7 @@ import { ApiModule } from './api/api.module'
     envFilePath: [ `.env.${ process.env.NODE_ENV }`, '.env' ],
     expandVariables: true,
   }),
-    ScheduleModule.forRoot(), ApiModule ],
+    ApiModule ],
   controllers: [],
   providers: [],
   exports: [ ConfigModule ]
