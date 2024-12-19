@@ -1,7 +1,7 @@
 export type LocationFrontendView = {
   lat: number
   lng: number
-  createdAt: Date
+  createdAt: string
   createdByName: string
 }
 

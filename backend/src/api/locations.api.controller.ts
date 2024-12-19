@@ -26,7 +26,7 @@ export class LocationsApiController {
       return {
         lat,
         lng,
-        createdAt,
+        createdAt: createdAt.toISOString(),
         createdByName: createdBy.name
       }
     } else {
@@ -49,7 +49,7 @@ export class LocationsApiController {
       createdAt,
       createdBy
     } = await this.locationRepository.save(new Location(user, req.body.type, req.body.lat, req.body.lng))
-    return { lat, lng, createdAt, createdByName: createdBy.name }
+    return { lat, lng, createdAt: createdAt.toISOString(), createdByName: createdBy.name }
   }
 
 }

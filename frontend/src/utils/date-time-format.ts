@@ -8,5 +8,5 @@ export const formatDate = (date: Date): string => {
     hour: '2-digit',
     minute: '2-digit'
   })
-  return `${ formattedDate } - ${ formattedTime }`
+  return `${ formattedDate }, ${ formattedTime }`
 }
