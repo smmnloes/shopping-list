@@ -9,8 +9,6 @@ export class ListItem {
   @Column()
   createdAt: Date
   @Column()
-  addedBy: string
-  @Column()
   name: string
   @Column()
   isStaple: boolean = false
@@ -19,8 +17,7 @@ export class ListItem {
   @ManyToMany(() => ShoppingList, shoppingList => shoppingList.items)
   shoppingLists: ShoppingList[]
 
-  constructor(addedBy: string, name: string, category: ShopCategory, isStaple = false) {
-    this.addedBy = addedBy
+  constructor(name: string, category: ShopCategory, isStaple = false) {
     this.createdAt = new Date()
     this.name = name
     this.isStaple = isStaple

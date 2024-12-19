@@ -21,7 +21,7 @@ export class ShoppingApiController {
     item: { name: string }
   }>): Promise<ListItemFrontend> {
     const shoppingList = await this.getListForCategory(category)
-    const newItem = new ListItem(req.user.name, req.body.item.name, shoppingList.shopCategory)
+    const newItem = new ListItem(req.body.item.name, shoppingList.shopCategory)
     shoppingList.items.push(newItem)
     await this.shoppingListRepository.save(shoppingList)
     return { id: newItem.id, name: newItem.name, isStaple: newItem.isStaple }
@@ -75,7 +75,7 @@ export class ShoppingApiController {
       id,
       name,
       isStaple
-    } = (await this.listItemRepository.save(new ListItem(req.user.name, req.body.staple.name, req.body.staple.category, true)))
+    } = (await this.listItemRepository.save(new ListItem(req.body.staple.name, req.body.staple.category, true)))
     return { id, name, isStaple }
   }
 
@@ -103,7 +103,7 @@ export class ShoppingApiController {
     const shoppingLists = await this.shoppingListRepository.find({ where: { shopCategory: category } })
     if (shoppingLists.length === 0) {
       console.error(`No list for category ${ category } found, creating one`)
-      const newList = new ShoppingList('SYSTEM', category, [])
+      const newList = new ShoppingList(category, [])
       await this.shoppingListRepository.save(newList)
       return newList
     }

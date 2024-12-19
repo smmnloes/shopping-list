@@ -8,16 +8,13 @@ export class ShoppingList {
   id: number
   @Column()
   createdAt: Date
-  @Column()
-  createdBy: string
-  @Column()
+  @Column({ unique: true })
   shopCategory: ShopCategory
   @ManyToMany(() => ListItem, item => item.shoppingLists, { eager: true, cascade: [ 'insert' ] })
   @JoinTable()
   items: ListItem[]
 
-  constructor(createdBy: string, category: ShopCategory, initialItems: ListItem[]) {
-    this.createdBy = createdBy
+  constructor(category: ShopCategory, initialItems: ListItem[]) {
     this.createdAt = new Date()
     this.shopCategory = category
     this.items = initialItems

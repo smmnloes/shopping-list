@@ -22,7 +22,7 @@ export class Note {
   @Column()
   content: string
 
-  @Column({ nullable: true })
+  @Column()
   publiclyVisible: boolean
 
   @Column({default: false})

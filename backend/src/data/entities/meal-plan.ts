@@ -8,8 +8,6 @@ export class MealPlan {
   id: number
   @Column()
   lastUpdatedAt: Date
-  @Column()
-  createdBy: string
   // "42-2024"
   @Column({ unique: true })
   weekYear: string
@@ -18,8 +16,7 @@ export class MealPlan {
   @Column({ type: 'text', transformer: new BooleanArrayTransformer() })
   checks: boolean[]
 
-  constructor(createdBy: string, weekYear: string, meals: string[], checks: boolean[]) {
-    this.createdBy = createdBy
+  constructor(weekYear: string, meals: string[], checks: boolean[]) {
     this.weekYear = weekYear
     this.meals = meals
     this.checks = checks

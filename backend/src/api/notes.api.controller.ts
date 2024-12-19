@@ -62,7 +62,6 @@ export class NotesApiController {
   @Post('notes')
   async createNote(@Request() { body: {}, user: { id } }: ExtendedJWTGuardRequest<any>): Promise<{ id: number }> {
     const user = await this.userRepository.findOneOrFail({ where: { id } })
-    // We are not encrypting newly created notes, because the content is empty
     const newNote = new Note(user, true, false)
     return this.notesRepository.save(newNote).then(({ id }) => ({ id }))
   }
