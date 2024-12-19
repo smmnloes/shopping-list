@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { User } from './user'
 
 @Entity()
@@ -13,6 +13,7 @@ export class Location {
   @PrimaryGeneratedColumn()
   id: number
   @Column()
+  @Index()
   createdAt: Date
   @ManyToOne(() => User, { eager: true })
   createdBy: User

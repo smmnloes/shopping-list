@@ -20,7 +20,6 @@ const LocationMap = () => {
       try {
         const location = await getLocation('CAR')
         setLocation(location)
-        console.log(location)
       } catch (e: any) {
         console.error(e.message)
       }

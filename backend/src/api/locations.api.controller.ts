@@ -19,8 +19,7 @@ export class LocationsApiController {
   @UseGuards(JwtAuthGuard)
   @Get('locations')
   async getLocation(@Query('type') type: LocationType): Promise<LocationFrontendView> {
-    const latestLocationForType = await this.locationRepository.find({ where: { type } })
-      .then(results => [ ...results ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0])
+    const latestLocationForType = await this.locationRepository.findOne({ where: { type }, order: {createdAt: 'DESC'} })
     if (latestLocationForType) {
       const { lat, lng, createdBy, createdAt } = latestLocationForType
       return {
