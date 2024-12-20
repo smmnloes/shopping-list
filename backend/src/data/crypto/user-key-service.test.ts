@@ -5,7 +5,7 @@ it('Key encryption', async () => {
   const encryptedKey = service.createEncryptedUserDataKey('password')
   console.log(encryptedKey)
   const data = ''
-  const decryptedKey = service.decryptUserKey(encryptedKey, 'password')
+  const decryptedKey = service.decryptUserDataKey(encryptedKey, 'password')
   console.log(decryptedKey)
   const encryptedData = service.encryptData(data, decryptedKey)
   console.log(encryptedData)

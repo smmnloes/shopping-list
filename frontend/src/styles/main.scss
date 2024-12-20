@@ -233,6 +233,10 @@ form input {
   label {
     text-align: left;
   }
+
+  h3 {
+    text-align: left;
+  }
 }
 
 .addItemForm {
@@ -576,7 +580,12 @@ td.mealDoneCheck {
   display: flex;
   flex-direction: column;
   font-size: 18px;
-  color: var(--color-error)
+  .errorMessages {
+    color: var(--color-error)
+  }
+  .successMessages {
+    color: #79b579;
+  }
 }
 
 .visibilityToggle {
@@ -617,4 +626,12 @@ td.mealDoneCheck {
     width: 30%;
     margin: 20px auto 10px;
   }
+}
+
+.accountUserInfo {
+  margin-bottom: 20px;
+}
+
+.userName {
+  font-weight: bold;
 }

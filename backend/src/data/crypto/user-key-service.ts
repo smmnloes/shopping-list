@@ -12,7 +12,11 @@ export class UserKeyService {
   public createEncryptedUserDataKey(userPassword: string) {
     // Create a random key for the user (32 bytes so that data can be encrypted via aes-256)
     const userDataKey = randomBytes(32).toString('hex').substring(0, 32)
+    return this.encryptUserDataKey(userDataKey, userPassword)
 
+  }
+
+  private encryptUserDataKey(userDataKey: string, userPassword: string): string {
     const userPasswordHash = this.createUserPasswordHash(userPassword)
 
     // Encrypt the user key with the password hash
@@ -24,7 +28,7 @@ export class UserKeyService {
   }
 
 
-  public decryptUserKey(encryptedUserDataKey: string, userPassword: string) {
+  public decryptUserDataKey(encryptedUserDataKey: string, userPassword: string) {
     const userPasswordHash =
       this.createUserPasswordHash(userPassword)
 
@@ -34,6 +38,11 @@ export class UserKeyService {
     decryptedUserDataKey += decipher.final('utf-8')
 
     return decryptedUserDataKey
+  }
+
+  public reencryptUserDataKey(currentUserDataKeyEncrypted: string, currentPassword: string, newPassword: string) {
+    const decryptedUserDataKey = this.decryptUserDataKey(currentUserDataKeyEncrypted, currentPassword)
+    return this.encryptUserDataKey(decryptedUserDataKey, newPassword)
   }
 
   public encryptData(data: string, decryptedUserDataKey: string): string {

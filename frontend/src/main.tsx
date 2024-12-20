@@ -17,6 +17,7 @@ import Notes from './pages/notes.tsx'
 import { EditNote } from './pages/edit-note.tsx'
 import Register from './pages/register.tsx'
 import LocationMap from './pages/location-map.tsx'
+import AccountSettings from './pages/account-settings.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -38,6 +39,11 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/locations" element={
               <PrivateRoute>
                 <LocationMap/>
+              </PrivateRoute>
+            }/>
+            <Route path="/account" element={
+              <PrivateRoute>
+                <AccountSettings/>
               </PrivateRoute>
             }/>
             <Route path="/edit-lists" element={

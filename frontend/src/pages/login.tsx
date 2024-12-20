@@ -35,7 +35,6 @@ function Login() {
   return (
     <>
       <h2>Anmeldung</h2>
-      <div className="content">
         <form className="loginForm" onSubmit={ e => e.preventDefault() }>
           <label htmlFor="userName">Nutzername:</label>
           <input id="userName" type="text" value={ username } onChange={ (e) => setUsername(e.target.value) }/>
@@ -48,8 +47,6 @@ function Login() {
         <div className="feedbackMessagesContainer">
           { messages.map((message, index) => (<span key={ index }>{ message }</span>)) }
         </div>
-
-      </div>
     </>
   )
 }

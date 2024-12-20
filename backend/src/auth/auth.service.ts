@@ -31,24 +31,34 @@ export class AuthService {
   }
 
   async login(userInformation: UserInformation, password: string): Promise<JWT> {
-    const user = await this.userRepository.findOneOrFail({where: {id: userInformation.id}})
-    if (!user.user_data_key_encrypted) {
-      user.user_data_key_encrypted = this.userKeyService.createEncryptedUserDataKey(password)
-      await this.userRepository.save(user)
-    }
-    const decryptedKey = this.userKeyService.decryptUserKey(user.user_data_key_encrypted, password)
-    // attach to jwt
-    return this.jwtService.sign({...userInformation, userDataKey: decryptedKey})
+    const user = await this.userRepository.findOneOrFail({ where: { id: userInformation.id } })
+    const decryptedKey = this.userKeyService.decryptUserDataKey(user.user_data_key_encrypted, password)
+    return this.jwtService.sign({ ...userInformation, userDataKey: decryptedKey })
   }
 
   async register({ username, password }: LoginCredentials): Promise<UserInformation> {
     if (await this.userRepository.exists({ where: { name: username } })) {
       throw new HttpException('Username already exists', HttpStatus.CONFLICT)
     }
+    const password_hashed = await this.hashPassword(password)
+
+    const user_data_key_encrypted = this.userKeyService.createEncryptedUserDataKey(password)
+
+    const { id, name } = await this.userRepository.save({ name: username, password_hashed, user_data_key_encrypted })
+    return { id, name }
+  }
+
+  private async hashPassword(password: string) {
     const salt = await genSalt(10)
-    const password_hashed = await hash(password, salt)
-    const { id, name } = await this.userRepository.save({ name: username, password_hashed })
-    return  { id, name }
+    return await hash(password, salt)
+  }
+
+  async changePassword(user: UserInformation, currentPassword: string, newPassword: string) {
+    await this.validateUser(user.name, currentPassword)
+    const userEntity = await this.userRepository.findOneOrFail({ where: { id: user.id } })
+    userEntity.user_data_key_encrypted = this.userKeyService.reencryptUserDataKey(userEntity.user_data_key_encrypted, currentPassword, newPassword)
+    userEntity.password_hashed = await this.hashPassword(newPassword)
+    await this.userRepository.save(userEntity)
   }
 }
 

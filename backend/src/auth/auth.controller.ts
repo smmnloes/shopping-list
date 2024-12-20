@@ -64,6 +64,19 @@ export class AuthController {
     res.status(200).send()
   }
 
+  @Post('changepassword')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async changePassword(@Request() { body: { currentPassword, newPassword }, user: {name, id} }: ExtendedJWTGuardRequest<{
+    currentPassword: string,
+    newPassword: string
+  }>, @Response() res: ExpressResponse<AuthStatus>) {
+    await this.authService.changePassword({name, id}, currentPassword, newPassword)
+    const jwt = await this.authService.login({name, id}, newPassword)
+    this.sendResponseWithAuthStatusAndJWTCookie(res, jwt,name)
+  }
+
+
   private sendResponseWithAuthStatusAndJWTCookie(res: ExpressResponse<AuthStatus>, jwt: string, username: string) {
     const expirationMs = this.configService.get<number>('AUTH_EXPIRATION_PERIOD_DAYS') * 24 * 60 * 60 * 1000
     res.cookie('jwt', jwt,
