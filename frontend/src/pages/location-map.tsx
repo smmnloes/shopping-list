@@ -1,6 +1,6 @@
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
-import { DragEndEvent, icon, Marker as LeafletMarker } from 'leaflet'
-import { useEffect, useState } from 'react'
+import { DragEndEvent, icon, Map as LeafletMap, Marker as LeafletMarker } from 'leaflet'
+import { createRef, Ref, useEffect, useState } from 'react'
 import { getLocation, postLocation } from '../api/locations.ts'
 import type { LocationFrontendView } from '../../../shared/types/location.ts'
 import { formatDate } from '../utils/date-time-format.ts'
@@ -9,11 +9,14 @@ const carIcon = icon({
   iconUrl: 'car.png',
   iconSize: [ 83, 50 ],
   iconAnchor: [ 40, 50 ], // sets the anchor to the middle bottom of the car
-  popupAnchor: [0, -55]   // sets the popup slightly above the middle of the car
+  popupAnchor: [ 0, -55 ]   // sets the popup slightly above the middle of the car
 })
+
+const DEFAULT_LOCATION = { lat: 52.425379, lng: 13.329916 }
 
 const LocationMap = () => {
   const [ location, setLocation ] = useState<LocationFrontendView>()
+  let mapRef: Ref<LeafletMap> = createRef()
 
   useEffect(() => {
     (async () => {
@@ -25,6 +28,13 @@ const LocationMap = () => {
       }
     })()
   }, [])
+
+  useEffect(() => {
+    if (mapRef.current !== null && location) {
+      mapRef.current.setView(location)
+    }
+  }, [location, mapRef])
+
 
   const setLocationHandler = async () => {
     navigator.geolocation.getCurrentPosition(async (location) => {
@@ -41,9 +51,8 @@ const LocationMap = () => {
 
   return (
     <div className="mapcontainer">
-      <MapContainer center={ [
-        52.425379, 13.329916
-      ] } zoom={ 18 } maxZoom={ 18 } scrollWheelZoom={ true } touchZoom={ true } zoomControl={ false }>
+      <MapContainer ref={mapRef} center={ DEFAULT_LOCATION } zoom={ 18 } maxZoom={ 18 } scrollWheelZoom={ true }
+                    touchZoom={ true } zoomControl={ false } >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
