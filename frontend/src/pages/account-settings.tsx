@@ -62,10 +62,10 @@ const AccountSettings = () => {
   }
 
   return <>
-    <h2>Account</h2>
+    <h1>Account</h1>
     <div className="accountUserInfo">
-      <p>angemeldet als <span className="userName">{ authStatus?.username }</span></p>
-      <button className="my-button" onClick={ handleLogout }>abmelden</button>
+      <p>angemeldet als<br/><span className="userName">{ authStatus?.username }</span></p>
+      <button className="my-button accountPageButton" onClick={ handleLogout }>abmelden</button>
     </div>
     <form className="loginForm" onSubmit={ e => e.preventDefault() }>
       <h3>Passwort ändern</h3>
@@ -78,15 +78,15 @@ const AccountSettings = () => {
       <label htmlFor="passwordConfirm">Passwort Bestätigen:</label>
       <input id="passwordConfirm" type="password" value={ passwordConfirm }
              onChange={ (e) => setPasswordConfirm(e.target.value) }/>
-      <button className="my-button loginButton" type="submit" onClick={ onChangePasswordClick }>Ändern</button>
+      <button className="my-button accountPageButton" type="submit" onClick={ onChangePasswordClick }>ändern</button>
     </form>
 
     <div className="feedbackMessagesContainer">
       <div className="errorMessages">
-        { errorMessages.map((message, index) => (<span key={ index }>{ message }</span>)) }
+        { errorMessages.map((message, index) => (<div key={ index }>{ message }</div>)) }
       </div>
       <div className="successMessages">
-        { successMessages.map((message, index) => (<span key={ index }>{ message }</span>)) }
+        { successMessages.map((message, index) => (<div key={ index }>{ message }</div>)) }
       </div>
     </div>
 

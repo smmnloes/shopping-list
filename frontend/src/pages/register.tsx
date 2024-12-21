@@ -61,7 +61,7 @@ function Register() {
 
   return (
     <>
-      <h2>Registrierung</h2>
+      <h1>Registrierung</h1>
       <div className="content">
         <form className="loginForm" onSubmit={ e => e.preventDefault() }>
           <label htmlFor="registrationSecret">Registrierungspassword:</label>
@@ -78,7 +78,7 @@ function Register() {
         </form>
 
         <div className="feedbackMessagesContainer">
-          { messages.map((message, index) => (<span key={ index }>{ message }</span>)) }
+          { messages.map((message, index) => (<div key={ index }>{ message }</div>)) }
         </div>
       </div>
     </>

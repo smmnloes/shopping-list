@@ -47,8 +47,8 @@ function Header() {
 
 
         <div className="userMenu" style={ { visibility: authStatus?.authenticated ? 'visible' : 'hidden' } }>
-          <div className="userCircle"
-               onClick={ () => navigate(location.pathname === '/account' ? '/' : '/account') }>{ authStatus?.username?.charAt(0).toUpperCase() }</div>
+          <div className={ `userCircle ${ location.pathname === '/account' ? 'active' : '' }` }
+               onClick={ () => location.pathname === '/account' ? navigate(-1) : navigate('/account') }>{ authStatus?.username?.charAt(0).toUpperCase() }</div>
         </div>
 
       </header>

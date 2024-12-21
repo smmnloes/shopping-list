@@ -179,7 +179,7 @@ form input {
 
   justify-items: center;
   align-items: center;
-  margin-top: 75px;
+  margin-top: 100px;
 
   * {
     padding: 5px;
@@ -233,10 +233,6 @@ form input {
   label {
     text-align: left;
   }
-
-  h3 {
-    text-align: left;
-  }
 }
 
 .addItemForm {
@@ -267,7 +263,7 @@ form input {
   display: flex;
   justify-content: end;
   font-size: 15px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 .offline-banner {
@@ -541,20 +537,9 @@ td.mealDoneCheck {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
-.userMenuContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: opacity 0.3s;
-  margin-right: 10px;
-
-  > * {
-    padding: 5px;
-  }
-}
 
 .userCircle {
   width: 50px;
@@ -566,10 +551,10 @@ td.mealDoneCheck {
   text-align: center;
   background: var(--color-highlight);
   border: 1px solid white;
-}
 
-.usernameDisplay {
-  text-align: center;
+  &.active {
+    color: white;
+  }
 }
 
 .noElementsMessage {
@@ -629,9 +614,15 @@ td.mealDoneCheck {
 }
 
 .accountUserInfo {
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 
 .userName {
   font-weight: bold;
+}
+
+.accountPageButton {
+  width: 100px;
+  padding: 10px;
+  margin: auto;
 }
