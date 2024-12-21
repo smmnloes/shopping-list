@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import ReactQuill, { DeltaStatic, EmitterSource } from 'react-quill-new'
+import { useEffect, useMemo, useState } from 'react'
+import ReactQuill, { DeltaStatic, EmitterSource, Quill } from 'react-quill-new'
 import '../styles/quill/quill.snow.scss'
 import { deleteNote, getNote, saveNote, setNoteVisibility } from '../api/notes.ts'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -40,6 +40,21 @@ export const EditNote = () => {
   }
 
   const noteId = parseInt(noteIdParam)
+  let reactQuillRef: ReactQuill | null = null
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const icons: any = Quill.import('ui/icons')
+      icons.undo = `<svg viewbox="0 0 18 18">
+        <polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10"></polygon>
+        <path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"></path>
+      </svg>`
+      icons.redo = `<svg viewbox="0 0 18 18">
+        <polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10"></polygon>
+        <path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14A5,5,0,1,1,14,9"></path>
+      </svg>`
+    }
+  }, [])
 
   useEffect(() => {
     (async () => {
@@ -82,21 +97,36 @@ export const EditNote = () => {
     setPubliclyVisible(newPubliclyVisible)
   }
 
-  const modules = {
+
+  const { modules, formats } = useMemo(() => ({
+    modules: {
+      history: {
+        delay: 1000,
+        maxStack: 100,
+        userOnly: false
+      },
       toolbar: {
         container: [
           [ { 'header': [ 2, 3, false ] }, 'bold', 'italic', 'underline', 'strike' ],
-          [ { 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }, { 'indent': '-1' }, { 'indent': '+1' }, 'image' ],
+          [ { 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }, { 'indent': '-1' }, { 'indent': '+1' }, 'image', 'undo', 'redo' ],
         ],
+        handlers: {
+          undo: () => {
+            return reactQuillRef?.getEditor()?.history.undo()
+          },
+          redo: () => {
+            return reactQuillRef?.getEditor()?.history.redo()
+          }
+        }
       }
-    },
-
-    formats = [
+    }, formats: [
       'header',
       'bold', 'italic', 'underline', 'strike',
       'list', 'indent',
       'image'
     ]
+  }), [])
+
 
   return (
     <div className="editor-wrapper">
@@ -137,7 +167,11 @@ export const EditNote = () => {
       </div>
       <div id="quill">
         <ReactQuill theme="snow" value={ noteContent } modules={ modules } formats={ formats }
-                    onChange={ handleOnChange }/>
+                    onChange={ handleOnChange } ref={ (el) => {
+          if (el) {
+            reactQuillRef = el
+          }
+        } }/>
       </div>
     </div>
   )
