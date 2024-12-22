@@ -5,8 +5,8 @@ git push
 # Frontend - built locally, building it on server crashes it
 cd ../frontend
 
-npm install
-npm run build:prod
+pnpm install
+pnpm run build:prod
  rsync -av --delete --progress ./dist ubuntu@mloesch.it:/var/www/shopping-list/frontend
 
 
@@ -19,8 +19,8 @@ export NVM_DIR="$HOME/.nvm"
 cd /var/www/shopping-list/backend
 git pull
 
-npm install
-npm run build
+pnpm install
+pnpm run build
 
 sudo systemctl daemon-reload
 sudo systemctl restart shopping-list-backend
