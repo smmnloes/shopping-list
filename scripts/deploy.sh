@@ -1,5 +1,8 @@
 #!/bin/bash
-npm version minor
+# Set the version type based on the argument, default to "minor"
+VERSION_TYPE=${1:-minor}
+
+npm version $VERSION_TYPE
 git push
 
 # Frontend - built locally, building it on server crashes it
