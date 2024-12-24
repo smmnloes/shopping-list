@@ -99,7 +99,7 @@ export const EditNote = () => {
       history: {
         delay: 1000,
         maxStack: 100,
-        userOnly: false
+        userOnly: true
       },
       toolbar: {
         container: [
