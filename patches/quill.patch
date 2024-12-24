@@ -1,15 +1,15 @@
 diff --git a/formats/list.js b/formats/list.js
-index f0ba12ec05a4322e140c1bd11490e8d2ae33ab46..4dddee1ef3fa0ff969f59548afbe81dc4cf8a94a 100644
+index f0ba12ec05a4322e140c1bd11490e8d2ae33ab46..31bf3045f4d59e5d79d30f59ddc4771bbd7ef3cc 100644
 --- a/formats/list.js
 +++ b/formats/list.js
-@@ -25,8 +25,8 @@ class ListItem extends Block {
-       if (format === 'checked') {
-         this.format('list', 'unchecked');
-         e.preventDefault();
--      } else if (format === 'unchecked') {
--        this.format('list', 'checked');
-+      } else if (format === 'click') {
-+        this.format('list', 'touchend');
+@@ -30,8 +30,8 @@ class ListItem extends Block {
          e.preventDefault();
        }
      };
+-    ui.addEventListener('mousedown', listEventHandler);
+-    ui.addEventListener('touchstart', listEventHandler);
++    ui.addEventListener('click', listEventHandler);
++    ui.addEventListener('touchend', listEventHandler);
+     this.attachUI(ui);
+   }
+   format(name, value) {
