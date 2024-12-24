@@ -1,5 +1,5 @@
 {
-  "version": "1.54.0",
+  "version": "1.54.1",
   "scripts": {
     "build": "npm --prefix backend run build && npm --prefix frontend run build:prod"
   },
