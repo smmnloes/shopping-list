@@ -82,7 +82,7 @@ export class AuthController {
     res.cookie('jwt', jwt,
       {
         httpOnly: true,
-        secure: true,
+        secure: false,
         maxAge: expirationMs,
         sameSite: 'lax'
       })

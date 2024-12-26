@@ -7,10 +7,5 @@
     "backend",
     "frontend"
   ],
-  "packageManager": "pnpm@9.15.1",
-  "pnpm": {
-    "patchedDependencies": {
-      "quill": "patches/quill.patch"
-    }
-  }
+  "packageManager": "pnpm@9.15.1"
 }
