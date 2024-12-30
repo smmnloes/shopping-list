@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   quill:
-    hash: ap3tkkphnnvznt74ehw3nakxmm
+    hash: 4ucifg57myn65tkfj456nikbna
     path: patches/quill.patch
 
 importers:
@@ -10040,7 +10040,7 @@ snapshots:
       lodash.clonedeep: 4.5.0
       lodash.isequal: 4.5.0
 
-  quill@2.0.3(patch_hash=ap3tkkphnnvznt74ehw3nakxmm):
+  quill@2.0.3(patch_hash=4ucifg57myn65tkfj456nikbna):
     dependencies:
       eventemitter3: 5.0.1
       lodash-es: 4.17.21
@@ -10085,7 +10085,7 @@ snapshots:
   react-quill-new@3.3.3(quill-delta@5.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       lodash: 4.17.21
-      quill: 2.0.3(patch_hash=ap3tkkphnnvznt74ehw3nakxmm)
+      quill: 2.0.3(patch_hash=4ucifg57myn65tkfj456nikbna)
       quill-delta: 5.1.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)

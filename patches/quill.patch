@@ -13,3 +13,28 @@ index f0ba12ec05a4322e140c1bd11490e8d2ae33ab46..31bf3045f4d59e5d79d30f59ddc4771b
      this.attachUI(ui);
    }
    format(name, value) {
+diff --git a/modules/keyboard.js b/modules/keyboard.js
+index 2113f227dac2d8ef92a32641e2b0569f6f26fca2..8fe8c82f8efc753192b633fc102ea02b941a2f13 100644
+--- a/modules/keyboard.js
++++ b/modules/keyboard.js
+@@ -259,6 +259,20 @@ class Keyboard extends Module {
+     this.quill.updateContents(delta, Quill.sources.USER);
+     this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
+     this.quill.focus();
++
++
++    // Hack to enable effects needed for auto-capitalization and others
++    const syntheticEvent = new KeyboardEvent('keydown', {
++      key: 'Enter',
++      keyCode: 13,
++      code: 'Enter',
++      bubbles: true,
++      cancelable: true,
++      isComposing: true
++    });
++
++    context.event.target.dispatchEvent(syntheticEvent);
++    console.log('Synthetic event dispatched');
+   }
+ }
+ const defaultOptions = {
