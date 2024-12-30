@@ -1,7 +1,14 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { deleteNote, getNote, saveNote, setNoteVisibility } from '../api/notes.ts'
 import { useNavigate, useParams } from 'react-router-dom'
 import type { NoteDetails } from '../../../shared/types/notes.ts'
+import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer'
+import { ContentEditable } from '@lexical/react/LexicalContentEditable'
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin'
+import { LexicalErrorBoundaryProps } from '@lexical/react/LexicalErrorBoundary'
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
+import PlaygroundEditorTheme from '../styles/PlaygroundEditorTheme.ts'
 
 enum SAVE_STATE {
   SAVED,
@@ -73,6 +80,13 @@ export const EditNote = () => {
   }
 
 
+// Editor configuration
+  const initialConfig: InitialConfigType = {
+    namespace: 'MyEditor',
+    theme: PlaygroundEditorTheme,
+    onError: (error) => console.error(error),
+  }
+
   return (
     <div className="editor-wrapper">
       <div className="editorControls">
@@ -110,7 +124,20 @@ export const EditNote = () => {
           </div>
         </div>
       </div>
-      {/* Editor goes here*/}
+      <LexicalComposer initialConfig={initialConfig}>
+        <RichTextPlugin
+            contentEditable={<ContentEditable className="editor-input"/>}
+            placeholder={<div className="editor-placeholder">Enter some text...</div>}
+            ErrorBoundary={{} as React.FC<LexicalErrorBoundaryProps>}
+        />
+        <ToolbarPlugin/>
+        <HistoryPlugin/>
+        <OnChangePlugin
+            onChange={editorState => {
+              // Access the editor state here
+              console.log(editorState)
+            }}/>
+      </LexicalComposer>
     </div>
   )
 }
