@@ -1,6 +1,11 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { configForCategory } from '../types/types.ts'
-import { CheckedItem, getCheckedItemIdsFromLocal, setCheckedItemsToLocal } from '../api/local-storage.ts'
+import {
+  CHECKED_ITEMS_KEY,
+  CheckedItem,
+  getStoredValueForKey,
+  storeValueForKey
+} from '../local-storage/local-storage.ts'
 import useOnlineStatus from '../hooks/use-online-status.ts'
 import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
@@ -25,7 +30,7 @@ const EditLists = () => {
     if (selectedCategory) {
       (async () => {
         try {
-          setCheckedItems(getCheckedItemIdsFromLocal())
+          setCheckedItems(getStoredValueForKey(CHECKED_ITEMS_KEY) ?? [])
           await refreshItems(selectedCategory)
         } catch (error) {
           console.error('Error fetching list items', error)
@@ -58,7 +63,7 @@ const EditLists = () => {
 
   const updateCheckedItems = (checkedItems: CheckedItem[]) => {
     setCheckedItems(checkedItems)
-    setCheckedItemsToLocal(checkedItems)
+    storeValueForKey(CHECKED_ITEMS_KEY, checkedItems)
   }
 
   const removeItems = async (toRemoveIds: number[]) => {
@@ -69,7 +74,6 @@ const EditLists = () => {
       await deleteItemsFromCategoryBulk(toRemoveIds, selectedCategory)
       await refreshItems(selectedCategory)
       updateCheckedItems(checkedItems.filter(item => !toRemoveIds.includes(item.id)))
-      console.log('Items removed')
     } catch (error) {
       console.error('There was a problem removing the item', error)
     }
