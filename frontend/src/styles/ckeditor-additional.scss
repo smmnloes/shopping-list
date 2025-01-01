@@ -1,0 +1,15 @@
+:root {
+  --ck-border-radius: 10px;
+  --ck-inner-shadow: 0;
+
+}
+
+.ck-editor div.ck.ck-toolbar {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.ck-powered-by {
+  display: none;
+}
+

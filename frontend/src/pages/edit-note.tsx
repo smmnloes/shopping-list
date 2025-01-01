@@ -1,10 +1,23 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import ReactQuill, { DeltaStatic, EmitterSource, Quill } from 'react-quill-new'
-import '../styles/quill/quill.snow.scss'
+import { useEffect, useRef, useState } from 'react'
 import { deleteNote, getNote, saveNote, setNoteVisibility } from '../api/notes.ts'
 import { useNavigate, useParams } from 'react-router-dom'
-import { postImageInsertProcessing } from '../utils/image-processing.ts'
 import type { NoteDetails } from '../../../shared/types/notes.ts'
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+import {
+  Bold,
+  ClassicEditor,
+  Editor,
+  Essentials,
+  EventInfo,
+  Heading,
+  Italic,
+  List,
+  Paragraph,
+  TodoList
+} from 'ckeditor5'
+
+import 'ckeditor5/ckeditor5.css'
+import '../styles/ckeditor-additional.scss'
 
 enum SAVE_STATE {
   SAVED,
@@ -24,16 +37,6 @@ const classForSaveState = {
   [SAVE_STATE.SAVING]: 'saving'
 }
 
-const icons: any = Quill.import('ui/icons')
-icons.undo = `<svg viewbox="0 0 18 18">
-        <polygon class="ql-fill ql-stroke" points="6 10 4 12 2 10 6 10"></polygon>
-        <path class="ql-stroke" d="M8.09,13.91A4.6,4.6,0,0,0,9,14,5,5,0,1,0,4,9"></path>
-      </svg>`
-icons.redo = `<svg viewbox="0 0 18 18">
-        <polygon class="ql-fill ql-stroke" points="12 10 14 12 16 10 12 10"></polygon>
-        <path class="ql-stroke" d="M9.91,13.91A4.6,4.6,0,0,1,9,14A5,5,0,1,1,14,9"></path>
-      </svg>`
-
 export const EditNote = () => {
   const [ noteContent, setNoteContent ] = useState<string>('')
 
@@ -41,6 +44,8 @@ export const EditNote = () => {
   const [ modalVisible, setModalVisible ] = useState<boolean>(false)
   const [ publiclyVisible, setPubliclyVisible ] = useState<boolean | undefined>()
   const [ permissions, setPermissions ] = useState<NoteDetails['permissions']>()
+
+  const initialLoadComplete = useRef(false)
 
   const navigate = useNavigate()
 
@@ -50,23 +55,18 @@ export const EditNote = () => {
   }
 
   const noteId = parseInt(noteIdParam)
-  const reactQuillRef = useRef<ReactQuill>(null)
+
+  const initialize = async () => {
+    const { content, publiclyVisible, permissions } = await getNote(noteId)
+    setNoteContent(content)
+    setPubliclyVisible(publiclyVisible)
+    setPermissions(permissions)
+    return content
+  }
 
   useEffect(() => {
-    (async () => {
-      const { content, publiclyVisible, permissions } = await getNote(noteId)
-      setNoteContent(content)
-      setPubliclyVisible(publiclyVisible)
-      setPermissions(permissions)
-    })()
+    initialize()
   }, [ noteId ])
-
-  const handleOnChange = async (value: string, delta: DeltaStatic, source: EmitterSource) => {
-    setNoteContent(await postImageInsertProcessing(value, delta))
-    if (source === 'user') {
-      setSaveState(SAVE_STATE.UNSAVED)
-    }
-  }
 
 
   const handleSaveNote = async () => {
@@ -93,35 +93,18 @@ export const EditNote = () => {
     setPubliclyVisible(newPubliclyVisible)
   }
 
-
-  const { modules, formats } = useMemo(() => ({
-    modules: {
-      history: {
-        delay: 1000,
-        maxStack: 100,
-        userOnly: true
-      },
-      toolbar: {
-        container: [
-          [ { 'header': [ 2, 3, false ] }, 'bold', 'italic', 'underline', 'strike' ],
-          [ { 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }, { 'indent': '-1' }, { 'indent': '+1' }, 'image', 'undo', 'redo' ],
-        ],
-        handlers: {
-          undo: () => {
-            reactQuillRef.current?.getEditor().history.undo()
-          },
-          redo: () => {
-            reactQuillRef.current?.getEditor().history.redo()
-          }
-        }
+  const handleOnChange = (event: EventInfo, editor: Editor) => {
+    if (event.name === 'change:data') {
+      if (initialLoadComplete.current) {
+        setNoteContent(editor.getData())
+        setSaveState(SAVE_STATE.UNSAVED)
       }
-    }, formats: [
-      'header',
-      'bold', 'italic', 'underline', 'strike',
-      'list', 'indent',
-      'image'
-    ]
-  }), [])
+    }
+  }
+
+  const handleOnReady = async (editor: Editor) => {
+    await initialize().then(content => editor.setData(content)).then(() => initialLoadComplete.current = true)
+  }
 
 
   return (
@@ -161,10 +144,20 @@ export const EditNote = () => {
           </div>
         </div>
       </div>
-      <div id="quill">
-        <ReactQuill theme="snow" value={ noteContent } modules={ modules } formats={ formats }
-                    onChange={ handleOnChange } ref={ reactQuillRef }/>
-      </div>
+      <CKEditor
+        editor={ ClassicEditor }
+        config={ {
+          licenseKey: 'GPL',
+          plugins: [ Essentials, Paragraph, Bold, Italic, List, TodoList, Heading ],
+          toolbar: {
+            items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', '-', 'numberedList', 'bulletedList', 'todoList' ],
+            shouldNotGroupWhenFull: true
+          },
+          initialData: noteContent,
+        } }
+        onChange={ handleOnChange }
+        onReady={ handleOnReady }
+      />
     </div>
   )
 }
