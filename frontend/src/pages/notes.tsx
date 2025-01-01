@@ -30,25 +30,42 @@ const formatDate = (date: Date): string => {
   }) }`
 }
 
-const sortNotesByCreatedDescending = (notes: NoteOverview[]) => [ ...notes.sort(
-  (noteA, noteB) => new Date(noteB.createdAt).getTime() - new Date(noteA.createdAt).getTime()
-) ]
-
 const Notes = () => {
   const [ notes, setNotes ] = useState<NoteOverview[]>([])
-  const [ sortCriteria, setSortCriteria ] = useState(0)
-  const [ sortOrder, setSortOrder ] = useState(0)
+  const [ selectedSortCriteria, setSelectedSortCriteria ] = useState(0)
+  const [ selectedSortOrder, setSelectedSortOrder ] = useState(0)
 
   const navigate = useNavigate()
 
   useEffect(() => {
     (async () => getNotes()
-      .then(response => setNotes(sortNotesByCreatedDescending(response.notes))))()
+      .then(response => setNotes(response.notes)))()
   }, [])
 
   const newNoteHandler = async () => {
     const id = await newNote().then(response => response.id)
     navigate(`/notes/${ id }`)
+  }
+
+  const sortNotes = (notes: NoteOverview[]): NoteOverview[] => {
+    const criteria = SORT_CRITERIA[selectedSortCriteria]
+    switch (criteria) {
+      case 'CREATION_TIME':
+        notes.sort((noteA, noteB) => new Date(noteB.createdAt).getTime() - new Date(noteA.createdAt).getTime())
+        break
+      case 'EDIT_TIME':
+        notes.sort((noteA, noteB) => new Date(noteB.lastUpdatedAt).getTime() - new Date(noteA.lastUpdatedAt).getTime())
+        break
+      case 'ALPHABETICAL':
+        notes.sort((noteA, noteB) => ('' + noteB.title).localeCompare(noteA.title))
+        break
+    }
+
+    const order = SORT_ORDER[selectedSortOrder]
+    if (order === 'ASCENDING') {
+      notes.reverse()
+    }
+    return notes
   }
 
   return (
@@ -58,18 +75,18 @@ const Notes = () => {
       <div className="listContainer notes">
         <div className="notesListControls">
           <button className="my-button" onClick={ () => {
-            setSortOrder((before) => (before + 1) % SORT_ORDER.length)
-          } }><img src={ iconForSortOrder[SORT_ORDER[sortOrder]] } alt="Sorting order"/></button>
+            setSelectedSortOrder((before) => (before + 1) % SORT_ORDER.length)
+          } }><img src={ iconForSortOrder[SORT_ORDER[selectedSortOrder]] } alt="Sorting order"/></button>
 
           <button className="my-button multi-img" onClick={ () => {
-            setSortCriteria(before => (before + 1) % SORT_CRITERIA.length)
+            setSelectedSortCriteria(before => (before + 1) % SORT_CRITERIA.length)
           } }>
-            <img src={ iconForSortCriteria[SORT_CRITERIA[sortCriteria]] } alt="Sorting criteria"/>
+            <img src={ iconForSortCriteria[SORT_CRITERIA[selectedSortCriteria]] } alt="Sorting criteria"/>
           </button>
         </div>
 
         <div className="listElement newElement" onClick={ newNoteHandler }>Neue Notiz</div>
-        { notes.map((note, index) => (
+        { sortNotes([...notes]).map((note, index) => (
           <div key={ index } className="listElementContainer">
             <div className="listElement" onClick={ () => navigate(`/notes/${ note.id }`) }>
               <div className="noteContainer">
