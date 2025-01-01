@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 # Set the version type based on the argument, default to "minor"
 VERSION_TYPE=${1:-minor}
 
