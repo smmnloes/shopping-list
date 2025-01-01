@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { getNotes, newNote } from '../api/notes.ts'
 import { useNavigate } from 'react-router-dom'
 import type { NoteOverview } from '../../../shared/types/notes.ts'
-import { getStoredValueForKey, NOTES_ORDER, NOTES_ORDER_KEY, storeValueForKey } from '../local-storage/local-storage.ts'
+import useLocalStorageState from '../hooks/use-local-storage-state.ts'
 
+export type NOTES_ORDER = { sortCriteria: number, sortOrder: number }
+export const NOTES_ORDER_KEY = 'notesOrder'
 
 const SORT_CRITERIA = [ 'CREATION_TIME', 'EDIT_TIME', 'ALPHABETICAL' ] as const
 type SORT_CRITERIA = (typeof SORT_CRITERIA)[number]
@@ -33,17 +35,13 @@ const formatDate = (date: Date): string => {
 
 const Notes = () => {
   const [ notes, setNotes ] = useState<NoteOverview[]>([])
-  const [ selectedSortCriteria, setSelectedSortCriteria ] = useState(0)
-  const [ selectedSortOrder, setSelectedSortOrder ] = useState(0)
+
+  const [notesOrder, setNotesOrder] = useLocalStorageState<NOTES_ORDER>(NOTES_ORDER_KEY, {sortCriteria: 0, sortOrder: 0})
 
   const navigate = useNavigate()
 
   useEffect(() => {
     (async () => {
-      const localSortingInfo = getStoredValueForKey<NOTES_ORDER>(NOTES_ORDER_KEY)
-      setSelectedSortOrder(localSortingInfo?.sortOrder ?? 0)
-      setSelectedSortCriteria(localSortingInfo?.sortCriteria ?? 0)
-
       getNotes()
         .then(response => setNotes(response.notes))
     })()
@@ -55,7 +53,7 @@ const Notes = () => {
   }
 
   const sortNotes = (notes: NoteOverview[]): NoteOverview[] => {
-    const criteria = SORT_CRITERIA[selectedSortCriteria]
+    const criteria = SORT_CRITERIA[notesOrder.sortCriteria]
     switch (criteria) {
       case 'CREATION_TIME':
         notes.sort((noteA, noteB) => new Date(noteB.createdAt).getTime() - new Date(noteA.createdAt).getTime())
@@ -68,24 +66,21 @@ const Notes = () => {
         break
     }
 
-    const order = SORT_ORDER[selectedSortOrder]
+    const order = SORT_ORDER[notesOrder.sortOrder]
     if (order === 'ASCENDING') {
       notes.reverse()
     }
     return notes
   }
 
-  // TODO: Local storage backed state? like query param backed?
   const handleSortOrderChange = () => {
-    const newValue = (selectedSortOrder + 1) % SORT_ORDER.length
-    setSelectedSortOrder(newValue)
-    storeValueForKey<NOTES_ORDER>(NOTES_ORDER_KEY, { sortCriteria: selectedSortCriteria, sortOrder: newValue })
+    const newValue = (notesOrder.sortOrder + 1) % SORT_ORDER.length
+    setNotesOrder({...notesOrder, sortOrder: newValue})
   }
 
   const handleSortCriteriaChange = () => {
-    const newValue = (selectedSortCriteria + 1) % SORT_CRITERIA.length
-    setSelectedSortCriteria(newValue)
-    storeValueForKey<NOTES_ORDER>(NOTES_ORDER_KEY, { sortCriteria: newValue, sortOrder: selectedSortOrder })
+    const newValue = (notesOrder.sortCriteria + 1) % SORT_CRITERIA.length
+    setNotesOrder({...notesOrder, sortCriteria: newValue})
   }
 
   return (
@@ -95,10 +90,10 @@ const Notes = () => {
       <div className="listContainer notes">
         <div className="notesListControls">
           <button className="my-button" onClick={ handleSortOrderChange }><img
-            src={ iconForSortOrder[SORT_ORDER[selectedSortOrder]] } alt="Sorting order"/></button>
+            src={ iconForSortOrder[SORT_ORDER[notesOrder.sortOrder]] } alt="Sorting order"/></button>
 
           <button className="my-button" onClick={ handleSortCriteriaChange }>
-            <img src={ iconForSortCriteria[SORT_CRITERIA[selectedSortCriteria]] } alt="Sorting criteria"/>
+            <img src={ iconForSortCriteria[SORT_CRITERIA[notesOrder.sortCriteria]] } alt="Sorting criteria"/>
           </button>
         </div>
 

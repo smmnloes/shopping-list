@@ -1,10 +1,4 @@
-import type { ShopCategory } from '../../../shared/types/shopping.ts'
 
-export type CheckedItem = { id: number, category: ShopCategory }
-export const CHECKED_ITEMS_KEY = 'checkedItems'
-
-export type NOTES_ORDER = { sortCriteria: number, sortOrder: number }
-export const NOTES_ORDER_KEY = 'notesOrder'
 
 export const getStoredValueForKey = <T> (key: string): T | null => {
   const values = localStorage.getItem(key)

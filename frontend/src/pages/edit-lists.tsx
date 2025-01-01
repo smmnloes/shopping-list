@@ -1,17 +1,15 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { configForCategory } from '../types/types.ts'
-import {
-  CHECKED_ITEMS_KEY,
-  CheckedItem,
-  getStoredValueForKey,
-  storeValueForKey
-} from '../local-storage/local-storage.ts'
 import useOnlineStatus from '../hooks/use-online-status.ts'
 import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import SelectStapleModal from './select-staple-modal.tsx'
 import { createNewItemForCategory, deleteItemsFromCategoryBulk, getItemsForCategory } from '../api/shopping.ts'
-import type {  ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
+import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
+import useLocalStorageState from '../hooks/use-local-storage-state.ts'
+
+export type CheckedItem = { id: number, category: ShopCategory }
+export const CHECKED_ITEMS_KEY = 'checkedItems'
 
 
 const EditLists = () => {
@@ -19,7 +17,7 @@ const EditLists = () => {
 
   const [ listItems, setListItems ] = useState<ListItemFrontend[]>([])
   const [ addedStaples, setAddedStaples ] = useState<ListItemFrontend[]>([])
-  const [ checkedItems, setCheckedItems ] = useState<CheckedItem[]>([])
+  const [ checkedItems, setCheckedItems ] = useLocalStorageState<CheckedItem[]>(CHECKED_ITEMS_KEY, [])
 
   const [ newItemName, setNewItemName ] = useState<string>('')
 
@@ -30,7 +28,6 @@ const EditLists = () => {
     if (selectedCategory) {
       (async () => {
         try {
-          setCheckedItems(getStoredValueForKey(CHECKED_ITEMS_KEY) ?? [])
           await refreshItems(selectedCategory)
         } catch (error) {
           console.error('Error fetching list items', error)
@@ -61,11 +58,6 @@ const EditLists = () => {
     }
   }
 
-  const updateCheckedItems = (checkedItems: CheckedItem[]) => {
-    setCheckedItems(checkedItems)
-    storeValueForKey(CHECKED_ITEMS_KEY, checkedItems)
-  }
-
   const removeItems = async (toRemoveIds: number[]) => {
     if (!selectedCategory) {
       return
@@ -73,7 +65,7 @@ const EditLists = () => {
     try {
       await deleteItemsFromCategoryBulk(toRemoveIds, selectedCategory)
       await refreshItems(selectedCategory)
-      updateCheckedItems(checkedItems.filter(item => !toRemoveIds.includes(item.id)))
+      setCheckedItems(checkedItems.filter(item => !toRemoveIds.includes(item.id)))
     } catch (error) {
       console.error('There was a problem removing the item', error)
     }
@@ -90,7 +82,7 @@ const EditLists = () => {
     } else {
       newCheckedItems = newCheckedItems.filter(item => item.id !== itemId)
     }
-    updateCheckedItems(newCheckedItems)
+    setCheckedItems(newCheckedItems)
   }
 
   const handleClearCheckedItems = async () => {
