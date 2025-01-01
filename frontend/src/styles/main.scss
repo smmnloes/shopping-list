@@ -162,7 +162,17 @@ form input {
 }
 
 .notesListControls {
-  margin-top: 25px;
+  display: flex;
+  justify-content: end;
+
+  img {
+    height: 30px;
+    width: 30px;
+  }
+
+  > * {
+    margin-left: 10px;
+  }
 }
 
 .loginButton {
