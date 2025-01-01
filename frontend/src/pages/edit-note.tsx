@@ -10,6 +10,8 @@ import {
   Essentials,
   EventInfo,
   Heading,
+  Indent,
+  IndentBlock,
   Italic,
   List,
   Paragraph,
@@ -148,9 +150,9 @@ export const EditNote = () => {
         editor={ ClassicEditor }
         config={ {
           licenseKey: 'GPL',
-          plugins: [ Essentials, Paragraph, Bold, Italic, List, TodoList, Heading ],
+          plugins: [ Essentials, Paragraph, Bold, Italic, List, TodoList, Heading, Indent, IndentBlock ],
           toolbar: {
-            items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', '-', 'numberedList', 'bulletedList', 'todoList' ],
+            items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', 'todoList',  'outdent', 'indent' ],
             shouldNotGroupWhenFull: true
           },
           initialData: noteContent,
