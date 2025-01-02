@@ -64,7 +64,7 @@ function Register() {
       <h1>Registrierung</h1>
       <div className="content">
         <form className="loginForm" onSubmit={ e => e.preventDefault() }>
-          <label htmlFor="registrationSecret">Registrierungspassword:</label>
+          <label htmlFor="registrationSecret">Registrierungspasswort:</label>
           <input id="registrationSecret" type="password" value={ registrationSecret }
                  onChange={ (e) => setRegistrationSecret(e.target.value) }/>
           <label htmlFor="userName">Nutzername:</label>

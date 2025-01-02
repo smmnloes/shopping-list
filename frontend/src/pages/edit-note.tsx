@@ -10,12 +10,15 @@ import {
   Essentials,
   EventInfo,
   Heading,
+  Image,
   Indent,
   IndentBlock,
   Italic,
   List,
   Paragraph,
-  TodoList
+  Strikethrough,
+  TodoList,
+  Underline
 } from 'ckeditor5'
 
 import 'ckeditor5/ckeditor5.css'
@@ -150,10 +153,22 @@ export const EditNote = () => {
         editor={ ClassicEditor }
         config={ {
           licenseKey: 'GPL',
-          plugins: [ Essentials, Paragraph, Bold, Italic, List, TodoList, Heading, Indent, IndentBlock ],
+          plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, List, TodoList, Heading, Indent, IndentBlock, Image ],
           toolbar: {
-            items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', 'todoList',  'outdent', 'indent' ],
-            shouldNotGroupWhenFull: true
+            items: [ 'undo', 'redo', '|', 'heading', '|', {
+              label: 'Styles',
+              icon: 'text',
+              withText: true,
+              items: [ 'bold', 'italic', 'underline', 'strikethrough' ]
+            },
+              {
+                label: 'Listen',
+                icon: 'alignLeft',
+                withText: true,
+                items: [ 'numberedList', 'bulletedList', 'todoList' ]
+              },
+              '|', 'outdent', 'indent'
+            ], shouldNotGroupWhenFull: true
           },
           initialData: noteContent,
         } }
