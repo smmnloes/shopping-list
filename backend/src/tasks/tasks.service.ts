@@ -10,7 +10,7 @@ import { DeleteObjectsCommand, ListObjectsV2Command, PutObjectCommand, S3Client 
 @Injectable()
 export class TasksService {
   private readonly logger = new Logger(TasksService.name)
-  private readonly s3Client = new S3Client()
+  private readonly s3Client = new S3Client({ region: 'eu-central-1' })
 
   constructor(@Inject() readonly configService: ConfigService) {
   }
@@ -25,7 +25,7 @@ export class TasksService {
     await this.cleanupOldBackups(backupBucketName, backupsPrefix)
   }
 
-  private async uploadBackup(backupBucketName, backupsPrefix: string) {
+  private async uploadBackup(backupBucketName: string, backupsPrefix: string) {
     const dbPath = this.configService.get('DATABASE_PATH')
     const absolutePath = path.resolve(dbPath)
     const backupFileName = format(new Date(), 'yyyy-MM-dd-HH-mm-ss')
@@ -37,7 +37,7 @@ export class TasksService {
     }))
   }
 
-  private async cleanupOldBackups(backupBucketName, backupsPrefix: string) {
+  private async cleanupOldBackups(backupBucketName: string, backupsPrefix: string) {
     // only keep the last 7 backups
     this.logger.log('Deleting all backups but the last 7')
     const allBackups = await this.s3Client.send(new ListObjectsV2Command({
