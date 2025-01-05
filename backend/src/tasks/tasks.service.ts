@@ -4,35 +4,57 @@ import { ConfigService } from '@nestjs/config'
 import path from 'path'
 import fs from 'fs/promises'
 import { format } from 'date-fns'
+import { DeleteObjectsCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 
 
 @Injectable()
 export class TasksService {
   private readonly logger = new Logger(TasksService.name)
+  private readonly s3Client = new S3Client()
 
   constructor(@Inject() readonly configService: ConfigService) {
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @Cron(CronExpression.EVERY_10_SECONDS)
   async backupDatabase() {
     this.logger.log('Starting db backup process')
+    const backupBucketName = this.configService.get('BACKUP_BUCKET')
+    const backupsPrefix = 'shopping-db-backups/'
+
+    await this.uploadBackup(backupBucketName, backupsPrefix)
+    await this.cleanupOldBackups(backupBucketName, backupsPrefix)
+  }
+
+  private async uploadBackup(backupBucketName, backupsPrefix: string) {
     const dbPath = this.configService.get('DATABASE_PATH')
     const absolutePath = path.resolve(dbPath)
-    const dbDirectoryPath = path.dirname(absolutePath)
-    const backupsPath = path.resolve(dbDirectoryPath, 'backups')
+    const backupFileName = format(new Date(), 'yyyy-MM-dd-HH-mm-ss')
 
-    this.logger.log(`Ensuring db backup directory ${ backupsPath } exists`)
-    await fs.mkdir(backupsPath).catch(e => {
-      if (e?.code !== 'EEXIST') throw e
-    })
-    const backupFileName = 'db-backup-' + format(new Date(), 'yyyy-MM-dd-HH-mm-ss')
-    await fs.copyFile(absolutePath, path.resolve(backupsPath, backupFileName))
+    await this.s3Client.send(new PutObjectCommand({
+      Bucket: backupBucketName,
+      Body: await fs.readFile(absolutePath),
+      Key: backupsPrefix + backupFileName
+    }))
+  }
 
+  private async cleanupOldBackups(backupBucketName, backupsPrefix: string) {
     // only keep the last 7 backups
     this.logger.log('Deleting all backups but the last 7')
-    const backupsToDelete = await fs.readdir(backupsPath).then(files => files.map(filename => path.resolve(backupsPath, filename)).slice(0, -7))
-    this.logger.log('Deleting files: ', backupsToDelete)
-    const result = await Promise.allSettled(backupsToDelete.map(backup => fs.rm(backup)))
-    this.logger.log('Deletion result:', result)
+    const allBackups = await this.s3Client.send(new ListObjectsV2Command({
+      Bucket: backupBucketName,
+      Prefix: backupsPrefix
+    })).then(response => response.Contents)
+    const toDelete = [ ...allBackups ].sort((a, b) => a.LastModified.getTime() - b.LastModified.getTime()).slice(0, -7)
+    if (toDelete.length === 0) {
+      this.logger.log('Nothing to delete, returning')
+      return
+    }
+
+    this.logger.log('Deleting objects: ', toDelete.map(object => object.Key))
+    const result = await this.s3Client.send(new DeleteObjectsCommand({
+      Bucket: backupBucketName,
+      Delete: { Objects: toDelete.map(({ Key }) => ({ Key })) }
+    }))
+    this.logger.log('Deletion result:', result.Deleted.map(d => d.Key))
   }
 }
