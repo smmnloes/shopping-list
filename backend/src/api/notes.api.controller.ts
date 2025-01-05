@@ -36,7 +36,7 @@ export class NotesApiController {
     return this.notesRepository.find()
       .then(results =>
         ({
-          notes: results.filter(note => this.hasUserReadAccess(note, req.user)).map(note => {
+          notes: results.filter(note => !note.deleted && this.hasUserReadAccess(note, req.user)).map(note => {
             note.content = note.encrypted ? this.userKeyService.decryptData(note.content, req.user.userDataKey) : note.content
             return note
           }).map(transformNoteToOverview)
@@ -47,7 +47,7 @@ export class NotesApiController {
   @UseGuards(JwtAuthGuard)
   @Get('notes/:id')
   async getNote(@Param('id', ParseIntPipe) id: number, @Request() req: ExtendedJWTGuardRequest<void>): Promise<NoteDetails> {
-    const note = await this.notesRepository.findOneOrFail({ where: { id } })
+    const note = await this.notesRepository.findOneOrFail({ where: { id, deleted: false } })
     this.assertUserReadAccess(note, req.user)
     const content = note.encrypted ? this.userKeyService.decryptData(note.content, req.user.userDataKey) : note.content
     return {
@@ -86,7 +86,8 @@ export class NotesApiController {
   async deleteNote(@Param('id', ParseIntPipe) id: number, @Request() req: ExtendedJWTGuardRequest<void>): Promise<void> {
     const note = await this.notesRepository.findOneOrFail({ where: { id } })
     this.assertUserWriteAccess(note, req.user)
-    await this.notesRepository.delete(id)
+    note.deleted = true
+    await this.notesRepository.save(note)
   }
 
   @UseGuards(JwtAuthGuard)

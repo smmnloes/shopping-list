@@ -28,6 +28,9 @@ export class Note {
   @Column({default: false})
   encrypted: boolean
 
+  @Column({default: false})
+  deleted: boolean
+
   constructor(createdBy: User, publiclyVisible: boolean, encrypted: boolean) {
     this.createdBy = createdBy
     this.createdAt = new Date()
