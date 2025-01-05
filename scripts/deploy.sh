@@ -1,9 +1,12 @@
 #!/bin/env bash
-# Set the version type based on the argument, default to "minor"
+# Set the version type based on the argument, default to "minor", 'no_update' skips the version bump
 VERSION_TYPE=${1:-minor}
 
-npm version $VERSION_TYPE
-git push
+if [ "$VERSION_TYPE" != "no_update" ]; then
+  echo "VERSION UPDATE!!!"
+    npm version $VERSION_TYPE
+    git push
+fi
 
 # Frontend - built locally, building it on server crashes it
 cd ../frontend
