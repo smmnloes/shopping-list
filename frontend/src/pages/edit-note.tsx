@@ -155,20 +155,8 @@ export const EditNote = () => {
           licenseKey: 'GPL',
           plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, List, TodoList, Heading, Indent, IndentBlock, Image ],
           toolbar: {
-            items: [ 'undo', 'redo', '|', 'heading', '|', {
-              label: 'Styles',
-              icon: 'text',
-              withText: true,
-              items: [ 'bold', 'italic', 'underline', 'strikethrough' ]
-            },
-              {
-                label: 'Listen',
-                icon: 'alignLeft',
-                withText: true,
-                items: [ 'numberedList', 'bulletedList', 'todoList' ]
-              },
-              '|', 'outdent', 'indent'
-            ], shouldNotGroupWhenFull: true
+            items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'numberedList', 'bulletedList', 'todoList', '|', 'outdent', 'indent' ],
+            shouldNotGroupWhenFull: true
           },
           initialData: noteContent,
         } }
