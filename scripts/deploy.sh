@@ -3,7 +3,6 @@
 VERSION_TYPE=${1:-minor}
 
 if [ "$VERSION_TYPE" != "no_update" ]; then
-  echo "VERSION UPDATE!!!"
     npm version $VERSION_TYPE
     git push
 fi
