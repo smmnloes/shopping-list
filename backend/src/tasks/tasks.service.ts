@@ -15,7 +15,7 @@ export class TasksService {
   constructor(@Inject() readonly configService: ConfigService) {
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async backupDatabase() {
     this.logger.log('Starting db backup process')
     const backupBucketName = this.configService.get('BACKUP_BUCKET')
