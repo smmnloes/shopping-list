@@ -32,20 +32,11 @@ export class SuggestionsService {
     const nonStaples = items.filter(item => !item.isStaple)
     // step 1: remove all the items that duplicate staples
     const withoutStapleDuplicates = nonStaples.filter(nonStaple => !staples.find(staple => this.laxEquals(staple, nonStaple)))
-    this.logArray(withoutStapleDuplicates, 'Without staple duplicates')
     // step 2 remove reaining duplicates
     const withoutAnyDuplicates = uniqBy(withoutStapleDuplicates, this.listItemLaxComparable)
-    this.logArray(withoutAnyDuplicates, 'Without dupes')
     const combined = [ ...staples, ...withoutAnyDuplicates ]
-    this.logArray(combined, 'Combined')
     console.log('Time taken: ' + (new Date().getTime() - startTime) + ' ms')
     return combined
-  }
-
-  private logArray = (array: ListItem[], name) => {
-    console.log(name)
-    console.log(array.length)
-    console.log(JSON.stringify(array.map(a => a.name), null, 4))
   }
 
   private listItemLaxComparable(item: ListItem): string {
