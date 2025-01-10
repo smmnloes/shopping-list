@@ -26,12 +26,11 @@ const EditLists = () => {
 
   const [ newItemName, setNewItemName ] = useState<string>('')
 
-  const [ showSuggestions, setShowSuggestions ] = useState(false)
   const [ suggestions, setSuggestions ] = useState<ListItemFrontend[]>([])
 
   const isOnline = useOnlineStatus()
 
-  const suggestionTimeoutId = useRef<number| null>(null)
+  const suggestionTimeoutId = useRef<number | null>(null)
 
   useEffect(() => {
     if (selectedCategory) {
@@ -53,7 +52,6 @@ const EditLists = () => {
   }
 
   const handleSubmit = async (event: any) => {
-    console.log('submit')
     event.preventDefault()
     if (!newItemName || !selectedCategory) {
       return
@@ -99,25 +97,22 @@ const EditLists = () => {
     await removeItems(checkedItems.filter(item => item.category === selectedCategory).map(item => item.id))
   }
 
-  const getSuggestions = async (input: string) => {
-    if (!selectedCategory) {
-      return
+  useEffect(() => {
+      (async () => {
+        if (selectedCategory && newItemName) {
+          if (suggestionTimeoutId.current !== null) {
+            clearTimeout(suggestionTimeoutId.current)
+          }
+          suggestionTimeoutId.current = setTimeout(async () => {
+            const suggestions = await getSuggestionsApi(selectedCategory, newItemName)
+            setSuggestions(suggestions)
+          }, 500)
+        } else {
+          setSuggestions([])
+        }
+      })()
     }
-    if (!input) {
-      setSuggestions([])
-      return
-    }
-    if (suggestionTimeoutId.current !== null) {
-      clearTimeout(suggestionTimeoutId.current)
-    }
-    suggestionTimeoutId.current = setTimeout(async ()=> {
-      const suggestions = await getSuggestionsApi(selectedCategory, input)
-      setSuggestions(suggestions)
-    }, 500)
-
-
-  }
-
+    , [ newItemName ])
 
   const EditableCheckableListItem = ({ index, item }: { index: number, item: ListItemFrontend }) => {
     const isItemChecked = (itemId: number) => !!checkedItems.find(item => item.id === itemId)
@@ -178,24 +173,21 @@ const EditLists = () => {
 
           <div className="suggestionsContainer">
             { suggestions.map((suggestion, index) => (
-              <div
+              <button
                 key={ index }
                 className="suggestionElement"
                 onClick={ () => {
                   setNewItemName(suggestion.name)
-                  setShowSuggestions(false)
                 } }
               >
                 { `${ suggestion.name }${ suggestion.isStaple ? ' (S)' : '' }` }
-              </div>
+              </button>
             )) }
           </div>
 
           <div className="inputAndButton">
             <input type="text" onChange={ e => {
               setNewItemName(e.target.value)
-              getSuggestions(e.target.value)
-              setShowSuggestions(true)
             } } value={ newItemName }/>
             <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
           </div>
