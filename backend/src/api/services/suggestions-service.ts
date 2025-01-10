@@ -15,6 +15,7 @@ export class SuggestionsService {
 
   public async getSuggestions(category: ShopCategory, input: string): Promise<ListItem[]> {
     const allItems = await this.getAllItems()
+    // String distance?
     return allItems.filter(item => item.shopCategory === category && item.name.toLowerCase().includes(input.toLowerCase()))
   }
 
@@ -28,14 +29,16 @@ export class SuggestionsService {
 
   private processItems(items: ListItem[]): ListItem[] {
     const startTime = new Date().getTime()
-    const staples = items.filter(item => item.isStaple)
-    const nonStaples = items.filter(item => !item.isStaple)
+    const trimmed = items.map((item) => ({...item, name: item.name.trim()}))
+    const staples = trimmed.filter(item => item.isStaple)
+    const nonStaples = trimmed.filter(item => !item.isStaple)
     // step 1: remove all the items that duplicate staples
     const withoutStapleDuplicates = nonStaples.filter(nonStaple => !staples.find(staple => this.laxEquals(staple, nonStaple)))
     // step 2 remove reaining duplicates
     const withoutAnyDuplicates = uniqBy(withoutStapleDuplicates, this.listItemLaxComparable)
     const combined = [ ...staples, ...withoutAnyDuplicates ]
     console.log('Time taken: ' + (new Date().getTime() - startTime) + ' ms')
+    console.log(JSON.stringify(combined.map(c => c.name), null, 4))
     return combined
   }
 

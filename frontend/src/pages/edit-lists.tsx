@@ -201,7 +201,8 @@ const EditLists = () => {
                   addItemFromSuggestion(suggestion)
                 } }
               >
-                { `${ suggestion.name }${ suggestion.isStaple ? ' (S)' : '' }` }
+                <span>{ suggestion.name }</span>
+                { suggestion.isStaple && <img src="/stapler.svg" alt='staple'/> }
               </div>
             )) }
           </div>
