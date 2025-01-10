@@ -31,7 +31,7 @@ const EditLists = () => {
 
   const isOnline = useOnlineStatus()
 
-  const suggestionTimeoutId = useRef<number | null>(null)
+  const suggestionTimeoutId = useRef<number | undefined>()
 
   useEffect(() => {
     if (selectedCategory) {
@@ -103,11 +103,9 @@ const EditLists = () => {
         if (!selectedCategory) {
           return
         }
+        window.clearTimeout(suggestionTimeoutId.current)
         if (newItemName) {
-          if (suggestionTimeoutId.current !== null) {
-            clearTimeout(suggestionTimeoutId.current)
-          }
-          suggestionTimeoutId.current = setTimeout(async () => {
+          suggestionTimeoutId.current = window.setTimeout(async () => {
             const suggestions = await getSuggestionsApi(selectedCategory, newItemName)
             const filteredSuggestions = suggestions.filter(suggestion => {
               return !(suggestion.isStaple && addedStaples.find(staple => staple.id === suggestion.id))
@@ -115,7 +113,6 @@ const EditLists = () => {
             setSuggestions(filteredSuggestions)
           }, 500)
         } else {
-          clearTimeout(suggestionTimeoutId.current)
           setSuggestions([])
         }
       })()
@@ -202,7 +199,7 @@ const EditLists = () => {
                 } }
               >
                 <span>{ suggestion.name }</span>
-                { suggestion.isStaple && <img src="/stapler.svg" alt='staple'/> }
+                { suggestion.isStaple && <img src="/stapler.svg" alt="staple"/> }
               </div>
             )) }
           </div>
