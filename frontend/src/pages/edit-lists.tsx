@@ -1,12 +1,12 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import { configForCategory } from '../types/types.ts'
-import useOnlineStatus from '../hooks/use-online-status.ts'
 import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import SelectStapleModal from './select-staple-modal.tsx'
 import { createNewItemForCategory, deleteItemsFromCategoryBulk, getItemsForCategory } from '../api/shopping.ts'
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 import useLocalStorageState from '../hooks/use-local-storage-state.ts'
+import { useOnlineStatus } from '../providers/online-status-provider.tsx'
 
 export type CheckedItem = { id: number, category: ShopCategory }
 export const CHECKED_ITEMS_KEY = 'checkedItems'

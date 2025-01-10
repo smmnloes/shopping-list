@@ -1,9 +1,9 @@
-import { useAuth } from '../services/auth-provider.tsx'
+import { useAuth } from '../providers/auth-provider.tsx'
 import { useLocation, useNavigate } from 'react-router-dom'
-import useOnlineStatus from '../hooks/use-online-status.ts'
 import { useEffect, useState } from 'react'
 import useServerVersion from '../hooks/use-server-version.ts'
 import packageJson from '../../../package.json'
+import { useOnlineStatus } from '../providers/online-status-provider.tsx'
 
 function Header() {
   const { authStatus } = useAuth()

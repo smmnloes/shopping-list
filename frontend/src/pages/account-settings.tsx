@@ -1,5 +1,5 @@
 import { changePassword, logout } from '../api/api.ts'
-import { useAuth } from '../services/auth-provider.tsx'
+import { useAuth } from '../providers/auth-provider.tsx'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { isAxiosError } from 'axios'

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { register } from '../api/api.ts'
 import { useState } from 'react'
 import { isAxiosError } from 'axios'
-import { useAuth } from '../services/auth-provider.tsx'
+import { useAuth } from '../providers/auth-provider.tsx'
 
 function Register() {
   const [ registrationSecret, setRegistrationSecret ] = useState('')

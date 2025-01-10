@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { AuthStatus } from '../services/auth-provider.tsx'
-import axiosRetry from 'axios-retry'
+import { AuthStatus } from '../providers/auth-provider.tsx'
+import axiosRetry, { isIdempotentRequestError } from 'axios-retry'
 
 export const backendHost = import.meta.env.VITE_BACKEND_HOST
 
@@ -8,7 +8,7 @@ export const backendHost = import.meta.env.VITE_BACKEND_HOST
 export const axiosInstance = axios.create({
   withCredentials: true
 })
-axiosRetry(axiosInstance, { retries: 3, retryDelay: axiosRetry.exponentialDelay })
+axiosRetry(axiosInstance, { retries: 3, retryDelay: axiosRetry.exponentialDelay, retryCondition: isIdempotentRequestError  })
 
 export const register = async (registrationReq: {
   credentials: { username: string, password: string },

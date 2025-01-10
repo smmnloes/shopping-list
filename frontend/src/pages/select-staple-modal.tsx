@@ -4,8 +4,8 @@ import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { MODAL_VISIBLE } from '../constants/query-params.ts'
 import { booleanFromString } from '../utils/boolean.ts'
 import { useEffect, useState } from 'react'
-import useOnlineStatus from '../hooks/use-online-status.ts'
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
+import { useOnlineStatus } from '../providers/online-status-provider.tsx'
 
 interface SelectStapleModalProps {
   selectedCategory?: ShopCategory,
