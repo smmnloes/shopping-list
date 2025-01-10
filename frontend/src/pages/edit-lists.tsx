@@ -130,7 +130,10 @@ const EditLists = () => {
       <div className="shopCategoryContainer">
         { Object.entries(configForCategory).map(([ category, config ], index) =>
           (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }` } key={ index }><img
-            alt={ category } onClick={ () => setSelectedCategory(category as ShopCategory) }
+            alt={ category } onClick={ () => {
+            setSelectedCategory(category as ShopCategory)
+            setNewItemName('')
+          } }
             src={ config.iconPath }/></div>)
         ) }
       </div>
@@ -158,21 +161,20 @@ const EditLists = () => {
             ) }
           </div>)
         }
-        <form className="addItemForm" onSubmit={ handleSubmit }>
+        <form className="addItemForm lessMarginTop" onSubmit={ handleSubmit }>
 
           <div className="suggestionsContainer" style={ { opacity: (showSuggestions && !!newItemName) ? 1 : 0 } }>
             { filteredSuggestions.map((suggestion, index) => (
-              <button
+              <div
                 key={ index }
-                type="button"
-                className="my-button"
+                className="suggestionElement"
                 onClick={ () => {
                   setNewItemName(suggestion)
                   setShowSuggestions(false)
                 } }
               >
                 { suggestion }
-              </button>
+              </div>
             )) }
           </div>
 

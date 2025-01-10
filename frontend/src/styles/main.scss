@@ -271,6 +271,10 @@ form input {
     justify-content: flex-start;
     overflow: auto;
   }
+
+  &.lessMarginTop {
+    margin-top: 15px;
+  }
 }
 
 .listAndInput {
@@ -649,4 +653,20 @@ td.mealDoneCheck {
   width: 100px;
   padding: 10px;
   margin: auto;
+}
+
+.suggestionElement {
+  background-color: var(--color-list-item);
+  padding: 10px;
+
+  border-radius: 10px;
+  margin: 5px;
+  border: 1px solid white;
+  font-size: 16px;
+
+  white-space: nowrap;
+
+  &:first-child {
+    margin-left: 0;
+  }
 }
