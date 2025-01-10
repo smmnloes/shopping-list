@@ -191,16 +191,19 @@ const EditLists = () => {
 
           <div className="suggestionsContainer">
             { suggestions.map((suggestion, index) => (
-              <div
-                key={ index }
-                className="suggestionElement"
-                onClick={ () => {
-                  addItemFromSuggestion(suggestion)
-                } }
-              >
-                <span>{ suggestion.name }</span>
-                { suggestion.isStaple && <img src="/stapler.svg" alt="staple"/> }
-              </div>
+              <>
+                <div
+                  key={ index }
+                  className="suggestionElement"
+                  onClick={ () => {
+                    addItemFromSuggestion(suggestion)
+                  } }
+                >
+                  <span>{ suggestion.name }</span>
+                  { suggestion.isStaple && <img src="/stapler.svg" alt="staple"/> }
+                </div>
+                {index < suggestions.length -1 && <hr className="vertical"/>}
+              </>
             )) }
           </div>
 

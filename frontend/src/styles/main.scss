@@ -91,6 +91,8 @@ form input {
   margin: 5px auto;
   border: 1px solid white;
 
+  height: 25px;
+
 
   .label {
     width: 90%;
@@ -265,8 +267,8 @@ form input {
   }
 
   .suggestionsContainer {
-    margin-bottom: 15px;
-    min-height: 50px;
+    margin-bottom: 5px;
+    min-height: 55px;
     display: flex;
     justify-content: flex-start;
     overflow: auto;
@@ -656,13 +658,13 @@ td.mealDoneCheck {
 }
 
 .suggestionElement {
-  background-color: var(--color-list-item);
   padding: 10px;
   display: flex;
+  align-items: center;
 
-  border-radius: 10px;
+  height: 25px;
+
   margin: 5px;
-  border: 1px solid white;
   font-size: 20px;
 
   white-space: nowrap;
@@ -676,4 +678,11 @@ td.mealDoneCheck {
     width: 25px;
     margin-left: 10px;
   }
+}
+
+hr.vertical {
+  height: 25px;
+  width: 0;
+  border: 1px solid white;
+  margin: auto;
 }
