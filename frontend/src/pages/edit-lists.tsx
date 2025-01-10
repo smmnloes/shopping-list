@@ -1,10 +1,15 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { configForCategory } from '../types/types.ts'
 import useOnlineStatus from '../hooks/use-online-status.ts'
 import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import SelectStapleModal from './select-staple-modal.tsx'
-import { createNewItemForCategory, deleteItemsFromCategoryBulk, getItemsForCategory } from '../api/shopping.ts'
+import {
+  createNewItemForCategory,
+  deleteItemsFromCategoryBulk,
+  getItemsForCategory,
+  getSuggestions as getSuggestionsApi
+} from '../api/shopping.ts'
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 import useLocalStorageState from '../hooks/use-local-storage-state.ts'
 
@@ -22,8 +27,11 @@ const EditLists = () => {
   const [ newItemName, setNewItemName ] = useState<string>('')
 
   const [ showSuggestions, setShowSuggestions ] = useState(false)
+  const [ suggestions, setSuggestions ] = useState<ListItemFrontend[]>([])
 
   const isOnline = useOnlineStatus()
+
+  const suggestionTimeoutId = useRef<number| null>(null)
 
   useEffect(() => {
     if (selectedCategory) {
@@ -91,6 +99,25 @@ const EditLists = () => {
     await removeItems(checkedItems.filter(item => item.category === selectedCategory).map(item => item.id))
   }
 
+  const getSuggestions = async (input: string) => {
+    if (!selectedCategory) {
+      return
+    }
+    if (!input) {
+      setSuggestions([])
+      return
+    }
+    if (suggestionTimeoutId.current !== null) {
+      clearTimeout(suggestionTimeoutId.current)
+    }
+    suggestionTimeoutId.current = setTimeout(async ()=> {
+      const suggestions = await getSuggestionsApi(selectedCategory, input)
+      setSuggestions(suggestions)
+    }, 500)
+
+
+  }
+
 
   const EditableCheckableListItem = ({ index, item }: { index: number, item: ListItemFrontend }) => {
     const isItemChecked = (itemId: number) => !!checkedItems.find(item => item.id === itemId)
@@ -109,20 +136,6 @@ const EditLists = () => {
       </div>
     )
   }
-
-  // TODO get from API
-  const filteredSuggestions = [
-    'Hafeeeermilch',
-    'Toematen',
-    'Eeier',
-    'Badeeeabing badabung',
-    'hello',
-    'eeeeeee',
-    'eeeeeee',
-    'eeeeeeeeeeeeeeeeeeee'
-  ].filter(suggestion =>
-    suggestion.toLowerCase().includes(newItemName.toLowerCase())
-  )
 
   return (
     <div>
@@ -163,17 +176,17 @@ const EditLists = () => {
         }
         <form className="addItemForm lessMarginTop" onSubmit={ handleSubmit }>
 
-          <div className="suggestionsContainer" style={ { opacity: (showSuggestions && !!newItemName) ? 1 : 0 } }>
-            { filteredSuggestions.map((suggestion, index) => (
+          <div className="suggestionsContainer">
+            { suggestions.map((suggestion, index) => (
               <div
                 key={ index }
                 className="suggestionElement"
                 onClick={ () => {
-                  setNewItemName(suggestion)
+                  setNewItemName(suggestion.name)
                   setShowSuggestions(false)
                 } }
               >
-                { suggestion }
+                { `${ suggestion.name }${ suggestion.isStaple ? ' (S)' : '' }` }
               </div>
             )) }
           </div>
@@ -181,6 +194,7 @@ const EditLists = () => {
           <div className="inputAndButton">
             <input type="text" onChange={ e => {
               setNewItemName(e.target.value)
+              getSuggestions(e.target.value)
               setShowSuggestions(true)
             } } value={ newItemName }/>
             <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>

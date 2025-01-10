@@ -1,4 +1,4 @@
-import type {  ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
+import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 import { axiosInstance, backendHost } from './api.ts'
 
 export const getItemsForCategory = async (category: ShopCategory): Promise<{ items: ListItemFrontend[] }> => {
@@ -33,4 +33,8 @@ export const createStaple = async (stapleName: string, category: ShopCategory) =
 }
 export const deleteStaple = async (stapleId: number) => {
   return axiosInstance.delete(`${ backendHost }/api/staples/${ stapleId }`).then(response => response.data)
+}
+
+export const getSuggestions = async (category: ShopCategory, input: string): Promise<ListItemFrontend[]> => {
+  return axiosInstance.get(`${ backendHost }/api/shopping-lists/${ category }/suggestions`, { params: { input } }).then(response => response.data)
 }
