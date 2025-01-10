@@ -100,7 +100,10 @@ const EditLists = () => {
 
   useEffect(() => {
       (async () => {
-        if (selectedCategory && newItemName) {
+        if (!selectedCategory) {
+          return
+        }
+        if (newItemName) {
           if (suggestionTimeoutId.current !== null) {
             clearTimeout(suggestionTimeoutId.current)
           }
@@ -112,6 +115,7 @@ const EditLists = () => {
             setSuggestions(filteredSuggestions)
           }, 500)
         } else {
+          clearTimeout(suggestionTimeoutId.current)
           setSuggestions([])
         }
       })()
@@ -145,6 +149,7 @@ const EditLists = () => {
     } else {
       await createNewItemForCategory(suggestion.name, selectedCategory)
     }
+    setNewItemName('')
     await refreshItems(selectedCategory)
   }
 
