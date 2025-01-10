@@ -4,6 +4,7 @@ import { ListItem } from '../../data/entities/list-item'
 import { Repository } from 'typeorm'
 import { ShopCategory } from '../../../../shared/types/shopping'
 import uniqBy from 'lodash.uniqby'
+import { Cron, CronExpression } from '@nestjs/schedule'
 
 @Injectable()
 export class SuggestionsService {
@@ -21,13 +22,18 @@ export class SuggestionsService {
 
   private async getAllItems(): Promise<ListItem[]> {
     if (this.cachedItems === null) {
-      console.log('loading all items into cache')
-      this.cachedItems = await this.listItemRepository.find().then(items => this.processItems(items))
+      await this.initializeItems()
     }
     return this.cachedItems
   }
 
+  private async initializeItems() {
+    console.log('loading all items into cache')
+    this.cachedItems = await this.listItemRepository.find().then(items => this.processItems(items))
+  }
+
   private processItems(items: ListItem[]): ListItem[] {
+    console.log('Starting processing of data')
     const startTime = new Date().getTime()
     const trimmed = items.map((item) => ({...item, name: item.name.trim()}))
     const staples = trimmed.filter(item => item.isStaple)
@@ -38,7 +44,7 @@ export class SuggestionsService {
     const withoutAnyDuplicates = uniqBy(withoutStapleDuplicates, this.listItemLaxComparable)
     const combined = [ ...staples, ...withoutAnyDuplicates ]
     console.log('Time taken: ' + (new Date().getTime() - startTime) + ' ms')
-    console.log(JSON.stringify(combined.map(c => c.name), null, 4))
+    console.log(`Total amount of items for suggestions: ${combined.length} (${staples.length} Staples, ${withoutAnyDuplicates.length} Non-Staples)`)
     return combined
   }
 
@@ -51,6 +57,12 @@ export class SuggestionsService {
   }
 
   public async onModuleInit() {
-    await this.getAllItems()
+    await this.initializeItems()
+  }
+
+  @Cron(CronExpression.EVERY_6_HOURS)
+  public async refreshInitializedData() {
+    console.log('Refreshing suggestions data')
+    await this.initializeItems()
   }
 }
