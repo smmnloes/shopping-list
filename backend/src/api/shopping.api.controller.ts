@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, ParseIntPipe, Post, Query, Request, UseGuards } from '@nestjs/common'
+import { Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Query, Request, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { In, Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
@@ -6,12 +6,14 @@ import { ListItem } from '../data/entities/list-item'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { InjectRepository } from '@nestjs/typeorm'
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping'
+import { SuggestionsService } from './services/suggestions-service'
 
 @Controller('api')
 export class ShoppingApiController {
   constructor(
     @InjectRepository(ShoppingList) readonly shoppingListRepository: Repository<ShoppingList>,
-    @InjectRepository(ListItem) readonly listItemRepository: Repository<ListItem>
+    @InjectRepository(ListItem) readonly listItemRepository: Repository<ListItem>,
+    @Inject() readonly suggestionsService: SuggestionsService
   ) {
   }
 
@@ -94,6 +96,13 @@ export class ShoppingApiController {
     }))
     await this.listItemRepository.delete(stapleToDelete.id)
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('shopping-lists/:category/suggestions')
+  async getSuggestions(@Param('category') category: ShopCategory, @Query('input') input: string): Promise<ListItemFrontend[]> {
+    return this.suggestionsService.getSuggestions(category, input).then(items => items.map(({ id, name, isStaple }) => ({ id, name, isStaple })))
+  }
+
 
   /**
    * @param category

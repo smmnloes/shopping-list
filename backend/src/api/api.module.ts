@@ -13,11 +13,12 @@ import { User } from '../data/entities/user'
 import { UserKeyService } from '../data/crypto/user-key-service'
 import { Location } from '../data/entities/location'
 import { LocationsApiController } from './locations.api.controller'
+import { SuggestionsService } from './services/suggestions-service'
 
 @Module({
   imports: [ AuthModule, TypeOrmModule.forFeature([ ShoppingList, ListItem, MealPlan, Note, User, Location ]) ],
   controllers: [ ApiController, MealApiController, ShoppingApiController, NotesApiController, LocationsApiController ],
-  providers: [ UserKeyService ],
+  providers: [ UserKeyService, SuggestionsService ],
   exports: []
 })
 export class ApiModule {

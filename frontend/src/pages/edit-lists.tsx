@@ -1,9 +1,15 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { configForCategory } from '../types/types.ts'
 import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import SelectStapleModal from './select-staple-modal.tsx'
-import { createNewItemForCategory, deleteItemsFromCategoryBulk, getItemsForCategory } from '../api/shopping.ts'
+import {
+  addStaplesToCategoryList,
+  createNewItemForCategory,
+  deleteItemsFromCategoryBulk,
+  getItemsForCategory,
+  getSuggestions as getSuggestionsApi
+} from '../api/shopping.ts'
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 import useLocalStorageState from '../hooks/use-local-storage-state.ts'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
@@ -21,8 +27,11 @@ const EditLists = () => {
 
   const [ newItemName, setNewItemName ] = useState<string>('')
 
+  const [ suggestions, setSuggestions ] = useState<ListItemFrontend[]>([])
 
   const isOnline = useOnlineStatus()
+
+  const suggestionTimeoutId = useRef<number | null>(null)
 
   useEffect(() => {
     if (selectedCategory) {
@@ -89,6 +98,29 @@ const EditLists = () => {
     await removeItems(checkedItems.filter(item => item.category === selectedCategory).map(item => item.id))
   }
 
+  useEffect(() => {
+      (async () => {
+        if (!selectedCategory) {
+          return
+        }
+        if (newItemName) {
+          if (suggestionTimeoutId.current !== null) {
+            clearTimeout(suggestionTimeoutId.current)
+          }
+          suggestionTimeoutId.current = setTimeout(async () => {
+            const suggestions = await getSuggestionsApi(selectedCategory, newItemName)
+            const filteredSuggestions = suggestions.filter(suggestion => {
+              return !(suggestion.isStaple && addedStaples.find(staple => staple.id === suggestion.id))
+            })
+            setSuggestions(filteredSuggestions)
+          }, 500)
+        } else {
+          clearTimeout(suggestionTimeoutId.current)
+          setSuggestions([])
+        }
+      })()
+    }
+    , [ newItemName ])
 
   const EditableCheckableListItem = ({ index, item }: { index: number, item: ListItemFrontend }) => {
     const isItemChecked = (itemId: number) => !!checkedItems.find(item => item.id === itemId)
@@ -108,13 +140,29 @@ const EditLists = () => {
     )
   }
 
+  async function addItemFromSuggestion(suggestion: ListItemFrontend) {
+    if (!selectedCategory) {
+      return
+    }
+    if (suggestion.isStaple) {
+      await addStaplesToCategoryList([ suggestion.id ], selectedCategory)
+    } else {
+      await createNewItemForCategory(suggestion.name, selectedCategory)
+    }
+    setNewItemName('')
+    await refreshItems(selectedCategory)
+  }
+
   return (
     <div>
       <h1>Einkaufsliste</h1>
       <div className="shopCategoryContainer">
         { Object.entries(configForCategory).map(([ category, config ], index) =>
           (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }` } key={ index }><img
-            alt={ category } onClick={ () => setSelectedCategory(category as ShopCategory) }
+            alt={ category } onClick={ () => {
+            setSelectedCategory(category as ShopCategory)
+            setNewItemName('')
+          } }
             src={ config.iconPath }/></div>)
         ) }
       </div>
@@ -142,9 +190,29 @@ const EditLists = () => {
             ) }
           </div>)
         }
-        <form className="addItemForm" onSubmit={ handleSubmit }>
-          <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
-          <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
+        <form className="addItemForm lessMarginTop" onSubmit={ handleSubmit }>
+
+          <div className="suggestionsContainer">
+            { suggestions.map((suggestion, index) => (
+              <div
+                key={ index }
+                className="suggestionElement"
+                onClick={ () => {
+                  addItemFromSuggestion(suggestion)
+                } }
+              >
+                <span>{ suggestion.name }</span>
+                { suggestion.isStaple && <img src="/stapler.svg" alt='staple'/> }
+              </div>
+            )) }
+          </div>
+
+          <div className="inputAndButton">
+            <input type="text" onChange={ e => {
+              setNewItemName(e.target.value)
+            } } value={ newItemName }/>
+            <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
+          </div>
         </form>
       </div>
     </div>
