@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { getServerVersion } from '../api/api'
 
 const useServerVersion = () => {
-  const [ serverVersion, setServerVersion ] = useState<{ version: string, checkTime: string } | undefined>()
+  const [ serverVersion, setServerVersion ] = useState<{ version: string } | undefined>()
 
   useEffect(() => {
     const checkVersion = async () => {
       const serverVersion = await getServerVersion()
-      setServerVersion({ version: serverVersion, checkTime: new Date().toISOString() })
+      setServerVersion({ version: serverVersion })
     }
 
     checkVersion()

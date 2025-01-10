@@ -18,7 +18,7 @@ function Header() {
     if (serverVersion && (serverVersion.version !== packageJson.version)) {
       setVersionModalVisible(true)
     }
-  }, [ serverVersion?.version, serverVersion?.checkTime ])
+  }, [ serverVersion?.version ])
 
 
   return (
@@ -35,10 +35,7 @@ function Header() {
           <div className="choiceModal">
             <span>Es gibt eine neuere Version der App ({ serverVersion?.version })<br/>Neu laden?</span>
             <div className="choiceModalButtons">
-              <button className="my-button" onClick={ async () => {
-                navigate(0)
-              } }>Ja
-              </button>
+              <button className="my-button" onClick={ async () => window.location.reload() }>Ja</button>
               <button className="my-button" onClick={ () => setVersionModalVisible(false) }>Nein</button>
             </div>
 
