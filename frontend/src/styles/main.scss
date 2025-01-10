@@ -247,6 +247,7 @@ form input {
 
 .addItemForm {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   margin-top: 25px;
 
@@ -256,6 +257,19 @@ form input {
 
   button {
     width: 30%;
+  }
+
+  .inputAndButton {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .suggestionsContainer {
+    margin-bottom: 15px;
+    height: 50px;
+    display: flex;
+    justify-content: flex-start;
+    overflow: auto;
   }
 }
 

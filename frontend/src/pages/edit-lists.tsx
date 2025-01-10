@@ -21,6 +21,7 @@ const EditLists = () => {
 
   const [ newItemName, setNewItemName ] = useState<string>('')
 
+  const [ showSuggestions, setShowSuggestions ] = useState(false)
 
   const isOnline = useOnlineStatus()
 
@@ -44,6 +45,7 @@ const EditLists = () => {
   }
 
   const handleSubmit = async (event: any) => {
+    console.log('submit')
     event.preventDefault()
     if (!newItemName || !selectedCategory) {
       return
@@ -108,6 +110,20 @@ const EditLists = () => {
     )
   }
 
+  // TODO get from API
+  const filteredSuggestions = [
+    'Hafeeeermilch',
+    'Toematen',
+    'Eeier',
+    'Badeeeabing badabung',
+    'hello',
+    'eeeeeee',
+    'eeeeeee',
+    'eeeeeeeeeeeeeeeeeeee'
+  ].filter(suggestion =>
+    suggestion.toLowerCase().includes(newItemName.toLowerCase())
+  )
+
   return (
     <div>
       <h1>Einkaufsliste</h1>
@@ -143,8 +159,30 @@ const EditLists = () => {
           </div>)
         }
         <form className="addItemForm" onSubmit={ handleSubmit }>
-          <input type="text" onChange={ e => setNewItemName(e.target.value) }/>
-          <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
+
+          <div className="suggestionsContainer" style={ { opacity: (showSuggestions && !!newItemName) ? 1 : 0 } }>
+            { filteredSuggestions.map((suggestion, index) => (
+              <button
+                key={ index }
+                type="button"
+                className="my-button"
+                onClick={ () => {
+                  setNewItemName(suggestion)
+                  setShowSuggestions(false)
+                } }
+              >
+                { suggestion }
+              </button>
+            )) }
+          </div>
+
+          <div className="inputAndButton">
+            <input type="text" onChange={ e => {
+              setNewItemName(e.target.value)
+              setShowSuggestions(true)
+            } } value={ newItemName }/>
+            <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
+          </div>
         </form>
       </div>
     </div>
