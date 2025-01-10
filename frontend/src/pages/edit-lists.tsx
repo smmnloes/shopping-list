@@ -5,6 +5,7 @@ import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import SelectStapleModal from './select-staple-modal.tsx'
 import {
+  addStaplesToCategoryList,
   createNewItemForCategory,
   deleteItemsFromCategoryBulk,
   getItemsForCategory,
@@ -105,7 +106,10 @@ const EditLists = () => {
           }
           suggestionTimeoutId.current = setTimeout(async () => {
             const suggestions = await getSuggestionsApi(selectedCategory, newItemName)
-            setSuggestions(suggestions)
+            const filteredSuggestions = suggestions.filter(suggestion => {
+              return !(suggestion.isStaple && addedStaples.find(staple => staple.id === suggestion.id))
+            })
+            setSuggestions(filteredSuggestions)
           }, 500)
         } else {
           setSuggestions([])
@@ -130,6 +134,18 @@ const EditLists = () => {
         </div>
       </div>
     )
+  }
+
+  async function addItemFromSuggestion(suggestion: ListItemFrontend) {
+    if (!selectedCategory) {
+      return
+    }
+    if (suggestion.isStaple) {
+      await addStaplesToCategoryList([ suggestion.id ], selectedCategory)
+    } else {
+      await createNewItemForCategory(suggestion.name, selectedCategory)
+    }
+    await refreshItems(selectedCategory)
   }
 
   return (
@@ -173,15 +189,15 @@ const EditLists = () => {
 
           <div className="suggestionsContainer">
             { suggestions.map((suggestion, index) => (
-              <button
+              <div
                 key={ index }
                 className="suggestionElement"
                 onClick={ () => {
-                  setNewItemName(suggestion.name)
+                  addItemFromSuggestion(suggestion)
                 } }
               >
                 { `${ suggestion.name }${ suggestion.isStaple ? ' (S)' : '' }` }
-              </button>
+              </div>
             )) }
           </div>
 
