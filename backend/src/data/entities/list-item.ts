@@ -16,6 +16,8 @@ export class ListItem {
   shopCategory: ShopCategory
   @ManyToMany(() => ShoppingList, shoppingList => shoppingList.items)
   shoppingLists: ShoppingList[]
+  @Column({default: 0})
+  addedCounter: number
 
   constructor(name: string, category: ShopCategory, isStaple = false) {
     this.createdAt = new Date()

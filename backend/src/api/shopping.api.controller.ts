@@ -48,7 +48,8 @@ export class ShoppingApiController {
     const shoppingList = await this.getListForCategory(category)
     const itemsToAdd = await this.listItemRepository.find({ where: { id: In(req.body.ids) } })
     shoppingList.items.push(...itemsToAdd)
-    await this.shoppingListRepository.save(shoppingList)
+    await this.shoppingListRepository.save(shoppingList, {})
+    await this.listItemRepository.save(itemsToAdd.map(item => ({ ...item, addedCounter: item.addedCounter + 1})))
   }
 
   @UseGuards(JwtAuthGuard)
@@ -94,8 +95,16 @@ export class ShoppingApiController {
 
   @UseGuards(JwtAuthGuard)
   @Get('shopping-lists/:category/suggestions')
-  async getSuggestions(@Param('category') category: ShopCategory, @Query('input') input: string,  @Query('addedItemIds', IntArrayPipe) addedItemIds: number[]): Promise<ListItemFrontend[]> {
-    return this.suggestionsService.getSuggestions(category, input, addedItemIds).then(items => items.map(({ id, name, isStaple }) => ({ id, name, isStaple })))
+  async getSuggestions(@Param('category') category: ShopCategory, @Query('input') input: string, @Query('addedItemIds', IntArrayPipe) addedItemIds: number[]): Promise<ListItemFrontend[]> {
+    return this.suggestionsService.getSuggestions(category, input, addedItemIds).then(items => items.map(({
+                                                                                                            id,
+                                                                                                            name,
+                                                                                                            isStaple
+                                                                                                          }) => ({
+      id,
+      name,
+      isStaple
+    })))
   }
 
 
