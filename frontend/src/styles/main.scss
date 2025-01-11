@@ -380,10 +380,10 @@ form input {
 
 .modal {
   background-color: var(--color-background);
-  padding: 20px;
+  padding: 15px;
   border-radius: 5px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  width: 70vw;
+  width: 85vw;
+  max-width: 500px;
   text-align: center;
   position: relative;
   height: 80vh;
