@@ -4,8 +4,8 @@ import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import SelectStapleModal from './select-staple-modal.tsx'
 import {
-  addStaplesToCategoryList,
-  createNewItemForCategory,
+  addExistingItemsToList,
+  createNewItem,
   deleteItemsFromCategoryBulk,
   getItemsForCategory,
   getSuggestions as getSuggestionsApi
@@ -59,7 +59,7 @@ const EditLists = () => {
       return
     }
     try {
-      await createNewItemForCategory(newItemName, selectedCategory)
+      await createNewItem(newItemName, selectedCategory, false)
       await refreshItems(selectedCategory)
       setNewItemName('')
       event.target.reset()
@@ -107,7 +107,7 @@ const EditLists = () => {
         window.clearTimeout(suggestionTimeoutId.current)
         if (newItemName) {
           suggestionTimeoutId.current = window.setTimeout(async () => {
-            const suggestions = await getSuggestionsApi(selectedCategory, newItemName, [...addedStaples.map(s => s.id), ...listItems.map(i => i.id)])
+            const suggestions = await getSuggestionsApi(selectedCategory, newItemName, [ ...addedStaples.map(s => s.id), ...listItems.map(i => i.id) ])
             setSuggestions(suggestions)
           }, SUGGESTION_DELAY_MS)
         } else {
@@ -139,11 +139,7 @@ const EditLists = () => {
     if (!selectedCategory) {
       return
     }
-    if (suggestion.isStaple) {
-      await addStaplesToCategoryList([ suggestion.id ], selectedCategory)
-    } else {
-      await createNewItemForCategory(suggestion.name, selectedCategory)
-    }
+    await addExistingItemsToList([ suggestion.id ], selectedCategory)
     setNewItemName('')
     await refreshItems(selectedCategory)
   }
@@ -187,7 +183,7 @@ const EditLists = () => {
         }
         <form className="addItemForm lessMarginTop" onSubmit={ handleSubmit }>
 
-          <div className={`suggestionsContainer ${suggestions.length > 0 ? 'visible' : 'invisible'}`}>
+          <div className={ `suggestionsContainer ${ suggestions.length > 0 ? 'visible' : 'invisible' }` }>
             { suggestions.map((suggestion, index) => (
               <>
                 <div

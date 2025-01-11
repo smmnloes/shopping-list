@@ -11,7 +11,7 @@ async function bootstrap() {
   app.use(bodyParser.json({ limit: '50mb' }))
   app.enableCors({
     origin: app.get(ConfigService).get('FRONTEND_HOST'),
-    methods: [ 'GET', 'POST', 'DELETE' ],
+    methods: [ 'GET', 'POST', 'DELETE', 'PUT' ],
     credentials: true
   })
   await app.listen(3000, 'localhost')

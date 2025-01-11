@@ -1,4 +1,16 @@
-import { Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Query, Request, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+  Request,
+  UseGuards
+} from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { In, Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
@@ -20,27 +32,24 @@ export class ShoppingApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists/:category/items')
-  async createNewItemForCategory(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
-    item: { name: string }
+  async createNewItem(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
+    item: { name: string, isStaple: boolean }
   }>): Promise<ListItemFrontend> {
     const shoppingList = await this.getListForCategory(category)
-    const newItem = new ListItem(req.body.item.name, shoppingList.shopCategory)
+    const newItem = new ListItem(req.body.item.name, shoppingList.shopCategory, req.body.item.isStaple)
     shoppingList.items.push(newItem)
     await this.shoppingListRepository.save(shoppingList)
     return { id: newItem.id, name: newItem.name, isStaple: newItem.isStaple }
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('shopping-lists/:category/staples')
-  async addStaplesToCategoryList(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
-    ids: string[]
+  @Put('shopping-lists/:category/items')
+  async addExistingItemsToList(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
+    ids: number[]
   }>): Promise<void> {
     const shoppingList = await this.getListForCategory(category)
-
-    const ids = req.body.ids.map(id => Number.parseInt(id))
-    const staplesToAdd = await this.listItemRepository.find({ where: { id: In(ids) } })
-    shoppingList.items.push(...staplesToAdd)
-
+    const itemsToAdd = await this.listItemRepository.find({ where: { id: In(req.body.ids) } })
+    shoppingList.items.push(...itemsToAdd)
     await this.shoppingListRepository.save(shoppingList)
   }
 
@@ -67,19 +76,6 @@ export class ShoppingApiController {
   async getStaples(@Query('category') category: ShopCategory): Promise<ListItemFrontend[]> {
     const staples = await this.listItemRepository.find({ where: { isStaple: true, shopCategory: category } })
     return staples.map(({ id, name, isStaple }) => ({ id, name, isStaple }))
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('staples')
-  async createStaple(@Request() req: ExtendedJWTGuardRequest<{
-    staple: { name: string, category: ShopCategory }
-  }>): Promise<ListItemFrontend> {
-    const {
-      id,
-      name,
-      isStaple
-    } = (await this.listItemRepository.save(new ListItem(req.body.staple.name, req.body.staple.category, true)))
-    return { id, name, isStaple }
   }
 
   @UseGuards(JwtAuthGuard)

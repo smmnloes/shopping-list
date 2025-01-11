@@ -1,4 +1,4 @@
-import { addStaplesToCategoryList, getStaples } from '../api/shopping.ts'
+import { addExistingItemsToList, getStaples } from '../api/shopping.ts'
 import { useNavigate } from 'react-router-dom'
 import useQueryParamState from '../hooks/use-query-param-state.ts'
 import { MODAL_VISIBLE } from '../constants/query-params.ts'
@@ -58,7 +58,7 @@ const SelectStapleModal = ({ selectedCategory, addedStaples, onModalClose }: Sel
       return
     }
     const staplesToAdd = selectedStaples.filter(staple => !addedStaples.some(addedStaple => addedStaple.id === staple.id))
-    await addStaplesToCategoryList(staplesToAdd.map(staple => staple.id), selectedCategory)
+    await addExistingItemsToList(staplesToAdd.map(staple => staple.id), selectedCategory)
     handleModalClose()
   }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { configForCategory } from '../types/types.ts'
-import { createStaple, deleteStaple, getStaples } from '../api/shopping.ts'
+import { createNewItem, deleteStaple, getStaples } from '../api/shopping.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import useQueryParamState from '../hooks/use-query-param-state.ts'
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
@@ -38,7 +38,7 @@ const EditStaples = () => {
       return
     }
     try {
-      await createStaple(newStapleName, selectedCategory)
+      await createNewItem(newStapleName, selectedCategory, true)
       await refreshStaples(selectedCategory)
       setNewStapleName('')
       event.target.reset()
