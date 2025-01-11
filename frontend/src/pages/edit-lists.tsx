@@ -160,13 +160,13 @@ const EditLists = () => {
       </div>
       <div className="listAndInput">
         <div className="listTopControlsContainer">
-          <SelectStapleModal selectedCategory={ selectedCategory } addedStaples={ addedStaples }
-                             onModalClose={ () => selectedCategory && refreshItems(selectedCategory) }/>
           <button className="clearCheckedItems my-button" onClick={ handleClearCheckedItems } disabled={ !isOnline }>
             <img
               src="/clear-all.svg"
               alt="clear-checked-items"/>
           </button>
+          <SelectStapleModal selectedCategory={ selectedCategory } addedStaples={ addedStaples }
+                             onModalClose={ () => selectedCategory && refreshItems(selectedCategory) }/>
         </div>
         <div className="listContainer">
           { addedStaples.length === 0 ? (<div className="noElementsMessage">Noch keine Staples hinzugefügt.</div>) :
@@ -203,7 +203,7 @@ const EditLists = () => {
             <input type="text" onChange={ e => {
               setNewItemName(e.target.value)
             } } value={ newItemName }/>
-            <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
+            <button className="my-button addButton" type="submit" disabled={ !isOnline }>Hinzufügen</button>
           </div>
         </form>
       </div>
