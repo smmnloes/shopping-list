@@ -35,10 +35,8 @@ export class ShoppingApiController {
   async createNewItem(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
     item: { name: string, isStaple: boolean }
   }>): Promise<ListItemFrontend> {
-    const shoppingList = await this.getListForCategory(category)
-    const newItem = new ListItem(req.body.item.name, shoppingList.shopCategory, req.body.item.isStaple)
-    shoppingList.items.push(newItem)
-    await this.shoppingListRepository.save(shoppingList)
+    const newItem = new ListItem(req.body.item.name, category, req.body.item.isStaple)
+    await this.listItemRepository.save(newItem)
     return { id: newItem.id, name: newItem.name, isStaple: newItem.isStaple }
   }
 

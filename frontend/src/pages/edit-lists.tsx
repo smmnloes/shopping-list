@@ -59,7 +59,8 @@ const EditLists = () => {
       return
     }
     try {
-      await createNewItem(newItemName, selectedCategory, false)
+      const { id } = await createNewItem(newItemName, selectedCategory, false)
+      await addExistingItemsToList([ id ], selectedCategory)
       await refreshItems(selectedCategory)
       setNewItemName('')
       event.target.reset()
@@ -185,7 +186,6 @@ const EditLists = () => {
 
           <div className={ `suggestionsContainer ${ suggestions.length > 0 ? 'visible' : 'invisible' }` }>
             { suggestions.map((suggestion, index) => (
-              <>
                 <div
                   key={ index }
                   className="suggestionElement"
@@ -196,7 +196,6 @@ const EditLists = () => {
                   <span>{ suggestion.name }</span>
                   { suggestion.isStaple && <img src="/stapler.svg" alt="staple"/> }
                 </div>
-              </>
             )) }
           </div>
 
