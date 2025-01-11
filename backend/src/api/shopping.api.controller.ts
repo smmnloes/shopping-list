@@ -7,6 +7,7 @@ import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { InjectRepository } from '@nestjs/typeorm'
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping'
 import { SuggestionsService } from './services/suggestions-service'
+import { IntArrayPipe } from './pipes/int-array-pipe'
 
 @Controller('api')
 export class ShoppingApiController {
@@ -99,8 +100,8 @@ export class ShoppingApiController {
 
   @UseGuards(JwtAuthGuard)
   @Get('shopping-lists/:category/suggestions')
-  async getSuggestions(@Param('category') category: ShopCategory, @Query('input') input: string): Promise<ListItemFrontend[]> {
-    return this.suggestionsService.getSuggestions(category, input).then(items => items.map(({ id, name, isStaple }) => ({ id, name, isStaple })))
+  async getSuggestions(@Param('category') category: ShopCategory, @Query('input') input: string,  @Query('addedItemIds', IntArrayPipe) addedItemIds: number[]): Promise<ListItemFrontend[]> {
+    return this.suggestionsService.getSuggestions(category, input, addedItemIds).then(items => items.map(({ id, name, isStaple }) => ({ id, name, isStaple })))
   }
 
 

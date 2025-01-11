@@ -35,6 +35,6 @@ export const deleteStaple = async (stapleId: number) => {
   return axiosInstance.delete(`${ backendHost }/api/staples/${ stapleId }`).then(response => response.data)
 }
 
-export const getSuggestions = async (category: ShopCategory, input: string): Promise<ListItemFrontend[]> => {
-  return axiosInstance.get(`${ backendHost }/api/shopping-lists/${ category }/suggestions`, { params: { input } }).then(response => response.data)
+export const getSuggestions = async (category: ShopCategory, input: string, addedItemIds: number[]): Promise<ListItemFrontend[]> => {
+  return axiosInstance.get(`${ backendHost }/api/shopping-lists/${ category }/suggestions`, { params: { input, addedItemIds } }).then(response => response.data)
 }

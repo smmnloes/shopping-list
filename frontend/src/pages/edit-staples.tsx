@@ -3,7 +3,7 @@ import { configForCategory } from '../types/types.ts'
 import { createStaple, deleteStaple, getStaples } from '../api/shopping.ts'
 import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import useQueryParamState from '../hooks/use-query-param-state.ts'
-import type {  ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
+import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
 
 
@@ -72,7 +72,7 @@ const EditStaples = () => {
           { staples.length === 0 ? (<div className="noElementsMessage">Noch keine Staples angelegt...</div>) :
             staples.map((item, index) => (
               <div key={ index } className="listElementContainer">
-                <div className="listElement">
+                <div className="shoppingListElement">
                   <div className="label ">{ item.name }</div>
                   <div className={ `deleteButton ${ !isOnline ? 'disabled' : '' }` }><img src="/paper-bin.svg"
                                                                                           onClick={ () => isOnline && removeStaple(item.id) }
@@ -84,8 +84,10 @@ const EditStaples = () => {
             )) }
         </div>
         <form className="addItemForm" onSubmit={ handleSubmit }>
-          <input type="text" onChange={ e => setNewStapleName(e.target.value) }/>
-          <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
+          <div className="inputAndButton">
+            <input type="text" onChange={ e => setNewStapleName(e.target.value) }/>
+            <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
+          </div>
         </form>
       </div>
     </div>

@@ -88,7 +88,7 @@ const SelectStapleModal = ({ selectedCategory, addedStaples, onModalClose }: Sel
                 (<div key={ index } className="listElementContainer">
                     <div
                       onClick={ () => handleStapleSelected(item) }
-                      className={ `listElement ${ selectedStaples.some(staple => staple.id === item.id) ? 'selectedStaple' : '' }` }>
+                      className={ `shoppingListElement ${ selectedStaples.some(staple => staple.id === item.id) ? 'selectedStaple' : '' }` }>
                       { item.name }
                     </div>
                   </div>

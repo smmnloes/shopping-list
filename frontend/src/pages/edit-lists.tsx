@@ -17,6 +17,7 @@ import { useOnlineStatus } from '../providers/online-status-provider.tsx'
 export type CheckedItem = { id: number, category: ShopCategory }
 export const CHECKED_ITEMS_KEY = 'checkedItems'
 
+const SUGGESTION_DELAY_MS = 300
 
 const EditLists = () => {
   const [ selectedCategory, setSelectedCategory ] = useQueryParamState<ShopCategory>(SELECTED_CATEGORY, 'GROCERY')
@@ -106,12 +107,9 @@ const EditLists = () => {
         window.clearTimeout(suggestionTimeoutId.current)
         if (newItemName) {
           suggestionTimeoutId.current = window.setTimeout(async () => {
-            const suggestions = await getSuggestionsApi(selectedCategory, newItemName)
-            const filteredSuggestions = suggestions.filter(suggestion => {
-              return !(suggestion.isStaple && addedStaples.find(staple => staple.id === suggestion.id))
-            })
-            setSuggestions(filteredSuggestions)
-          }, 500)
+            const suggestions = await getSuggestionsApi(selectedCategory, newItemName, [...addedStaples.map(s => s.id), ...listItems.map(i => i.id)])
+            setSuggestions(suggestions)
+          }, SUGGESTION_DELAY_MS)
         } else {
           setSuggestions([])
         }
@@ -123,7 +121,7 @@ const EditLists = () => {
     const isItemChecked = (itemId: number) => !!checkedItems.find(item => item.id === itemId)
 
     return (
-      <div key={ index } className="listElement">
+      <div key={ index } className="shoppingListElement">
         <div className="listItemCheckBox"><input type="checkbox"
                                                  checked={ isItemChecked(item.id) }
                                                  onChange={ (event) => handleCheckedItemsOnChange(event, item.id) }/>
@@ -189,7 +187,7 @@ const EditLists = () => {
         }
         <form className="addItemForm lessMarginTop" onSubmit={ handleSubmit }>
 
-          <div className="suggestionsContainer">
+          <div className={`suggestionsContainer ${suggestions.length > 0 ? 'visible' : 'invisible'}`}>
             { suggestions.map((suggestion, index) => (
               <>
                 <div
@@ -202,7 +200,6 @@ const EditLists = () => {
                   <span>{ suggestion.name }</span>
                   { suggestion.isStaple && <img src="/stapler.svg" alt="staple"/> }
                 </div>
-                {index < suggestions.length -1 && <hr className="vertical"/>}
               </>
             )) }
           </div>

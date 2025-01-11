@@ -97,10 +97,10 @@ const Notes = () => {
           </button>
         </div>
 
-        <div className="listElement newElement" onClick={ newNoteHandler }>Neue Notiz</div>
+        <div className="newNoteElement" onClick={ newNoteHandler }>Neue Notiz</div>
         { sortNotes([ ...notes ]).map((note, index) => (
           <div key={ index } className="listElementContainer">
-            <div className="listElement" onClick={ () => navigate(`/notes/${ note.id }`) }>
+            <div className="notesListElement" onClick={ () => navigate(`/notes/${ note.id }`) }>
               <div className="noteContainer">
                 <img className="visibilityIcon" hidden={ note.publiclyVisible } src="/padlock-locked.svg"
                      alt="Note is private"/>
