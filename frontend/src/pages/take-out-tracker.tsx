@@ -1,17 +1,16 @@
-import { useState } from 'react'
+import { CSSProperties, useState } from 'react'
 import '../styles/takeout-tracker.scss'
 
 const names = [
   'Max',
   'Yang',
-  'Johann',
-  'Blubdibub',
 ]
 
 const TakeOutTracker = () => {
   const [ isSpinning, setIsSpinning ] = useState(false)
-  const [ currentNameIndex, setCurrentNameIndex ] = useState(0)
+  const [ currentRotation, setCurrentRotation ] = useState(0)
 
+  const getSelectedName = names[currentRotation % names.length]
 
   const segmentAngle = 360 / names.length
 
@@ -19,8 +18,7 @@ const TakeOutTracker = () => {
     if (isSpinning) return
 
     setIsSpinning(true)
-    const newName = currentNameIndex + 1
-    setCurrentNameIndex(newName)
+    setCurrentRotation((currentRotation + 1))
 
     setTimeout(() => {
       setIsSpinning(false)
@@ -29,48 +27,23 @@ const TakeOutTracker = () => {
 
   return (
     <div>
-      <div>
-        {/* Center pointer */ }
-        <div className="pointer"/>
-
-        {/* Wheel */ }
-        <ul
-          className="circle"
-          style={ {
-            transform: `rotate(${ currentNameIndex * segmentAngle }deg)`,
-          } }
-        >
-          { names.map((name, index) => (
-            <li
-              key={ name }
-              style={ {
-                transform: `rotate(${ index * segmentAngle - segmentAngle /2 }deg) skewY(${ -(90 - segmentAngle) }deg)`,
-              } }
-            >
-              <div
-                className='text'
-                style={ {
-                 transform: `rotate(${ segmentAngle / 2 }deg)`,
-                } }
-              >{ name }
-              </div>
-            </li>
-          )) }
-        </ul>
+      <div className="pie" style={ { '--n': names.length, transform: `rotate(${currentRotation * segmentAngle * -1}deg)` } as CSSProperties }>
+        <div className="centerCircle"/>
+        { names.map((name, index) => (
+          <div className="slice" key={ index }
+               style={ {
+                 '--i': index,
+                 '--c': index % 2 === 0 ? '#4f6880' : '#abc8e3',
+                 '--x': `"${ name }"`,
+                 '--oa': `${ (-90)}deg`
+               } as CSSProperties }></div>
+        )) }
       </div>
-
-      <button
-        onClick={ spinWheel }
-        disabled={ isSpinning }
-        className="spin-button"
-      >
-        Spin the Wheel
-      </button>
-
+      <button onClick={spinWheel}>Spin wheel</button>
+      <div>{`Selected name is: ${getSelectedName}`}</div>
     </div>
   )
 
 }
 
 export default TakeOutTracker
-
