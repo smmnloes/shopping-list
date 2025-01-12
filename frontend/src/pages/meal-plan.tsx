@@ -1,5 +1,5 @@
 import { addDays, addWeeks, getISOWeekYear, getWeek, GetWeekOptions, getYear, startOfWeek } from 'date-fns'
-import { memo, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getMealsForWeek, saveMealsForWeek } from '../api/meals.ts'
 import objectHash from 'object-hash'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
@@ -8,7 +8,7 @@ const COMMON_WEEK_OPTIONS: GetWeekOptions = { weekStartsOn: 1, firstWeekContains
 
 const getCurrentWeekMonday = () => startOfWeek(new Date(), COMMON_WEEK_OPTIONS)
 
-const MealPlan = memo(() => {
+const MealPlan = () => {
   const [ selectedMonday, setSelectedMonday ] = useState<Date>(getCurrentWeekMonday())
 
   const mealsForWeekDefault = Array(7).fill('')
@@ -121,7 +121,7 @@ const MealPlan = memo(() => {
       </table>
     </div>
   )
-})
+}
 
 const weekDay = [ 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So' ]
 
