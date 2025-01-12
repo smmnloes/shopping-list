@@ -19,6 +19,7 @@ import Register from './pages/register.tsx'
 import LocationMap from './pages/location-map.tsx'
 import AccountSettings from './pages/account-settings.tsx'
 import { OnlineStatusProvider } from './providers/online-status-provider.tsx'
+import TakeOutTracker from './pages/take-out-tracker.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -71,6 +72,11 @@ createRoot(document.getElementById('root')!).render(
               <Route path="/notes/:id" element={
                 <PrivateRoute>
                   <EditNote/>
+                </PrivateRoute>
+              }/>
+              <Route path="/takeout-tracker" element={
+                <PrivateRoute>
+                  <TakeOutTracker/>
                 </PrivateRoute>
               }/>
             </Routes>
