@@ -27,6 +27,11 @@ function App() {
           </Link>
           <span>Autostandort</span>
         </div>
+        <div className="navElement last">
+          <Link to="/takeout-tracker"><img src="/take-away.svg" alt="notes"/>
+          </Link>
+          <span>Takeout Tracker</span>
+        </div>
       </div>
     </>
   )

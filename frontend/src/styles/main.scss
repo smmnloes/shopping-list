@@ -199,21 +199,25 @@ form input {
 .navContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 20px;
+  // gap + 2x navElement width
+  width: 320px;
 
   justify-items: center;
-  align-items: center;
-  margin-top: 100px;
+
+  margin: 100px auto;
 
   * {
     padding: 5px;
   }
+
+
 }
 
 .navElement {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
   border: 1px solid white;
   width: 150px;
   height: 150px;
@@ -236,6 +240,9 @@ form input {
     width: 3.7em;
   }
 
+  &.last {
+    grid-column: 1 / span 2;
+  }
 }
 
 
@@ -636,7 +643,7 @@ td.mealDoneCheck {
 }
 
 .mapcontainer {
-  width: 100%;
+  padding: 20px;
   height: 100%;
   display: flex;
   flex-direction: column;
