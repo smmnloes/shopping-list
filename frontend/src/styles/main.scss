@@ -205,8 +205,8 @@ form input {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto auto;
   gap: 20px;
-  // gap + 2x navElement width
-  width: 320px;
+  // gap + 2x navElement width + padding
+  width: 360px;
 
   justify-items: center;
 

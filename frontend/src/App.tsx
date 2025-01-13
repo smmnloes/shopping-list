@@ -30,7 +30,7 @@ function App() {
         <div className="navElement last">
           <Link to="/takeout-tracker"><img src="/take-away.svg" alt="notes"/>
           </Link>
-          <span>Takeout Tracker</span>
+          <span>Takeout</span>
         </div>
       </div>
     </>
