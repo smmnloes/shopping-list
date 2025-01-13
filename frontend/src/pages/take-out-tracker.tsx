@@ -39,8 +39,7 @@ const TakeOutTracker = () => {
                } as CSSProperties }></div>
         )) }
       </div>
-      <button onClick={spinWheel}>Spin wheel</button>
-      <div>{`Selected name is: ${getSelectedName}`}</div>
+      <button className="my-button big" onClick={spinWheel}>{getSelectedName} hat bezahlt!</button>
     </div>
   )
 
