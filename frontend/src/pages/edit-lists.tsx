@@ -203,7 +203,7 @@ const EditLists = () => {
             <input type="text" onChange={ e => {
               setNewItemName(e.target.value)
             } } value={ newItemName }/>
-            <button className="my-button addButton" type="submit" disabled={ !isOnline }>Hinzufügen</button>
+            <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
           </div>
         </form>
       </div>

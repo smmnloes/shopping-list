@@ -139,7 +139,6 @@ form input {
   font-size: 20px;
 
   &.small {
-    margin-left: 10px;
     font-size: 15px;
   }
 }
@@ -267,11 +266,11 @@ form input {
   margin-top: 25px;
 
   input {
-    width: 60%;
+    flex: 1;
   }
 
   button {
-    width: 30%;
+    margin-left: 10px;
   }
 
   .inputAndButton {
