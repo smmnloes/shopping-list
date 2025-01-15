@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Request, UnauthorizedException, UseGuards } from '@nestjs/common'
+import { Controller, Get, Post, UseGuards } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { User } from '../data/entities/user'
 import { TakeoutPayment } from '../data/entities/takeout-payment'
@@ -18,25 +17,19 @@ export class TakeoutApiController {
 
   @UseGuards(JwtAuthGuard)
   @Get('takeout')
-  async getTakeoutState(@Request() req: ExtendedJWTGuardRequest<void>): Promise<TakeoutStateFrontend> {
+  async getTakeoutState(): Promise<TakeoutStateFrontend> {
     const { nextOne, allUsers } = await this.getNextUserToPay()
 
     return {
       usernames: allUsers.map(user => user.name),
       hasToPayName: nextOne.name,
-      permissions: {
-        canSwitch: req.user.id === nextOne.id
-      }
     }
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('takeout')
-  async switchTakeoutState(@Request() req: ExtendedJWTGuardRequest<void>): Promise<void> {
+  async switchTakeoutState(): Promise<void> {
     const { nextOne } = await this.getNextUserToPay()
-    if (req.user.id !== nextOne.id) {
-     throw new UnauthorizedException('Only user that is next can switch')
-    }
     await this.takeoutRepository.save(new TakeoutPayment(nextOne))
   }
 
