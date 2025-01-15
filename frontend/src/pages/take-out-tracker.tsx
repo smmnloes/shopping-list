@@ -1,45 +1,19 @@
-import { CSSProperties, useState } from 'react'
 import '../styles/takeout-tracker.scss'
+import { useState } from 'react'
 
-const names = [
-  'Max',
-  'Yang',
-]
+type PointDirection = 'LEFT' | 'RIGHT'
 
 const TakeOutTracker = () => {
-  const [ isSpinning, setIsSpinning ] = useState(false)
-  const [ currentRotation, setCurrentRotation ] = useState(0)
-
-  const getSelectedName = names[currentRotation % names.length]
-
-  const segmentAngle = 360 / names.length
-
-  const spinWheel = () => {
-    if (isSpinning) return
-
-    setIsSpinning(true)
-    setCurrentRotation((currentRotation + 1))
-
-    setTimeout(() => {
-      setIsSpinning(false)
-    }, 1000) // Match this with the CSS transition duration
-  }
+  const [ pointDirection, setPointDirection ] = useState<PointDirection>()
 
   return (
-    <div>
-      <div className="pie" style={ { '--n': names.length, transform: `rotate(${currentRotation * segmentAngle * -1}deg)` } as CSSProperties }>
-        <div className="centerCircle"/>
-        { names.map((name, index) => (
-          <div className="slice" key={ index }
-               style={ {
-                 '--i': index,
-                 '--c': index % 2 === 0 ? '#4f6880' : '#abc8e3',
-                 '--x': `"${ name }"`,
-                 '--oa': `${ (-90)}deg`
-               } as CSSProperties }></div>
-        )) }
-      </div>
-      <button className="my-button big" onClick={spinWheel}>{getSelectedName} hat bezahlt!</button>
+    <div className="takeoutTracker">
+      <div className="takeoutNames"><span>Name 1</span><span>Name 2</span></div>
+      <div className="pointHand"><img className={ `point-${ pointDirection?.toLowerCase() ?? 'up' }` } src="/point-hand.svg"
+                                      alt="point hand"/></div>
+      <button className="my-button"
+              onClick={ () => setPointDirection((prev) => prev === 'LEFT' ? 'RIGHT' : 'LEFT') }>Ich habe bezahlt!
+      </button>
     </div>
   )
 
