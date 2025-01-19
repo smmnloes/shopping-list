@@ -45,18 +45,23 @@ export class ShoppingApiController {
   async addExistingItemsToList(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
     ids: number[]
   }>): Promise<void> {
-    const shoppingList = await this.getListForCategory(category)
+    const shoppingList = await this.getOrCreateListForCategory(category)
     const itemsToAdd = await this.listItemRepository.find({ where: { id: In(req.body.ids) } })
     shoppingList.items.push(...itemsToAdd)
     await this.shoppingListRepository.save(shoppingList, {})
-    await this.listItemRepository.save(itemsToAdd.map(item => ({ ...item, addedCounter: item.addedCounter + 1})))
+    await this.listItemRepository.save(itemsToAdd.map(item => ({
+      ...item,
+      addedCounter: item.addedCounter + 1,
+      lastAddedAt: new Date()
+    })))
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('shopping-lists/:category')
   async getItemsForCategory(@Param('category') category: ShopCategory): Promise<{ items: ListItemFrontend[] }> {
-    const shoppingList = await this.getListForCategory(category)
-    return { items: shoppingList.items.map(({ id, name, isStaple }) => ({ id, name, isStaple })) }
+    const shoppingList = await this.getOrCreateListForCategory(category)
+    const sortedByLastAdded = [ ...shoppingList.items ].sort((itemA, itemB) => (itemA.lastAddedAt?.getTime() ?? 0) - (itemB.lastAddedAt?.getTime() ?? 0))
+    return { items: sortedByLastAdded.map(({ id, name, isStaple }) => ({ id, name, isStaple })) }
   }
 
   @UseGuards(JwtAuthGuard)
@@ -64,7 +69,7 @@ export class ShoppingApiController {
   async deleteItemsFromCategoryBulk(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
     ids: number[]
   }>) {
-    const shoppingList = await this.getListForCategory(category)
+    const shoppingList = await this.getOrCreateListForCategory(category)
 
     shoppingList.items = shoppingList.items.filter(item => !req.body.ids.includes(item.id))
     await this.shoppingListRepository.save(shoppingList)
@@ -96,15 +101,18 @@ export class ShoppingApiController {
   @UseGuards(JwtAuthGuard)
   @Get('shopping-lists/:category/suggestions')
   async getSuggestions(@Param('category') category: ShopCategory, @Query('input') input: string, @Query('addedItemIds', IntArrayPipe) addedItemIds: number[]): Promise<ListItemFrontend[]> {
-    return this.suggestionsService.getSuggestions(category, input, addedItemIds).then(items => items.map(({
-                                                                                                            id,
-                                                                                                            name,
-                                                                                                            isStaple
-                                                                                                          }) => ({
-      id,
-      name,
-      isStaple
-    })))
+    return this.suggestionsService.getSuggestions(category, input, addedItemIds)
+      .then(items => items.map((
+        {
+          id,
+          name,
+          isStaple
+        }) => (
+        {
+          id,
+          name,
+          isStaple
+        })))
   }
 
 
@@ -112,7 +120,7 @@ export class ShoppingApiController {
    * @param category
    * @private
    */
-  private async getListForCategory(category: ShopCategory): Promise<ShoppingList> {
+  private async getOrCreateListForCategory(category: ShopCategory): Promise<ShoppingList> {
     const shoppingLists = await this.shoppingListRepository.find({ where: { shopCategory: category } })
     if (shoppingLists.length === 0) {
       console.error(`No list for category ${ category } found, creating one`)

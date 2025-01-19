@@ -13,7 +13,7 @@ export class SuggestionsService {
 
   public async getSuggestions(category: ShopCategory, input: string, addedItemIds: number[]): Promise<ListItem[]> {
     const allItems = await this.listItemRepository.find({ where: { shopCategory: category } })
-    const addedItems = addedItemIds.map(id => allItems.find(item => item.id === id)).filter(Boolean)
+    const addedItems = addedItemIds.map(id => allItems.find(item => item.id === id)).filter(item => item !== undefined)
     const withoutAddedItems = allItems.filter(item => !this.alreadyAdded(item, addedItems))
 
     const processed = this.processItems(withoutAddedItems)
