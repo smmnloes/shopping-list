@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [ react(), VitePWA({
     registerType: 'autoUpdate',
     includeAssets: [ '*.svg', '*.png' ],
-
+    devOptions: { enabled: true },
     workbox: {
       runtimeCaching: [
         {

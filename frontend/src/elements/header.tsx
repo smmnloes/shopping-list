@@ -21,6 +21,24 @@ function Header() {
   }, [ serverVersion?.version ])
 
 
+  /**
+   * Delete the workbox-cache which caches index.html when new version is available
+   */
+  const handleNewVersionReload = async () => {
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (let registration of registrations) {
+          await registration.unregister();
+        }
+        const cacheNames = await caches.keys();
+        const workboxCache = cacheNames.find(name => name.includes('workbox'))
+        if (workboxCache) {
+          await caches.delete(workboxCache)
+        }
+        window.location.reload();
+      }
+  }
+
   return (
     <>
       <header className="header">
@@ -35,7 +53,7 @@ function Header() {
           <div className="choiceModal">
             <span>Es gibt eine neuere Version der App ({ serverVersion?.version })<br/>Neu laden?</span>
             <div className="choiceModalButtons">
-              <button className="my-button" onClick={ async () => navigate(0) }>Ja</button>
+              <button className="my-button" onClick={ handleNewVersionReload }>Ja</button>
               <button className="my-button" onClick={ () => setVersionModalVisible(false) }>Nein</button>
             </div>
 
