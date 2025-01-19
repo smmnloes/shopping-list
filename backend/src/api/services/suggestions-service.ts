@@ -6,7 +6,7 @@ import { ShopCategory } from '../../../../shared/types/shopping'
 
 @Injectable()
 export class SuggestionsService {
-  readonly MAX_SUGGESTIONS = 10
+  readonly MAX_SUGGESTIONS = 15
 
   constructor(@InjectRepository(ListItem) readonly listItemRepository: Repository<ListItem>) {
   }
@@ -17,15 +17,17 @@ export class SuggestionsService {
     const withoutAddedItems = allItems.filter(item => !this.alreadyAdded(item, addedItems))
 
     const processed = this.processItems(withoutAddedItems)
-    const sortedByAddedCounter = [ ...processed ].sort((itemA, itemB) => itemB.addedCounter - itemA.addedCounter)
 
-    const filtered = sortedByAddedCounter.filter(item =>
-      item.shopCategory === category
-      // String distance?
-      && item.name.toLowerCase().includes(input.toLowerCase())
+    const matched = await this.match(input, processed)
+    const scored = matched.map(match => ({
+      ...match,
+      combinedScore: (1 / match.score) * (match.item.addedCounter + 1)
+    }))
+
+    const sorted = [ ...scored ].sort((matchA, matchB) =>
+      matchB.combinedScore - matchA.combinedScore
     )
-
-    return filtered.slice(0, this.MAX_SUGGESTIONS)
+    return sorted.map(match => match.item).slice(0, this.MAX_SUGGESTIONS)
   }
 
   private alreadyAdded(item: ListItem, alreadyAddedItems: ListItem[]): boolean {
@@ -58,5 +60,11 @@ export class SuggestionsService {
 
   private laxEquals(itemA: ListItem, itemB: ListItem) {
     return this.listItemLaxComparable(itemA) === this.listItemLaxComparable(itemB)
+  }
+
+  private async match(input: string, items: ListItem[]) {
+    const fuseModule = await import('fuse.js')
+    const fuse = new fuseModule.default(items, { keys: [ 'name' ], includeScore: true })
+    return fuse.search(input)
   }
 }
