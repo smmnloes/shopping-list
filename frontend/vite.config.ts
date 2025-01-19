@@ -10,7 +10,13 @@ export default defineConfig({
     chunkSizeWarningLimit: 2000,
   },
   plugins: [ react(), VitePWA({
-    registerType: 'autoUpdate',
+    devOptions: {
+      enabled: true,
+      type: 'module',
+      navigateFallback: 'index.html'
+    },
+    strategies: 'injectManifest',
+    registerType: 'prompt',
     includeAssets: [ '*.svg', '*.png' ],
 
     workbox: {
@@ -33,6 +39,7 @@ export default defineConfig({
           },
         },
       ],
+
     },
 
     manifest: {

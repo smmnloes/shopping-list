@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import useServerVersion from '../hooks/use-server-version.ts'
 import packageJson from '../../../package.json'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
+import { useRegisterSW } from 'virtual:pwa-register/react'
 
 function Header() {
   const { authStatus } = useAuth()
@@ -19,6 +20,12 @@ function Header() {
       setVersionModalVisible(true)
     }
   }, [ serverVersion?.version ])
+
+  const { updateServiceWorker } = useRegisterSW({
+    onRegisteredSW: (swScriptUrl: string, registration: ServiceWorkerRegistration) => console.log(swScriptUrl, registration),
+    onNeedRefresh: () => console.log('we need a refresh, mate!'),
+    onOfflineReady: () => console.log('can be used offline!')
+  })
 
 
   return (
