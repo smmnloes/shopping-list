@@ -26,6 +26,11 @@
     "react-router-dom": "^6.26.2",
     "vite-plugin-pwa": "^0.21.1",
     "workbox-core": "^7.1.0",
+    "workbox-precaching": "^7.1.0",
+    "workbox-strategies": "^7.1.0",
+    "workbox-routing": "^7.1.0",
+    "workbox-expiration": "^7.1.0",
+    "workbox-cacheable-response": "^7.1.0",
     "ckeditor5": "^44.1.0",
     "@ckeditor/ckeditor5-react": "^9.4.0"
   },

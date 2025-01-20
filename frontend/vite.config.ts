@@ -10,31 +10,15 @@ export default defineConfig({
     chunkSizeWarningLimit: 2000,
   },
   plugins: [ react(), VitePWA({
+    strategies: 'injectManifest',
     registerType: 'autoUpdate',
     includeAssets: [ '*.svg', '*.png' ],
-    devOptions: { enabled: true },
-    workbox: {
-      runtimeCaching: [
-        {
-          urlPattern: ({ url }) => {
-            return url.pathname.startsWith('/api') && !url.pathname.includes('onlinestatus')
-          },
-          handler: 'NetworkFirst',
-          options: {
-            cacheName: 'api-cache',
-            networkTimeoutSeconds: 5,
-            expiration: {
-              maxEntries: 100,
-              maxAgeSeconds: 24 * 60 * 60, // Cache for 1 day
-            },
-            cacheableResponse: {
-              statuses: [ 0, 200 ],
-            },
-          },
-        },
-      ],
+    devOptions: { enabled: true, type: 'module', navigateFallback: 'index.html' },
+    srcDir: 'src/serviceworker',
+    filename: 'sw.ts',
+    injectManifest: {
+      minify: false
     },
-
     manifest: {
       name: 'Einkaufsliste',
       display: 'standalone',

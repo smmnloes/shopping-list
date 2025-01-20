@@ -164,7 +164,22 @@ importers:
       vite-plugin-pwa:
         specifier: ^0.21.1
         version: 0.21.1(vite@5.4.11(@types/node@20.17.10)(sass-embedded@1.83.0)(terser@5.37.0))(workbox-build@7.3.0(@types/babel__core@7.20.5))(workbox-window@7.3.0)
+      workbox-cacheable-response:
+        specifier: ^7.1.0
+        version: 7.3.0
       workbox-core:
+        specifier: ^7.1.0
+        version: 7.3.0
+      workbox-expiration:
+        specifier: ^7.1.0
+        version: 7.3.0
+      workbox-precaching:
+        specifier: ^7.1.0
+        version: 7.3.0
+      workbox-routing:
+        specifier: ^7.1.0
+        version: 7.3.0
+      workbox-strategies:
         specifier: ^7.1.0
         version: 7.3.0
     devDependencies:
