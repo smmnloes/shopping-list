@@ -13,7 +13,7 @@ export default defineConfig({
     strategies: 'injectManifest',
     registerType: 'autoUpdate',
     includeAssets: [ '*.svg', '*.png' ],
-    devOptions: { enabled: true, type: 'module', navigateFallback: 'index.html' },
+    devOptions: { enabled: true, type: 'module' },
     srcDir: 'src/serviceworker',
     filename: 'sw.ts',
     injectManifest: {
