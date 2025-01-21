@@ -46,7 +46,7 @@ export const getAuthStatus = async (): Promise<AuthStatus> => {
 
 
 export const onlineStatus = async () => {
-  return axiosInstance.get(`${ backendHost }/api/onlinestatus`)
+  return axiosInstance.get(`${ backendHost }/api/onlinestatus`, { 'axios-retry': { retries: 0 } })
 }
 
 export const getServerVersion = async (): Promise<string> => {
