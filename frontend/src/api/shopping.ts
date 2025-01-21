@@ -6,7 +6,12 @@ export const getItemsForCategory = async (category: ShopCategory): Promise<{ ite
 }
 
 export const createNewItem = async (name: string, category: ShopCategory, isStaple: boolean) => {
-  return axiosInstance.post(`${ backendHost }/api/shopping-lists/${ category }/items`, { item: { name, isStaple } }).then(response => response.data)
+  return axiosInstance.post(`${ backendHost }/api/shopping-lists/${ category }/items`, {
+    item: {
+      name,
+      isStaple
+    }
+  }).then(response => response.data)
 }
 
 export const addExistingItemsToList = async (ids: number[], category: ShopCategory) => {
@@ -28,5 +33,8 @@ export const deleteStaple = async (stapleId: number) => {
 }
 
 export const getSuggestions = async (category: ShopCategory, input: string, addedItemIds: number[]): Promise<ListItemFrontend[]> => {
-  return axiosInstance.get(`${ backendHost }/api/shopping-lists/${ category }/suggestions`, { params: { input, addedItemIds } }).then(response => response.data)
+  return axiosInstance.post(`${ backendHost }/api/shopping-lists/${ category }/suggestions`, {
+    input,
+    addedItemIds
+  }).then(response => response.data)
 }
