@@ -9,13 +9,14 @@ import { User } from './entities/user'
 import { Location } from './entities/location'
 import { UserKeyService } from './crypto/user-key-service'
 import { TakeoutPayment } from './entities/takeout-payment'
+import { NotificationSubscription } from './entities/notification-subscription'
 
 @Module({
   imports: [ TypeOrmModule.forRootAsync({
     useFactory: (configService: ConfigService) => ({
       type: 'sqlite',
       database: configService.get<string>('DATABASE_PATH'),
-      entities: [ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment ],
+      entities: [ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription ],
       synchronize: true
     }),
     inject: [ ConfigService ]

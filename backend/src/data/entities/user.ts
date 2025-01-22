@@ -1,4 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { NotificationSubscription } from './notification-subscription'
+import type { PushSubscription } from 'web-push'
+
 
 @Entity()
 export class User {
@@ -11,6 +14,8 @@ export class User {
   password_hashed: string
   @Column({nullable: true})
   user_data_key_encrypted?: string
+  @OneToOne(() => NotificationSubscription)
+  subscription: PushSubscription
 
   constructor() {
   }

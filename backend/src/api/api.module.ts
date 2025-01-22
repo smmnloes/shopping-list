@@ -16,11 +16,16 @@ import { LocationsApiController } from './locations.api.controller'
 import { SuggestionsService } from './services/suggestions-service'
 import { TakeoutPayment } from '../data/entities/takeout-payment'
 import { TakeoutApiController } from './takeout.api.controller'
+import { NotificationsApiController } from './notifications.api.controller'
+import { NotificationSubscription } from '../data/entities/notification-subscription'
+import { NotificationService } from './services/notification-service'
 
 @Module({
-  imports: [ AuthModule, TypeOrmModule.forFeature([ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment ]) ],
-  controllers: [ ApiController, MealApiController, ShoppingApiController, NotesApiController, LocationsApiController, TakeoutApiController ],
-  providers: [ UserKeyService, SuggestionsService ],
+  imports: [ AuthModule, TypeOrmModule.forFeature([ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription ]) ],
+  controllers: [
+    ApiController, MealApiController, ShoppingApiController, NotesApiController, LocationsApiController, TakeoutApiController, NotificationsApiController
+  ],
+  providers: [ UserKeyService, SuggestionsService, NotificationService ],
   exports: []
 })
 export class ApiModule {

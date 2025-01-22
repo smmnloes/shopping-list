@@ -3,6 +3,7 @@ import { useAuth } from '../providers/auth-provider.tsx'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { isAxiosError } from 'axios'
+import { subscribeToPushNotifications } from '../serviceworker/push-notifications.ts'
 
 const AccountSettings = () => {
   const { authStatus, setAuthStatus } = useAuth()
@@ -61,12 +62,20 @@ const AccountSettings = () => {
     return valid
   }
 
+  const handlePushNotification = async () => {
+    const subscription = await subscribeToPushNotifications()
+    if (subscription) {
+      // TODO
+    }
+  }
+
   return <>
     <h1>Account</h1>
     <div className="accountUserInfo">
       <p>angemeldet als<br/><span className="userName">{ authStatus?.username }</span></p>
       <button className="my-button accountPageButton" onClick={ handleLogout }>abmelden</button>
     </div>
+    <button className="my-button" onClick={handlePushNotification}>Push Notifications</button>
     <form className="loginForm" onSubmit={ e => e.preventDefault() }>
       <h3>Passwort ändern</h3>
       <label htmlFor="currentPassword">Aktuelles Passwort:</label>
