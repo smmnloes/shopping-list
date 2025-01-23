@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { User } from './user'
 import type { PushSubscription } from 'web-push'
 
@@ -8,7 +8,7 @@ export class NotificationSubscription {
   id: number
   @Column()
   createdAt: Date
-  @OneToOne(() => User)
+  @OneToOne(() => User, {eager: true})
   @JoinColumn()
   user: User
   @Column({type: 'json'})

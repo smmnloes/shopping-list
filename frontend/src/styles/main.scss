@@ -721,3 +721,10 @@ hr.vertical {
   border: 1px solid white;
   margin: auto;
 }
+
+.notificationToggleContainer {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  justify-content: center;
+}

@@ -25,7 +25,7 @@ registerRoute(({ url }) => url.pathname.startsWith('/api') && !url.pathname.incl
   }))
 
 self.addEventListener('push', (event) => {
-  console.log('Push event received:', event);
+  console.log('Push event received:', event)
 
   event.waitUntil(
     (async () => {
@@ -33,14 +33,11 @@ self.addEventListener('push', (event) => {
         const options: NotificationOptions = {
           body: event.data?.text() ?? 'No payload',
           icon: '/icon.png'
-        };
-
-        console.log('Showing notification with options:', options);
-        const result = await self.registration.showNotification('Title', options);
-        console.log('Notification shown successfully:', result);
+        }
+        await self.registration.showNotification('Title', options)
       } catch (error) {
-        console.error('Error showing notification:', error);
+        console.error('Error showing notification:', error)
       }
     })()
-  );
-});
+  )
+})

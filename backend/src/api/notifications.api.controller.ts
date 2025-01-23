@@ -1,4 +1,4 @@
-import { Controller, Inject, Post, Request, UseGuards } from '@nestjs/common'
+import { Controller, Get, Inject, Post, Request, UseGuards } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
@@ -25,8 +25,29 @@ export class NotificationsApiController {
   }>): Promise<void> {
     const user = await this.userRepository.findOneOrFail({ where: { id: req.user.id } })
     await this.notificationSubscriptionRepository.upsert(new NotificationSubscription(user, req.body.subscription), [ 'user' ])
-    // Test
-    await this.notificationService.sendPushNotification(req.body.subscription, 'This is your first message!')
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('notifications/options')
+  async setNotificationsOptions(@Request() req: ExtendedJWTGuardRequest<{ enabled: boolean }>): Promise<void> {
+    const user = await this.userRepository.findOneOrFail({ where: { id: req.user.id } })
+    user.options.notifications.enabled = req.body.enabled
+    await this.userRepository.save(user)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('notifications/options')
+  async getNotificationsOptions(@Request() req: ExtendedJWTGuardRequest<void>): Promise<{ enabled: boolean }> {
+    const user = await this.userRepository.findOneOrFail({ where: { id: req.user.id } })
+    return user.options.notifications
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('notifications/test')
+  async testNotifications(@Request() req: ExtendedJWTGuardRequest<void>): Promise<void> {
+    const user = await this.userRepository.findOneOrFail({ where: { id: req.user.id } })
+    const subscription = await this.notificationSubscriptionRepository.findOneOrFail({ where: { user: {id: user.id} } })
+    await this.notificationService.sendPushNotification(subscription.subscription, 'This is a test message!')
   }
 
 }

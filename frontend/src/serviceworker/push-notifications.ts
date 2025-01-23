@@ -1,6 +1,6 @@
 import { saveSubscription } from '../api/notifications.ts'
 
-export async function subscribeToPushNotifications(): Promise<PushSubscription | undefined> {
+export async function subscribeToPushNotifications(): Promise<void> {
   if (!('serviceWorker' in navigator)) {
     console.error('Service Worker not supported')
     return
@@ -17,6 +17,5 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
   })
 
   await saveSubscription(subscription)
-  return subscription
 
 }

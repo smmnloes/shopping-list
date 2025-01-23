@@ -3,6 +3,15 @@ import { NotificationSubscription } from './notification-subscription'
 import type { PushSubscription } from 'web-push'
 
 
+export type UserOptions = {
+  notifications: { enabled: boolean }
+}
+
+const defaultOptions: UserOptions = { notifications: { enabled: false } }
+
+export type UserId = number
+
+
 @Entity()
 export class User {
 
@@ -16,9 +25,9 @@ export class User {
   user_data_key_encrypted?: string
   @OneToOne(() => NotificationSubscription, { nullable: true })
   subscription: PushSubscription
+  @Column({ type: 'json', default: JSON.stringify(defaultOptions) })
+  options: UserOptions
 
   constructor() {
   }
 }
-
-export type UserId = number

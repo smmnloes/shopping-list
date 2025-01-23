@@ -1,9 +1,10 @@
 import { changePassword, logout } from '../api/api.ts'
 import { useAuth } from '../providers/auth-provider.tsx'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { isAxiosError } from 'axios'
 import { subscribeToPushNotifications } from '../serviceworker/push-notifications.ts'
+import { getNotificationsStatus, setNotificationsStatus, testNotification } from '../api/notifications.ts'
 
 const AccountSettings = () => {
   const { authStatus, setAuthStatus } = useAuth()
@@ -13,8 +14,16 @@ const AccountSettings = () => {
   const [ passwordConfirm, setPasswordConfirm ] = useState<string>('')
   const [ errorMessages, setErrorMessages ] = useState<string[]>([])
   const [ successMessages, setSuccessMessages ] = useState<string[]>([])
+  const [ notificationsEnabled, setNotificationsEnabled ] = useState<boolean | undefined>()
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    (async () => (
+      setNotificationsEnabled(await getNotificationsStatus().then(result => result.enabled))
+    ))()
+  }, [])
+
   const handleLogout = async () => {
     await logout()
     setAuthStatus({ authenticated: false })
@@ -27,7 +36,7 @@ const AccountSettings = () => {
     }
     try {
       await changePassword(currentPassword, newPassword)
-      setSuccessMessages(['Passwort erfolgreich geändert'])
+      setSuccessMessages([ 'Passwort erfolgreich geändert' ])
     } catch (error: any) {
       if (isAxiosError(error)) {
         switch (error.response?.status) {
@@ -62,10 +71,13 @@ const AccountSettings = () => {
     return valid
   }
 
-  const handlePushNotification = async () => {
-    const subscription = await subscribeToPushNotifications()
-    if (subscription) {
-      // TODO
+  const handleNotificationToggle = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.checked
+    console.log('notifications enabled: ' + newValue)
+    await setNotificationsStatus(newValue)
+    setNotificationsEnabled(newValue)
+    if (newValue) {
+      await subscribeToPushNotifications()
     }
   }
 
@@ -75,7 +87,18 @@ const AccountSettings = () => {
       <p>angemeldet als<br/><span className="userName">{ authStatus?.username }</span></p>
       <button className="my-button accountPageButton" onClick={ handleLogout }>abmelden</button>
     </div>
-    <button className="my-button" onClick={handlePushNotification}>Push Notifications</button>
+    <h3>Benachrichtigungen</h3>
+    <div className="notificationToggleContainer">
+      <span>Aus</span>
+      <label className="switch">
+        <input type="checkbox" checked={ notificationsEnabled } onChange={ handleNotificationToggle }/>
+        <span className="slider round"></span>
+      </label>
+      <span>An</span>
+    </div>
+    <button className="my-button" style={ { marginTop: '20px', padding: '5px' } } onClick={ testNotification }>Test!</button>
+
+
     <form className="loginForm" onSubmit={ e => e.preventDefault() }>
       <h3>Passwort ändern</h3>
       <label htmlFor="currentPassword">Aktuelles Passwort:</label>
