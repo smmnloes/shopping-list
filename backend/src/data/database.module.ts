@@ -11,12 +11,14 @@ import { UserKeyService } from './crypto/user-key-service'
 import { TakeoutPayment } from './entities/takeout-payment'
 import { NotificationSubscription } from './entities/notification-subscription'
 
+export const entities = [ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription ]
+
 @Module({
   imports: [ TypeOrmModule.forRootAsync({
     useFactory: (configService: ConfigService) => ({
       type: 'sqlite',
       database: configService.get<string>('DATABASE_PATH'),
-      entities: [ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription ],
+      entities,
       synchronize: true
     }),
     inject: [ ConfigService ]

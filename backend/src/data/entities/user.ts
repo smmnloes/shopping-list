@@ -12,9 +12,9 @@ export class User {
   name: string
   @Column()
   password_hashed: string
-  @Column({nullable: true})
+  @Column({ nullable: true })
   user_data_key_encrypted?: string
-  @OneToOne(() => NotificationSubscription)
+  @OneToOne(() => NotificationSubscription, { nullable: true })
   subscription: PushSubscription
 
   constructor() {
