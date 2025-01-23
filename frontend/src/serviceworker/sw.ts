@@ -26,18 +26,43 @@ registerRoute(({ url }) => url.pathname.startsWith('/api') && !url.pathname.incl
 
 self.addEventListener('push', (event) => {
   console.log('Push event received:', event)
-
+  console.log(event.data?.json())
+  const { message, title, onClickRedirect } = event.data?.json()
   event.waitUntil(
     (async () => {
       try {
         const options: NotificationOptions = {
-          body: event.data?.text() ?? 'No payload',
-          icon: '/icon.png'
+          body: message,
+          icon: '/icon.png',
+          data: { onClickRedirect }
         }
-        await self.registration.showNotification('Title', options)
+        await self.registration.showNotification(title, options)
       } catch (error) {
         console.error('Error showing notification:', error)
       }
     })()
+  )
+})
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const { onClickRedirect } = event.notification.data
+  if (!onClickRedirect) {
+    return
+  }
+
+  event.waitUntil(
+    self.clients
+      .matchAll({
+        type: 'window',
+      })
+      .then((clientList) => {
+        for (const client of clientList) {
+          console.log('Client url ' + client.url)
+          if (client.url.endsWith(onClickRedirect) && 'focus' in client) return client.focus()
+        }
+        return self.clients.openWindow(onClickRedirect)
+      }),
+
   )
 })

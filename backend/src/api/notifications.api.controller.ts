@@ -49,8 +49,12 @@ export class NotificationsApiController {
     if (!user.options.notifications.enabled) {
       return
     }
-    const subscription = await this.notificationSubscriptionRepository.findOneOrFail({ where: { user: {id: user.id} } })
-    await this.notificationService.sendPushNotification(subscription.subscription, 'This is a test message!')
+    const subscription = await this.notificationSubscriptionRepository.findOneOrFail({ where: { user: { id: user.id } } })
+    await this.notificationService.sendPushNotification(subscription.subscription, {
+      title: 'Test title',
+      message: 'This is a test message!',
+      onClickRedirect: '/notes'
+    })
   }
 
 }

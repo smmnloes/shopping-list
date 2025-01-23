@@ -88,15 +88,16 @@ const AccountSettings = () => {
       <button className="my-button accountPageButton" onClick={ handleLogout }>abmelden</button>
     </div>
     <h3>Benachrichtigungen</h3>
-    <div className="notificationToggleContainer">
+    { (notificationsEnabled !== undefined) && (<div className="notificationToggleContainer">
       <span>Aus</span>
       <label className="switch">
         <input type="checkbox" checked={ notificationsEnabled } onChange={ handleNotificationToggle }/>
         <span className="slider round"></span>
       </label>
       <span>An</span>
-    </div>
-    <button className="my-button" style={ { marginTop: '20px', padding: '5px' } } onClick={ testNotification }>Test!</button>
+    </div>) }
+    <button className="my-button" style={ { marginTop: '20px', padding: '5px' } } onClick={ testNotification }>Test!
+    </button>
 
 
     <form className="loginForm" onSubmit={ e => e.preventDefault() }>
