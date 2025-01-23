@@ -46,6 +46,9 @@ export class NotificationsApiController {
   @Post('notifications/test')
   async testNotifications(@Request() req: ExtendedJWTGuardRequest<void>): Promise<void> {
     const user = await this.userRepository.findOneOrFail({ where: { id: req.user.id } })
+    if (!user.options.notifications.enabled) {
+      return
+    }
     const subscription = await this.notificationSubscriptionRepository.findOneOrFail({ where: { user: {id: user.id} } })
     await this.notificationService.sendPushNotification(subscription.subscription, 'This is a test message!')
   }
