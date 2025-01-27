@@ -17,7 +17,7 @@ import { useOnlineStatus } from '../providers/online-status-provider.tsx'
 export type CheckedItem = { id: number, category: ShopCategory }
 export const CHECKED_ITEMS_KEY = 'checkedItems'
 
-const SUGGESTION_DELAY_MS = 300
+const SUGGESTION_DELAY_MS = 600
 
 const EditLists = () => {
   const [ selectedCategory, setSelectedCategory ] = useQueryParamState<ShopCategory>(SELECTED_CATEGORY, 'GROCERY')
