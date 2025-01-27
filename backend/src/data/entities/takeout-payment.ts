@@ -9,9 +9,12 @@ export class TakeoutPayment {
   createdAt: Date
   @ManyToOne(() => User, { eager: true })
   createdBy: User
+  @Column({default: true})
+  confirmed: boolean
 
   constructor(createdBy: User) {
     this.createdAt = new Date()
     this.createdBy = createdBy
+    this.confirmed = false
   }
 }
