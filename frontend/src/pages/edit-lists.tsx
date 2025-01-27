@@ -184,26 +184,28 @@ const EditLists = () => {
         }
         <form className="addItemForm lessMarginTop" onSubmit={ handleSubmit }>
 
-          <div className={ `suggestionsContainer ${ suggestions.length > 0 ? 'visible' : 'invisible' }` }>
-            { suggestions.map((suggestion, index) => (
-                <div
-                  key={ index }
-                  className="suggestionElement"
-                  onClick={ () => {
-                    addItemFromSuggestion(suggestion)
-                  } }
-                >
-                  <span>{ suggestion.name }</span>
-                  { suggestion.isStaple && <img src="/stapler.svg" alt="staple"/> }
-                </div>
-            )) }
-          </div>
-
           <div className="inputAndButton">
-            <input type="text" onChange={ e => {
-              setNewItemName(e.target.value)
-            } } value={ newItemName }/>
-            <button className="my-button addButton small" type="submit" disabled={ !isOnline }>Hinzufügen</button>
+            <div className="inputAndSuggestions">
+              <input type="text" size={ newItemName.length } className={ newItemName.length === 0 ? 'full-width' : '' }
+                     onChange={ e => {
+                       setNewItemName(e.target.value)
+                     } } value={ newItemName }/>
+              <div className={ `suggestionsContainer` }>
+                { suggestions.map((suggestion, index) => (
+                  <div
+                    key={ index }
+                    className="suggestionElement"
+                    onClick={ () => {
+                      addItemFromSuggestion(suggestion)
+                    } }
+                  >
+                    <span>{ suggestion.name }</span>
+                    { suggestion.isStaple && <img src="/stapler.svg" alt="staple"/> }
+                  </div>
+                )) }
+              </div>
+            </div>
+
           </div>
         </form>
       </div>
