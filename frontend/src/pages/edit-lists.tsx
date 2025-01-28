@@ -186,11 +186,11 @@ const EditLists = () => {
 
           <div className="inputAndButton">
             <div className="inputAndSuggestions">
-              <input type="text" size={ newItemName.length } className={ newItemName.length === 0 ? 'full-width' : '' }
+              <input type="text" size={ newItemName.length } className={ newItemName.length === 0 ? 'empty' : '' }
                      onChange={ e => {
                        setNewItemName(e.target.value)
                      } } value={ newItemName }/>
-              <div className={ `suggestionsContainer` }>
+              <div className={ `suggestionsContainer ${ newItemName.length === 0 ? 'empty' : '' }` }>
                 { suggestions.map((suggestion, index) => (
                   <div
                     key={ index }

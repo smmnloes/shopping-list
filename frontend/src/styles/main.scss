@@ -710,15 +710,12 @@ td.mealDoneCheck {
   width: 100%;
 
   input {
-    border-right-style: solid;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
     padding-right: 0;
+    flex: 0;
 
 
-    &.full-width {
-      width: 100%;
-      border-style: none;
+    &.empty {
+     flex: 1;
     }
   }
 
@@ -726,7 +723,11 @@ td.mealDoneCheck {
     display: flex;
     overflow: auto;
     padding-left: 8px;
+    flex: 1;
 
+    &.empty {
+      flex: 0;
+    }
     > * {
       margin: 3px;
       padding: 3px;
