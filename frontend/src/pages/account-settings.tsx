@@ -82,7 +82,6 @@ const AccountSettings = () => {
   }
 
   return <>
-    <h1>Account</h1>
     <div className="accountUserInfo">
       <p>angemeldet als<br/><span className="userName">{ authStatus?.username }</span></p>
       <button className="my-button accountPageButton" onClick={ handleLogout }>abmelden</button>

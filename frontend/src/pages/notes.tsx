@@ -85,7 +85,6 @@ const Notes = () => {
 
   return (
     <div>
-      <h1>Notizen</h1>
 
       <div className="listContainer notes">
         <div className="notesListControls">

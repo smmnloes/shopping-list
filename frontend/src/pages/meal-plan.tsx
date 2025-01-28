@@ -77,7 +77,6 @@ const MealPlan = () => {
   }
 
   return (<div>
-      <h1>Meal Plan</h1>
       <div className="kwSelect">
         <div className="weekButtons">
           <img src="/arrow-circle-left.svg" alt="previous week"
