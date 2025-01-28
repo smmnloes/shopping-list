@@ -6,7 +6,7 @@ import { ShopCategory } from '../../../../shared/types/shopping'
 
 @Injectable()
 export class SuggestionsService {
-  readonly MAX_SUGGESTIONS = 15
+  readonly MAX_SUGGESTIONS = 10
 
   constructor(@InjectRepository(ListItem) readonly listItemRepository: Repository<ListItem>) {
   }

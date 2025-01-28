@@ -722,14 +722,14 @@ td.mealDoneCheck {
   .suggestionsContainer {
     display: flex;
     overflow: auto;
-    padding-left: 8px;
+    padding-left: 20px;
     flex: 1;
 
     &.empty {
       flex: 0;
     }
     > * {
-      margin: 3px;
+      margin: 6px 3px;
       padding: 3px;
     }
   }
