@@ -1,32 +1,27 @@
 import '../styles/takeout-tracker.scss'
 import { useEffect, useState } from 'react'
-import { getCurrentTakeoutState } from '../api/takeout.ts'
-import { TakeoutPaymentFrontend } from '../../../shared/types/takeout'
+import { claimPayment, confirmPayment, getCurrentTakeoutState } from '../api/takeout.ts'
+import { TakeoutStateFrontend, TakeoutUserInfo } from '../../../shared/types/takeout'
 
-type User = { id: number, name: string }
 
 const TakeOutTracker = () => {
-  const [ state, setState ] = useState<State>()
-  const [ users, setUsers ] = useState<[ User, User ]>()
+  const [ users, setUsers ] = useState<[ TakeoutUserInfo, TakeoutUserInfo ]>()
+  const [ possibleActions, setPossibleActions ] = useState<TakeoutStateFrontend['possibleActions']>()
+  const [ waitingForConfirmation, setWaitingForConfirmation ] = useState<boolean>()
 
   useEffect(() => {
     refresh()
   }, [])
 
-  const getState = (payments: TakeoutPaymentFrontend[]) => {
-    const latestPayment = payments[0]
-    if (latestPayment.createdById)
 
-  }
   const refresh = async () => {
-    const { users, payments } = await getCurrentTakeoutState()
+    const { users, possibleActions, waitingForConfirmation } = await getCurrentTakeoutState()
     setUsers([ users[0], users[1] ])
-    setState(getState(payments))
+    setPossibleActions(possibleActions)
+    setWaitingForConfirmation(waitingForConfirmation)
   }
 
-  // point direction, button, message   <- defined by: latestPayment id, confirmed, if not confirmed -> next is latest, if confirmed, next is other one
-  // easier: get latest confirmed payment, set other one as next ;)
-  const getPointDirection = () => nextToPay === users?.[0] ? 'LEFT' : nextToPay === users?.[1] ? 'RIGHT' : 'UP'
+  const getPointDirection = () => users?.[0].hasToPay ? 'LEFT' : users?.[1].hasToPay ? 'RIGHT' : 'UP'
 
   return (<>
       <div className="takeoutTracker">
@@ -35,11 +30,22 @@ const TakeOutTracker = () => {
         <div className="pointHand"><img className={ `point-${ getPointDirection().toLowerCase() }` }
                                         src="/point-hand.svg"
                                         alt="point hand"/></div>
-        {
-
+        { (() => {
+          if (possibleActions?.claim) {
+            return <button className="my-button" onClick={ async () => {
+              await claimPayment()
+              await refresh()
+            } }>Claim!</button>
+          } else if (possibleActions?.confirm) {
+            return <button className="my-button" onClick={ async () => {
+              await confirmPayment()
+              await refresh()
+            } }>Confirm!</button>
+          } else if (waitingForConfirmation) {
+            return <p>Waiting for confirmation!</p>
+          } else return <p>Alles paletti!</p>
+        })()
         }
-        <button className="my-button">
-        </button>
       </div>
     </>
   )

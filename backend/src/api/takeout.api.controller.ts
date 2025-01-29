@@ -4,9 +4,8 @@ import { Repository } from 'typeorm'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { User } from '../data/entities/user'
 import { TakeoutPayment } from '../data/entities/takeout-payment'
-import { CurrentTakeoutAction, TakeoutPaymentFrontend, TakeoutStateFrontend } from '../../../shared/types/takeout'
+import { TakeoutStateFrontend, TakeoutUserInfo } from '../../../shared/types/takeout'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
-import { JWTGuardUserData } from '../auth/jwt.strategy'
 
 @Controller('api')
 export class TakeoutApiController {
@@ -21,20 +20,15 @@ export class TakeoutApiController {
   @Get('takeout')
   async getTakeoutState(@Request() req: ExtendedJWTGuardRequest<void>): Promise<TakeoutStateFrontend> {
     const allUsers = await this.userRepository.find().then(result =>
-      result.slice(0, 2).map(({ id, name }) => ({ id, name })))
-    const payments = await this.takeoutRepository.find({ order: { createdAt: 'DESC' }, take: 20 })
-      .then(results => results.map(({ createdAt, createdBy, confirmed }) => ({
-        createdById: createdBy.id,
-        createdAt: createdAt.toISOString(),
-        confirmed
-      })))
+      result.slice(0, 2))
+    const latestPayment = await this.getLatestPayment()
     return {
-      users: allUsers,
-      hasToPayId: payments[0].confirmed ? allUsers.find(user => user.id !== payments[0].createdById) : payments[0].createdById,
-      payments,
-      action: this.getTakeoutAction(payments, req.user)
+      users: this.enrichUsersWithHasToPay(latestPayment, allUsers),
+      possibleActions: this.determinePossibleActionsForUser(req.user.id, latestPayment),
+      waitingForConfirmation: latestPayment.createdBy.id === req.user.id && !latestPayment.confirmed
     }
   }
+
 
   @UseGuards(JwtAuthGuard)
   @Post('takeout/claim')
@@ -70,22 +64,19 @@ export class TakeoutApiController {
     take: 1
   }))[0]
 
-  private getTakeoutAction(payments: TakeoutPaymentFrontend[], user: JWTGuardUserData): CurrentTakeoutAction {
-    const latestPayment = payments[0]
-    if (latestPayment.createdById === user.id) {
-      // Newest payment was created by current user
-      if (latestPayment.confirmed) {
-        return 'NONE'
-      } else {
-        return 'CONFIRMATION_NEEDED'
-      }
-    } else {
-      // newest payment was created by other user
-      if (latestPayment.confirmed) {
-        return 'CAN_CLAIM'
-      } else {
-        return 'CAN_CONFIRM'
-      }
+  private determinePossibleActionsForUser(userId: number, latestPayment: TakeoutPayment) {
+    return {
+      claim: latestPayment.createdBy.id !== userId && latestPayment.confirmed,
+      confirm: latestPayment.createdBy.id !== userId && !latestPayment.confirmed
     }
   }
+
+  private enrichUsersWithHasToPay(latestPayment: TakeoutPayment, users: User[]): TakeoutUserInfo[] {
+    return users.map(({ id, name }) => ({
+      id,
+      name,
+      hasToPay: (id === latestPayment.createdBy.id && !latestPayment.confirmed) || (id !== latestPayment.createdBy.id && latestPayment.confirmed)
+    }))
+  }
+
 }

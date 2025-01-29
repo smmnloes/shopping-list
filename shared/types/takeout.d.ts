@@ -1,16 +1,20 @@
+export type TakeoutUserInfo = {id: number, name: string, hasToPay: boolean}
+
 export type TakeoutStateFrontend = {
-  users: {id: number, name: string}[]
+  users: TakeoutUserInfo[]
+
+  possibleActions: {
+    claim: boolean
+    confirm: boolean
+  }
+  waitingForConfirmation: boolean
   /**
    * Latest 20 payments
    */
-  action: CurrentTakeoutAction
-  payments: TakeoutPaymentFrontend[]
+  //paymentHistory: TakeoutPaymentFrontend[]
 }
 
 export type TakeoutPaymentFrontend = {
   createdAt: string
   createdById: number
-  confirmed: boolean
 }
-
-export type CurrentTakeoutAction = 'CONFIRMATION_NEEDED' | 'CAN_CONFIRM' | 'CAN_CLAIM' | 'NONE'
