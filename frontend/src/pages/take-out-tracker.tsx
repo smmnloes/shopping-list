@@ -38,15 +38,15 @@ const TakeOutTracker = () => {
               return <button className="my-button" onClick={ async () => {
                 await claimPayment()
                 await refresh()
-              } }>Ich habe gegönnt!</button>
+              } }>Ich habe bezahlt!</button>
             } else if (possibleActions?.confirm) {
               return <button className="my-button" onClick={ async () => {
                 await confirmPayment()
                 await refresh()
-              } }>Bestätigen, dass { userNameHasToPay } gegönnt hat!</button>
+              } }>Bestätigen, dass { userNameHasToPay } bezahlt hat!</button>
             } else if (waitingForConfirmation) {
               return <p>Warte auf Bestätigung von { userNameNotHasToPay }...</p>
-            } else return <p>Warte darauf, dass { userNameHasToPay } gönnt...</p>
+            } else return <p>Warte darauf, dass { userNameHasToPay } bezahlt...</p>
           })()
           }
         </div>
@@ -59,7 +59,6 @@ const TakeOutTracker = () => {
 export default TakeOutTracker
 
 
-// TODO: better messages/styling
 // Notifications for confirm/confirmed
 // What happens when there is no payment yet / backwards compatibility
 // History below

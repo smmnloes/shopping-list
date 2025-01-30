@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Request, UnauthorizedException, UseGuards } from '@nestjs/common'
+import { Controller, Get, Inject, Post, Request, UnauthorizedException, UseGuards } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
@@ -6,13 +6,15 @@ import { User } from '../data/entities/user'
 import { TakeoutPayment } from '../data/entities/takeout-payment'
 import { TakeoutStateFrontend, TakeoutUserInfo } from '../../../shared/types/takeout'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
+import { NotificationService } from './services/notification-service'
 
 @Controller('api')
 export class TakeoutApiController {
 
   constructor(
     @InjectRepository(TakeoutPayment) readonly takeoutRepository: Repository<TakeoutPayment>,
-    @InjectRepository(User) readonly userRepository: Repository<User>
+    @InjectRepository(User) readonly userRepository: Repository<User>,
+    @Inject() readonly notificationService: NotificationService
   ) {
   }
 
@@ -37,9 +39,16 @@ export class TakeoutApiController {
     if (latestPayment && latestPayment.createdBy.id === req.user.id) {
       throw new UnauthorizedException('It is not this users turn to pay!')
     }
-    const currentUser = await this.userRepository.findOneOrFail({ where: { id: req.user.id } })
+
+    const { currentUser, otherUser } = await this.getAllUsers(req.user.id)
+
     await this.takeoutRepository.save(new TakeoutPayment(currentUser))
-    // TODO: send notification
+
+    await this.notificationService.sendPushNotification(otherUser, {
+      title: 'Takeout Zahlung bestätigen',
+      message: `Bestätige Takeout Zahlung von ${ currentUser.name }`,
+      onClickRedirect: '/takeout-tracker'
+    })
   }
 
 
@@ -57,6 +66,24 @@ export class TakeoutApiController {
     latestPayment.confirmed = true
     await this.takeoutRepository.save(latestPayment)
 
+    const {currentUser, otherUser} = await this.getAllUsers(req.user.id)
+
+    await this.notificationService.sendPushNotification(otherUser, {
+      title: 'Takeout Zahlung bestätigt',
+      message: `${ currentUser.name } hat deine Zahlung bestätigt`,
+    }
+  )
+
+  }
+
+  private async getAllUsers(currentRequestUserId: number) {
+    const allUsers = await this.userRepository.find().then(result =>
+      result.slice(0, 2))
+
+    return {
+      currentUser: allUsers.find(user => user.id === currentRequestUserId),
+      otherUser: allUsers.find(user => user.id !== currentRequestUserId)
+    }
   }
 
   private getLatestPayment = async () => (await this.takeoutRepository.find({

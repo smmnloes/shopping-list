@@ -4,6 +4,7 @@ import { registerRoute } from 'workbox-routing'
 import { NetworkFirst } from 'workbox-strategies'
 import { ExpirationPlugin } from 'workbox-expiration'
 import { CacheableResponsePlugin } from 'workbox-cacheable-response'
+import { PushNotificationPayload } from '../../../shared/types/push-notifications'
 
 declare const self: ServiceWorkerGlobalScope
 
@@ -27,7 +28,7 @@ registerRoute(({ url }) => url.pathname.startsWith('/api') && !url.pathname.incl
 self.addEventListener('push', (event) => {
   console.log('Push event received:', event)
   console.log(event.data?.json())
-  const { message, title, onClickRedirect } = event.data?.json()
+  const { message, title, onClickRedirect } = event.data?.json() as PushNotificationPayload
   event.waitUntil(
     (async () => {
       try {
@@ -46,7 +47,7 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
-  const { onClickRedirect } = event.notification.data
+  const { onClickRedirect } = event.notification.data as PushNotificationPayload
   if (!onClickRedirect) {
     return
   }
