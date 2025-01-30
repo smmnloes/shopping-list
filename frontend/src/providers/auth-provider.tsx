@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { getAuthStatus } from '../api/api.ts'
 import { useLocation } from 'react-router-dom'
+import { AuthStatus } from '../../../shared/types/auth'
 
 interface AuthContextProps {
   authStatus: AuthStatus | null
@@ -38,7 +39,3 @@ export const useAuth = () => {
   return context
 }
 
-export type AuthStatus = {
-  authenticated: boolean,
-  username?: string
-}

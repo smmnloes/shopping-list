@@ -22,6 +22,8 @@ const TakeOutTracker = () => {
   }
 
   const getPointDirection = () => users?.[0].hasToPay ? 'LEFT' : users?.[1].hasToPay ? 'RIGHT' : 'UP'
+  const userNameHasToPay = users?.find(user => user.hasToPay)?.name ?? ''
+  const userNameNotHasToPay = users?.find(user => !user.hasToPay)?.name ?? ''
 
   return (<>
       <div className="takeoutTracker">
@@ -30,22 +32,24 @@ const TakeOutTracker = () => {
         <div className="pointHand"><img className={ `point-${ getPointDirection().toLowerCase() }` }
                                         src="/point-hand.svg"
                                         alt="point hand"/></div>
-        { (() => {
-          if (possibleActions?.claim) {
-            return <button className="my-button" onClick={ async () => {
-              await claimPayment()
-              await refresh()
-            } }>Claim!</button>
-          } else if (possibleActions?.confirm) {
-            return <button className="my-button" onClick={ async () => {
-              await confirmPayment()
-              await refresh()
-            } }>Confirm!</button>
-          } else if (waitingForConfirmation) {
-            return <p>Waiting for confirmation!</p>
-          } else return <p>Alles paletti!</p>
-        })()
-        }
+        <div className="interaction">
+          { (() => {
+            if (possibleActions?.claim) {
+              return <button className="my-button" onClick={ async () => {
+                await claimPayment()
+                await refresh()
+              } }>Ich habe gegönnt!</button>
+            } else if (possibleActions?.confirm) {
+              return <button className="my-button" onClick={ async () => {
+                await confirmPayment()
+                await refresh()
+              } }>Bestätigen, dass { userNameHasToPay } gegönnt hat!</button>
+            } else if (waitingForConfirmation) {
+              return <p>Warte auf Bestätigung von { userNameNotHasToPay }...</p>
+            } else return <p>Warte darauf, dass { userNameHasToPay } gönnt...</p>
+          })()
+          }
+        </div>
       </div>
     </>
   )
@@ -53,3 +57,9 @@ const TakeOutTracker = () => {
 }
 
 export default TakeOutTracker
+
+
+// TODO: better messages/styling
+// Notifications for confirm/confirmed
+// What happens when there is no payment yet / backwards compatibility
+// History below

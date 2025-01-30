@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { AuthStatus } from '../providers/auth-provider.tsx'
 import axiosRetry, { isIdempotentRequestError } from 'axios-retry'
 import qs from 'qs'
+import { AuthStatus } from '../../../shared/types/auth'
 
 export const backendHost = import.meta.env.VITE_BACKEND_HOST
 

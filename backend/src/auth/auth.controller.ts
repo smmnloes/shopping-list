@@ -16,6 +16,7 @@ import { Response as ExpressResponse } from 'express'
 import { ConfigService } from '@nestjs/config'
 import { JwtAuthGuard } from './guards/jwt.guard'
 import { ExtendedJWTGuardRequest, ExtendedLocalGuardRequest } from '../util/request-types'
+import { AuthStatus } from '../../../shared/types/auth'
 
 
 @Controller('api/auth')
@@ -26,7 +27,7 @@ export class AuthController {
   @Get()
   @UseGuards(JwtAuthGuard)
   async getAuthStatus(@Request() req: ExtendedJWTGuardRequest<void>): Promise<AuthStatus> {
-    return { authenticated: true, username: req.user.name }
+    return { authenticated: true, username: req.user.name, userId: req.user.id }
   }
 
   @Post('login')
@@ -94,10 +95,4 @@ export class AuthController {
 export class LoginCredentials {
   readonly username: string
   readonly password: string
-}
-
-
-export type AuthStatus = {
-  authenticated: boolean,
-  username: string
 }

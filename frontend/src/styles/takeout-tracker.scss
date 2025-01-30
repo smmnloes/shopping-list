@@ -16,11 +16,17 @@
 
   h1 {
     margin-bottom: 100px;
-    margin-top: 50px;
+    margin-top: 25px;
+  }
+
+  p {
+    font-weight: 700;
+    font-size: 26px;
   }
 }
 
 .pointHand {
+  filter: invert(1) brightness(10) drop-shadow(3px 3px 3px rgba(0,0,0,0.5));
   img {
     width: 100px;
     height: 100px;
@@ -42,7 +48,8 @@
 
 .takeoutNames {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
+  word-break: break-all;
 
   span {
     border: 2px solid white;
@@ -50,5 +57,14 @@
     font-size: 25px;
     padding: 15px;
     font-weight: 600;
+  }
+}
+
+.interaction {
+  width: 70%;
+  margin: 0 auto;
+
+  button {
+    font-weight: 700;
   }
 }
