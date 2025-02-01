@@ -3,7 +3,7 @@ import { DragEndEvent, icon, Map as LeafletMap, Marker as LeafletMarker } from '
 import { createRef, Ref, useEffect, useState } from 'react'
 import { getLocation, postLocation } from '../api/locations.ts'
 import type { LocationFrontendView } from '../../../shared/types/location.ts'
-import { formatDate } from '../utils/date-time-format.ts'
+import { formatDateAndTime } from '../utils/date-time-format.ts'
 
 const carIcon = icon({
   iconUrl: 'car.png',
@@ -33,7 +33,7 @@ const LocationMap = () => {
     if (mapRef.current !== null && location) {
       mapRef.current.setView(location)
     }
-  }, [location, mapRef])
+  }, [ location, mapRef ])
 
 
   const setLocationHandler = async () => {
@@ -51,14 +51,14 @@ const LocationMap = () => {
 
   return (
     <div className="mapcontainer">
-      <MapContainer ref={mapRef} center={ DEFAULT_LOCATION } zoom={ 18 } maxZoom={ 18 } scrollWheelZoom={ true }
-                    touchZoom={ true } zoomControl={ false } >
+      <MapContainer ref={ mapRef } center={ DEFAULT_LOCATION } zoom={ 18 } maxZoom={ 18 } scrollWheelZoom={ true }
+                    touchZoom={ true } zoomControl={ false }>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         { location && (
           <Marker position={ { lat: location.lat, lng: location.lng } } icon={ carIcon } draggable={ true }
-                  eventHandlers={ { dragend: markerChangeHandler } }><Popup>von <b>{ location.createdByName }</b><br/>am <b>{ formatDate(new Date(location.createdAt)) }</b>
+                  eventHandlers={ { dragend: markerChangeHandler } }><Popup>von <b>{ location.createdByName }</b><br/>am <b>{ formatDateAndTime(new Date(location.createdAt)) }</b>
           </Popup></Marker>) }
       </MapContainer>
       <button onClick={ setLocationHandler } className="my-button">Auf aktuellen Standort setzen</button>

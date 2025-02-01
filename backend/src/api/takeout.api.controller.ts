@@ -23,11 +23,16 @@ export class TakeoutApiController {
   async getTakeoutState(@Request() req: ExtendedJWTGuardRequest<void>): Promise<TakeoutStateFrontend> {
     const allUsers = await this.userRepository.find().then(result =>
       result.slice(0, 2))
-    const latestPayment = await this.getLatestPayment()
+    const latestPayments = await this.getLatestPayments()
+    const latestPayment: TakeoutPayment | undefined = latestPayments[0]
     return {
       users: this.enrichUsersWithHasToPay(latestPayment, allUsers),
       possibleActions: this.determinePossibleActionsForUser(req.user.id, latestPayment),
-      waitingForConfirmation: latestPayment.createdBy.id === req.user.id && !latestPayment.confirmed
+      waitingForConfirmation: latestPayment.createdBy.id === req.user.id && !latestPayment.confirmed,
+      latestPayments: latestPayments.map(({ createdAt, createdBy }) => ({
+        createdById: createdBy.id,
+        createdAt: createdAt.toISOString()
+      })).slice(0,5)
     }
   }
 
@@ -35,7 +40,7 @@ export class TakeoutApiController {
   @UseGuards(JwtAuthGuard)
   @Post('takeout/claim')
   async claimTakeoutPayment(@Request() req: ExtendedJWTGuardRequest<void>): Promise<void> {
-    const latestPayment = await this.getLatestPayment()
+    const latestPayment = await this.getLatestPayments().then(payments => payments[0])
     if (latestPayment && latestPayment.createdBy.id === req.user.id) {
       throw new UnauthorizedException('It is not this users turn to pay!')
     }
@@ -55,7 +60,7 @@ export class TakeoutApiController {
   @UseGuards(JwtAuthGuard)
   @Post('takeout/confirm')
   async confirmTakeoutPayment(@Request() req: ExtendedJWTGuardRequest<void>): Promise<void> {
-    const latestPayment = await this.getLatestPayment()
+    const latestPayment: TakeoutPayment | undefined = await this.getLatestPayments().then(payments => payments[0])
     if (!latestPayment) {
       console.log('Nothing to do, no payment yet')
       return
@@ -66,13 +71,13 @@ export class TakeoutApiController {
     latestPayment.confirmed = true
     await this.takeoutRepository.save(latestPayment)
 
-    const {currentUser, otherUser} = await this.getAllUsers(req.user.id)
+    const { currentUser, otherUser } = await this.getAllUsers(req.user.id)
 
     await this.notificationService.sendPushNotification(otherUser, {
-      title: 'Takeout Zahlung bestätigt',
-      message: `${ currentUser.name } hat deine Zahlung bestätigt`,
-    }
-  )
+        title: 'Takeout Zahlung bestätigt',
+        message: `${ currentUser.name } hat deine Zahlung bestätigt`,
+      }
+    )
 
   }
 
@@ -86,23 +91,26 @@ export class TakeoutApiController {
     }
   }
 
-  private getLatestPayment = async () => (await this.takeoutRepository.find({
+  private getLatestPayments = async () => this.takeoutRepository.find({
     order: { createdAt: 'DESC' },
-    take: 1
-  }))[0]
+    take: 6
+  })
 
-  private determinePossibleActionsForUser(userId: number, latestPayment: TakeoutPayment) {
-    return {
+  private determinePossibleActionsForUser(userId: number, latestPayment: TakeoutPayment | undefined) {
+    return !latestPayment ? {
+      claim: true,
+      confirm: false
+    } : {
       claim: latestPayment.createdBy.id !== userId && latestPayment.confirmed,
       confirm: latestPayment.createdBy.id !== userId && !latestPayment.confirmed
     }
   }
 
-  private enrichUsersWithHasToPay(latestPayment: TakeoutPayment, users: User[]): TakeoutUserInfo[] {
+  private enrichUsersWithHasToPay(latestPayment: TakeoutPayment | undefined, users: User[]): TakeoutUserInfo[] {
     return users.map(({ id, name }) => ({
       id,
       name,
-      hasToPay: (id === latestPayment.createdBy.id && !latestPayment.confirmed) || (id !== latestPayment.createdBy.id && latestPayment.confirmed)
+      hasToPay: (id === latestPayment?.createdBy.id && !latestPayment?.confirmed) || (id !== latestPayment?.createdBy.id && latestPayment?.confirmed)
     }))
   }
 

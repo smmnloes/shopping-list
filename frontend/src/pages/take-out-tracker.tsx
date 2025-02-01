@@ -1,13 +1,17 @@
 import '../styles/takeout-tracker.scss'
 import { useEffect, useState } from 'react'
 import { claimPayment, confirmPayment, getCurrentTakeoutState } from '../api/takeout.ts'
-import { TakeoutStateFrontend, TakeoutUserInfo } from '../../../shared/types/takeout'
+import { TakeoutStateFrontend } from '../../../shared/types/takeout'
+import { formatDate } from '../utils/date-time-format.ts'
 
 
 const TakeOutTracker = () => {
-  const [ users, setUsers ] = useState<[ TakeoutUserInfo, TakeoutUserInfo ]>()
-  const [ possibleActions, setPossibleActions ] = useState<TakeoutStateFrontend['possibleActions']>()
-  const [ waitingForConfirmation, setWaitingForConfirmation ] = useState<boolean>()
+  const [ {
+    users,
+    possibleActions,
+    waitingForConfirmation,
+    latestPayments
+  }, setTakeoutState ] = useState<TakeoutStateFrontend>({} as TakeoutStateFrontend)
 
   useEffect(() => {
     refresh()
@@ -15,10 +19,8 @@ const TakeOutTracker = () => {
 
 
   const refresh = async () => {
-    const { users, possibleActions, waitingForConfirmation } = await getCurrentTakeoutState()
-    setUsers([ users[0], users[1] ])
-    setPossibleActions(possibleActions)
-    setWaitingForConfirmation(waitingForConfirmation)
+    const takeoutState = await getCurrentTakeoutState()
+    setTakeoutState(takeoutState)
   }
 
   const getPointDirection = () => users?.[0].hasToPay ? 'LEFT' : users?.[1].hasToPay ? 'RIGHT' : 'UP'
@@ -50,6 +52,13 @@ const TakeOutTracker = () => {
           })()
           }
         </div>
+        <div className="takeoutHistory">
+          <h3>History</h3>
+            { latestPayments?.map((payment, index) =>
+              <div className="historyElement" key={ index }>
+                { formatDate(new Date(payment.createdAt)) } - { users.find(u => u.id === payment.createdById)?.name }
+              </div>) }
+          </div>
       </div>
     </>
   )
@@ -57,8 +66,3 @@ const TakeOutTracker = () => {
 }
 
 export default TakeOutTracker
-
-
-// Notifications for confirm/confirmed
-// What happens when there is no payment yet / backwards compatibility
-// History below

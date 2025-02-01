@@ -68,3 +68,16 @@
     font-weight: 700;
   }
 }
+
+.takeoutHistory {
+  width: 70%;
+  margin: 30px auto;
+  .historyElement {
+    background-color: var(--color-list-item);
+    padding: 10px;
+
+    border-radius: 10px;
+    margin: 5px auto;
+    border: 1px solid white;
+  }
+}

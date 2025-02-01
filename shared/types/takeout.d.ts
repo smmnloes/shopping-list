@@ -9,9 +9,9 @@ export type TakeoutStateFrontend = {
   }
   waitingForConfirmation: boolean
   /**
-   * Latest 20 payments
+   * Latest 5 payments
    */
-  //paymentHistory: TakeoutPaymentFrontend[]
+  latestPayments: TakeoutPaymentFrontend[]
 }
 
 export type TakeoutPaymentFrontend = {
