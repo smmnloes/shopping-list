@@ -48,7 +48,7 @@ const TakeOutTracker = () => {
               } }>Bestätigen, dass { userNameHasToPay } bezahlt hat!</button>
             } else if (waitingForConfirmation) {
               return <p>Warte auf Bestätigung von { userNameNotHasToPay }...</p>
-            } else return <p>Warte darauf, dass { userNameHasToPay } bezahlt...</p>
+            }
           })()
           }
         </div>
@@ -56,9 +56,9 @@ const TakeOutTracker = () => {
           <h3>History</h3>
             { latestPayments?.map((payment, index) =>
               <div className="historyElement" key={ index }>
-                { formatDate(new Date(payment.createdAt)) } - { users.find(u => u.id === payment.createdById)?.name }
+                <b>{ users.find(u => u.id === payment.createdById)?.name }</b> ({ formatDate(new Date(payment.createdAt)) })
               </div>) }
-          </div>
+        </div>
       </div>
     </>
   )
