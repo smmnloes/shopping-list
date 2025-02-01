@@ -27,6 +27,22 @@ const TakeOutTracker = () => {
   const userNameHasToPay = users?.find(user => user.hasToPay)?.name ?? ''
   const userNameNotHasToPay = users?.find(user => !user.hasToPay)?.name ?? ''
 
+  const getInteractionComponent = () => {
+    if (possibleActions?.claim) {
+      return <button className="my-button" onClick={ async () => {
+        await claimPayment()
+        await refresh()
+      } }>Ich habe bezahlt!</button>
+    } else if (possibleActions?.confirm) {
+      return <button className="my-button" onClick={ async () => {
+        await confirmPayment()
+        await refresh()
+      } }>Bestätigen, dass { userNameHasToPay } bezahlt hat!</button>
+    } else if (waitingForConfirmation) {
+      return <p>Warte auf Bestätigung von { userNameNotHasToPay }...</p>
+    } else return null
+  }
+
   return (<>
       <div className="takeoutTracker">
         <h1>Wer ist dran mit Takeout?</h1>
@@ -35,29 +51,15 @@ const TakeOutTracker = () => {
                                         src="/point-hand.svg"
                                         alt="point hand"/></div>
         <div className="interaction">
-          { (() => {
-            if (possibleActions?.claim) {
-              return <button className="my-button" onClick={ async () => {
-                await claimPayment()
-                await refresh()
-              } }>Ich habe bezahlt!</button>
-            } else if (possibleActions?.confirm) {
-              return <button className="my-button" onClick={ async () => {
-                await confirmPayment()
-                await refresh()
-              } }>Bestätigen, dass { userNameHasToPay } bezahlt hat!</button>
-            } else if (waitingForConfirmation) {
-              return <p>Warte auf Bestätigung von { userNameNotHasToPay }...</p>
-            }
-          })()
+          { getInteractionComponent()
           }
         </div>
         <div className="takeoutHistory">
           <h3>History</h3>
-            { latestPayments?.map((payment, index) =>
-              <div className="historyElement" key={ index }>
-                <b>{ users.find(u => u.id === payment.createdById)?.name }</b> ({ formatDate(new Date(payment.createdAt)) })
-              </div>) }
+          { latestPayments?.map((payment, index) =>
+            <div className="historyElement" key={ index }>
+              <b>{ users.find(u => u.id === payment.createdById)?.name }</b> ({ formatDate(new Date(payment.createdAt)) })
+            </div>) }
         </div>
       </div>
     </>

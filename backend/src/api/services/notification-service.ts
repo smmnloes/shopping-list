@@ -16,7 +16,11 @@ export class NotificationService {
   }
 
   public async sendPushNotification(targetUser: User, payload: PushNotificationPayload) {
-    const subscription = await this.subscriptionRepository.findOneOrFail({where: {user: {id: targetUser.id}}}).then(result => result.subscription)
-    await sendNotification(subscription, JSON.stringify(payload))
+    try {
+      const subscription = await this.subscriptionRepository.findOneOrFail({ where: { user: { id: targetUser.id } } }).then(result => result.subscription)
+      await sendNotification(subscription, JSON.stringify(payload))
+    } catch (e) {
+      console.error('Could not send push notification', e)
+    }
   }
 }
