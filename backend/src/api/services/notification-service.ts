@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 import { sendNotification, setVapidDetails } from 'web-push'
 import { ConfigService } from '@nestjs/config'
 import { User } from '../../data/entities/user'
@@ -18,9 +18,9 @@ export class NotificationService {
   public async sendPushNotification(targetUser: User, payload: PushNotificationPayload) {
     try {
       const subscription = await this.subscriptionRepository.findOneOrFail({ where: { user: { id: targetUser.id } } }).then(result => result.subscription)
-      await sendNotification(subscription, JSON.stringify(payload))
+      await sendNotification(subscription, JSON.stringify(payload)).then(result => Logger.log('Push notification result', result))
     } catch (e) {
-      console.error('Could not send push notification', e)
+      Logger.error('Could not send push notification', e)
     }
   }
 }
