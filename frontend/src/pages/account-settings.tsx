@@ -21,13 +21,14 @@ const AccountSettings = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    (async () => {
-        const { enabled, storedSubscription } = await getNotificationsStatus()
-        setNotificationsEnabled(enabled)
-        setPushSubscriptionActive(await isSubscriptionActive(storedSubscription))
-      }
-    )()
+    refresh()
   }, [])
+
+  const refresh = async () => {
+    const { enabled, storedSubscription } = await getNotificationsStatus()
+    setNotificationsEnabled(enabled)
+    setPushSubscriptionActive(await isSubscriptionActive(storedSubscription))
+  }
 
   const isSubscriptionActive = async (storedSubscription: StoredSubscription): Promise<boolean> => {
     return await navigator.serviceWorker?.getRegistration().then(registration => registration?.pushManager.getSubscription()
@@ -86,12 +87,11 @@ const AccountSettings = () => {
 
   const handleNotificationToggle = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.checked
-    console.log('notifications enabled: ' + newValue)
     await setNotificationsStatus(newValue)
-    setNotificationsEnabled(newValue)
     if (newValue) {
       await subscribeToPushNotifications()
     }
+    await refresh()
   }
 
   return <>
