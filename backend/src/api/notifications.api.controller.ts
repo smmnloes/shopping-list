@@ -7,6 +7,7 @@ import { User } from '../data/entities/user'
 import { NotificationSubscription } from '../data/entities/notification-subscription'
 import type { PushSubscription } from 'web-push'
 import { NotificationService } from './services/notification-service'
+import { NotificationsStatus } from '../../../shared/types/push-notifications'
 
 @Controller('api')
 export class NotificationsApiController {
@@ -36,10 +37,11 @@ export class NotificationsApiController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('notifications/options')
-  async getNotificationsOptions(@Request() req: ExtendedJWTGuardRequest<void>): Promise<{ enabled: boolean }> {
+  @Get('notifications/status')
+  async getNotificationsStatus(@Request() req: ExtendedJWTGuardRequest<void>): Promise<NotificationsStatus> {
     const user = await this.userRepository.findOneOrFail({ where: { id: req.user.id } })
-    return user.options.notifications
+    const {subscription: {endpoint, expirationTime}} = await this.notificationSubscriptionRepository.findOneOrFail({ where: { user: { id: user.id } } })
+    return { ...user.options.notifications, storedSubscription: {endpoint, expirationTime} }
   }
 
   @UseGuards(JwtAuthGuard)

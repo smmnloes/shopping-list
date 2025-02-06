@@ -740,4 +740,20 @@ td.mealDoneCheck {
   flex-direction: row;
   margin: auto;
   justify-content: center;
+  align-items: center;
+}
+
+.notificationHealthIndicator {
+  margin-left: 20px;
+  padding: 5px;
+  img {
+    width: 30px;
+    height: 30px;
+  }
+
+  &.hidden {
+    display: none;
+  }
+
+
 }

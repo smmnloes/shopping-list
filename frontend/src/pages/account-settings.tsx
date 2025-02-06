@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { isAxiosError } from 'axios'
 import { subscribeToPushNotifications } from '../serviceworker/push-notifications.ts'
 import { getNotificationsStatus, setNotificationsStatus, testNotification } from '../api/notifications.ts'
+import { StoredSubscription } from '../../../shared/types/push-notifications'
 
 const AccountSettings = () => {
   const { authStatus, setAuthStatus } = useAuth()
@@ -15,14 +16,26 @@ const AccountSettings = () => {
   const [ errorMessages, setErrorMessages ] = useState<string[]>([])
   const [ successMessages, setSuccessMessages ] = useState<string[]>([])
   const [ notificationsEnabled, setNotificationsEnabled ] = useState<boolean | undefined>()
+  const [ pushSubscriptionActive, setPushSubscriptionActive ] = useState<boolean | undefined>()
 
   const navigate = useNavigate()
 
   useEffect(() => {
-    (async () => (
-      setNotificationsEnabled(await getNotificationsStatus().then(result => result.enabled))
-    ))()
+    (async () => {
+        const { enabled, storedSubscription } = await getNotificationsStatus()
+        setNotificationsEnabled(enabled)
+        setPushSubscriptionActive(await isSubscriptionActive(storedSubscription))
+      }
+    )()
   }, [])
+
+  const isSubscriptionActive = async (storedSubscription: StoredSubscription): Promise<boolean> => {
+    return await navigator.serviceWorker?.getRegistration().then(registration => registration?.pushManager.getSubscription()
+      .then(currentSubscription =>
+        currentSubscription?.endpoint === storedSubscription.endpoint
+        && (currentSubscription?.expirationTime == null || currentSubscription.expirationTime < Date.now())
+      )) ?? false
+  }
 
   const handleLogout = async () => {
     await logout()
@@ -94,10 +107,11 @@ const AccountSettings = () => {
         <span className="slider round"></span>
       </label>
       <span>An</span>
+      <div className={ `notificationHealthIndicator ${ pushSubscriptionActive ? 'healthy' : 'unhealthy' } ${!notificationsEnabled ? 'hidden': ''}` }><img
+        src={ pushSubscriptionActive ? '/checkmark-circle.svg' : '/alert.svg' } alt="ok"/></div>
     </div>) }
     <button className="my-button" style={ { marginTop: '20px', padding: '5px' } } onClick={ testNotification }>Test!
     </button>
-
 
     <form className="loginForm" onSubmit={ e => e.preventDefault() }>
       <h3>Passwort ändern</h3>
