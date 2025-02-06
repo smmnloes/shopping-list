@@ -26,10 +26,6 @@ function Header() {
    */
   const handleNewVersionReload = async () => {
       if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for (let registration of registrations) {
-          await registration.unregister();
-        }
         const cacheNames = await caches.keys();
         const workboxCache = cacheNames.find(name => name.includes('workbox'))
         if (workboxCache) {
