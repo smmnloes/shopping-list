@@ -29,7 +29,7 @@ export class TakeoutApiController {
       users: this.enrichUsersWithHasToPay(latestPayment, allUsers),
       possibleActions: this.determinePossibleActionsForUser(req.user.id, latestPayment),
       waitingForConfirmation: latestPayment.createdBy.id === req.user.id && !latestPayment.confirmed,
-      latestPayments: latestPayments.map(({ createdAt, createdBy }) => ({
+      latestPayments: latestPayments.filter(payment => payment.confirmed).map(({ createdAt, createdBy }) => ({
         createdById: createdBy.id,
         createdAt: createdAt.toISOString()
       })).slice(0,5)
