@@ -737,25 +737,43 @@ td.mealDoneCheck {
   }
 }
 
+.notificationsContainer {
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    margin: 10px auto 0;
+  }
+
+  .testbutton {
+    padding: 8px;
+  }
+
+}
+
 .notificationToggleContainer {
   display: flex;
   flex-direction: row;
-  margin: auto;
   justify-content: center;
   align-items: center;
 }
 
 .notificationHealthIndicator {
-  margin-left: 20px;
   padding: 5px;
   img {
-    width: 30px;
-    height: 30px;
+    height: 25px;
   }
 
   &.hidden {
     display: none;
   }
 
+  .notificationStatusAndIcon {
+    display: flex;
+    flex-direction: row;
 
+    > * {
+      margin: 0 5px;
+    }
+  }
 }

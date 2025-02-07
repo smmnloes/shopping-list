@@ -1,4 +1,9 @@
 .slideout {
+
+  .slideoutHeader {
+    margin-bottom: 10px;
+  }
+
   .title {
     font-weight: 700;
     font-size: 23px;
@@ -34,12 +39,17 @@
   }
   .slideout-content {
     translate: 0 -150%;
-    transition: all 0.5s;
-    height: 0;
+    transform: scaleY(0);
+    opacity: 0;
+    max-height: 0;
+    transition: opacity 1s, translate 0.5s, transform 0.5s, max-height 0.5s;
 
     &.down {
       translate: 0;
-      height: 100%;
+      transform: scaleY(1);
+      max-height: 500px;
+      opacity: 1;
+      transition: opacity 1s, translate 0.5s, transform 0.5s, max-height 0.5s;
     }
   }
 }

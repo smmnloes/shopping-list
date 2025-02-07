@@ -104,7 +104,7 @@ const AccountSettings = () => {
 
 
       <Slideout title="Benachrichtigungen">
-        <>
+        <div className="notificationsContainer">
           { (notificationsEnabled !== undefined) && (<div className="notificationToggleContainer">
             <span>Aus</span>
             <label className="switch">
@@ -112,15 +112,19 @@ const AccountSettings = () => {
               <span className="slider round"></span>
             </label>
             <span>An</span>
-            <div
-              className={ `notificationHealthIndicator ${ pushSubscriptionActive ? 'healthy' : 'unhealthy' } ${ !notificationsEnabled ? 'hidden' : '' }` }>
-              <img
-                src={ pushSubscriptionActive ? '/checkmark-circle.svg' : '/alert.svg' } alt="ok"/></div>
           </div>) }
-          <button className="my-button" style={ { marginTop: '20px', padding: '5px' } }
+          <div
+            className={ `notificationHealthIndicator ${ pushSubscriptionActive ? 'healthy' : 'unhealthy' } ${ !notificationsEnabled ? 'hidden' : '' }` }>
+            <div className="notificationStatusAndIcon">
+              <span>Status:</span>
+              <img
+                src={ pushSubscriptionActive ? '/checkmark-circle.svg' : '/alert.svg' } alt="ok"/>
+            </div>
+          </div>
+          <button className="my-button testbutton"
                   onClick={ testNotification }>Test!
           </button>
-        </>
+        </div>
       </Slideout>
 
       <Slideout title="Passwort ändern">
