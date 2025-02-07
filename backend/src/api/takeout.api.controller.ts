@@ -28,7 +28,7 @@ export class TakeoutApiController {
     return {
       users: this.enrichUsersWithHasToPay(latestPayment, allUsers),
       possibleActions: this.determinePossibleActionsForUser(req.user.id, latestPayment),
-      waitingForConfirmation: latestPayment.createdBy.id === req.user.id && !latestPayment.confirmed,
+      waitingForConfirmation: latestPayment?.createdBy.id === req.user.id && !latestPayment?.confirmed,
       latestPayments: latestPayments.filter(payment => payment.confirmed).map(({ createdAt, createdBy }) => ({
         createdById: createdBy.id,
         createdAt: createdAt.toISOString()
@@ -107,11 +107,18 @@ export class TakeoutApiController {
   }
 
   private enrichUsersWithHasToPay(latestPayment: TakeoutPayment | undefined, users: User[]): TakeoutUserInfo[] {
-    return users.map(({ id, name }) => ({
-      id,
-      name,
-      hasToPay: (id === latestPayment?.createdBy.id && !latestPayment?.confirmed) || (id !== latestPayment?.createdBy.id && latestPayment?.confirmed)
-    }))
+    const enriched = users.map(({ id, name }) => {
+      const hasToPay = (id === latestPayment?.createdBy.id && !latestPayment?.confirmed) || (id !== latestPayment?.createdBy.id && latestPayment?.confirmed)
+      return ({
+        id,
+        name,
+        hasToPay
+      })
+    })
+    if (!enriched.some(x => x.hasToPay)) {
+      enriched[0].hasToPay = true
+    }
+    return enriched
   }
 
 }
