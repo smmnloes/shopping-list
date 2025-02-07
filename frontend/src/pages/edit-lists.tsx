@@ -146,7 +146,7 @@ const EditLists = () => {
   }
 
   return (
-    <div>
+    <div className="shoppingListContainer">
       <div className="shopCategoryContainer">
         { Object.entries(configForCategory).map(([ category, config ], index) =>
           (<div className={ `shopCategoryIcon ${ selectedCategory === category ? 'selected' : '' }` } key={ index }><img

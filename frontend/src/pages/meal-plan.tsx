@@ -76,7 +76,7 @@ const MealPlan = () => {
     console.log('Meals saved')
   }
 
-  return (<div>
+  return (<div className="mealPlanContainer">
       <div className="kwSelect">
         <div className="weekButtons">
           <img src="/arrow-circle-left.svg" alt="previous week"

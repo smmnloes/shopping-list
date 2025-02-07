@@ -71,6 +71,10 @@ form input {
   }
 }
 
+.shoppingListContainer {
+  margin: 75px auto;
+}
+
 .listContainer {
   border-radius: 15px;
 
@@ -105,6 +109,10 @@ form input {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+}
+
+.notesContainer {
+  margin: 75px auto;
 }
 
 .notesListElement {
@@ -210,7 +218,7 @@ form input {
 
   justify-items: center;
 
-  margin: 75px auto;
+  margin: 85px auto;
 
   * {
     padding: 5px;
@@ -308,7 +316,6 @@ form input {
   display: flex;
   justify-content: end;
   font-size: 15px;
-  margin-bottom: 50px;
 }
 
 .offline-banner {
@@ -464,6 +471,10 @@ form input {
   font-size: 25px;
   font-weight: bold;
   color: white;
+}
+
+.mealPlanContainer {
+  margin: 50px auto;
 }
 
 .mealTable {
