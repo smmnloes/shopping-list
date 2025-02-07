@@ -6,6 +6,7 @@ import { isAxiosError } from 'axios'
 import { subscribeToPushNotifications } from '../serviceworker/push-notifications.ts'
 import { getNotificationsStatus, setNotificationsStatus, testNotification } from '../api/notifications.ts'
 import { StoredSubscription } from '../../../shared/types/push-notifications'
+import Slideout from '../elements/slideout.tsx'
 
 const AccountSettings = () => {
   const { authStatus, setAuthStatus } = useAuth()
@@ -95,47 +96,60 @@ const AccountSettings = () => {
   }
 
   return <>
-    <div className="accountUserInfo">
-      <p>angemeldet als<br/><span className="userName">{ authStatus?.username }</span></p>
-      <button className="my-button accountPageButton" onClick={ handleLogout }>abmelden</button>
-    </div>
-    <h3>Benachrichtigungen</h3>
-    { (notificationsEnabled !== undefined) && (<div className="notificationToggleContainer">
-      <span>Aus</span>
-      <label className="switch">
-        <input type="checkbox" checked={ notificationsEnabled } onChange={ handleNotificationToggle }/>
-        <span className="slider round"></span>
-      </label>
-      <span>An</span>
-      <div className={ `notificationHealthIndicator ${ pushSubscriptionActive ? 'healthy' : 'unhealthy' } ${!notificationsEnabled ? 'hidden': ''}` }><img
-        src={ pushSubscriptionActive ? '/checkmark-circle.svg' : '/alert.svg' } alt="ok"/></div>
-    </div>) }
-    <button className="my-button" style={ { marginTop: '20px', padding: '5px' } } onClick={ testNotification }>Test!
-    </button>
-
-    <form className="loginForm" onSubmit={ e => e.preventDefault() }>
-      <h3>Passwort ändern</h3>
-      <label htmlFor="currentPassword">Aktuelles Passwort:</label>
-      <input id="currentPassword" type="password" value={ currentPassword }
-             onChange={ (e) => setCurrentPassword(e.target.value) }/>
-      <label htmlFor="password">Neues Passwort:</label>
-      <input id="password" type="password" value={ newPassword }
-             onChange={ (e) => setNewPassword(e.target.value) }/>
-      <label htmlFor="passwordConfirm">Passwort Bestätigen:</label>
-      <input id="passwordConfirm" type="password" value={ passwordConfirm }
-             onChange={ (e) => setPasswordConfirm(e.target.value) }/>
-      <button className="my-button accountPageButton" type="submit" onClick={ onChangePasswordClick }>ändern</button>
-    </form>
-
-    <div className="feedbackMessagesContainer">
-      <div className="errorMessages">
-        { errorMessages.map((message, index) => (<div key={ index }>{ message }</div>)) }
+    <div className="accountSettingsContainer">
+      <div className="accountUserInfo">
+        <p>angemeldet als<br/><span className="userName">{ authStatus?.username }</span></p>
+        <button className="my-button accountPageButton" onClick={ handleLogout }>abmelden</button>
       </div>
-      <div className="successMessages">
-        { successMessages.map((message, index) => (<div key={ index }>{ message }</div>)) }
-      </div>
-    </div>
 
+
+      <Slideout title="Benachrichtigungen">
+        <>
+          { (notificationsEnabled !== undefined) && (<div className="notificationToggleContainer">
+            <span>Aus</span>
+            <label className="switch">
+              <input type="checkbox" checked={ notificationsEnabled } onChange={ handleNotificationToggle }/>
+              <span className="slider round"></span>
+            </label>
+            <span>An</span>
+            <div
+              className={ `notificationHealthIndicator ${ pushSubscriptionActive ? 'healthy' : 'unhealthy' } ${ !notificationsEnabled ? 'hidden' : '' }` }>
+              <img
+                src={ pushSubscriptionActive ? '/checkmark-circle.svg' : '/alert.svg' } alt="ok"/></div>
+          </div>) }
+          <button className="my-button" style={ { marginTop: '20px', padding: '5px' } }
+                  onClick={ testNotification }>Test!
+          </button>
+        </>
+      </Slideout>
+
+      <Slideout title="Passwort ändern">
+        <>
+          <form className="loginForm" onSubmit={ e => e.preventDefault() }>
+            <label htmlFor="currentPassword">Aktuelles Passwort:</label>
+            <input id="currentPassword" type="password" value={ currentPassword }
+                   onChange={ (e) => setCurrentPassword(e.target.value) }/>
+            <label htmlFor="password">Neues Passwort:</label>
+            <input id="password" type="password" value={ newPassword }
+                   onChange={ (e) => setNewPassword(e.target.value) }/>
+            <label htmlFor="passwordConfirm">Passwort Bestätigen:</label>
+            <input id="passwordConfirm" type="password" value={ passwordConfirm }
+                   onChange={ (e) => setPasswordConfirm(e.target.value) }/>
+            <button className="my-button accountPageButton" type="submit" onClick={ onChangePasswordClick }>ändern
+            </button>
+          </form>
+
+          <div className="feedbackMessagesContainer">
+            <div className="errorMessages">
+              { errorMessages.map((message, index) => (<div key={ index }>{ message }</div>)) }
+            </div>
+            <div className="successMessages">
+              { successMessages.map((message, index) => (<div key={ index }>{ message }</div>)) }
+            </div>
+          </div>
+        </>
+      </Slideout>
+    </div>
   </>
 
 }

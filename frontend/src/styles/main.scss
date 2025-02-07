@@ -661,8 +661,10 @@ td.mealDoneCheck {
   }
 }
 
-.accountUserInfo {
-  margin-bottom: 50px;
+.accountSettingsContainer {
+  > * {
+    margin-bottom: 60px;
+  }
 }
 
 .userName {

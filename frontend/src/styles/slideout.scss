@@ -1,0 +1,45 @@
+.slideout {
+  .title {
+    font-weight: 700;
+    font-size: 23px;
+  }
+
+
+  .slideout-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      transition: all 0.5s;
+      height: 17px;
+      rotate: 90deg;
+      margin-right: 10px;
+    }
+
+    &.down {
+      img {
+        rotate: 180deg;
+      }
+    }
+    .line {
+      width: 60%;
+      border: 1px solid black;
+      height: 0;
+    }
+  }
+  .slideout-container {
+    overflow: hidden;
+  }
+  .slideout-content {
+    translate: 0 -150%;
+    transition: all 0.5s;
+    height: 0;
+
+    &.down {
+      translate: 0;
+      height: 100%;
+    }
+  }
+}
