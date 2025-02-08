@@ -23,7 +23,7 @@ import {
 
 import 'ckeditor5/ckeditor5.css'
 import '../styles/ckeditor-additional.scss'
-import PreventNavigation from '../elements/navigation-blocker.tsx'
+import PreventNavigation from '../elements/prevent-navigation.tsx'
 
 enum SAVE_STATE {
   SAVED,
@@ -115,7 +115,7 @@ export const EditNote = () => {
 
   return (
     <div className="edit-note-container">
-      <PreventNavigation when={true}/>
+      <PreventNavigation when={saveState !== SAVE_STATE.SAVED}/>
       <div className="editor-wrapper">
         <div className="editorControls">
           <div className="saveControls">
