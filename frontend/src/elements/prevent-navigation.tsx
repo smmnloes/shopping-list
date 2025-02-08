@@ -1,5 +1,6 @@
 import { useBlocker } from 'react-router-dom'
-import ChoiceModal from './choice-modal.tsx'
+import ChoiceModal, { ChoiceModalHandler } from './choice-modal.tsx'
+import { useEffect, useRef } from 'react'
 
 const PreventNavigation = ({
                              when,
@@ -12,7 +13,15 @@ const PreventNavigation = ({
     }
   )
 
-  return <ChoiceModal initialVisibility={ blocker.state === 'blocked' } message={ message }
+  const preventNavigationModalRef = useRef<ChoiceModalHandler | null>(null)
+
+  useEffect(() => {
+    if (blocker.state === 'blocked' && preventNavigationModalRef.current) {
+      preventNavigationModalRef.current.showModal()
+    }
+  }, [blocker.state])
+
+  return <ChoiceModal ref={preventNavigationModalRef} message={ message }
                       onConfirm={ () => blocker.state === 'blocked' && blocker.proceed() }
                       onCancel={ () => blocker.state === 'blocked' && blocker.reset() }
   />

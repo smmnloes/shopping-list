@@ -24,7 +24,7 @@ import {
 import 'ckeditor5/ckeditor5.css'
 import '../styles/ckeditor-additional.scss'
 import PreventNavigation from '../elements/prevent-navigation.tsx'
-import ChoiceModal from '../elements/choice-modal.tsx'
+import ChoiceModal, { ChoiceModalHandler } from '../elements/choice-modal.tsx'
 
 enum SAVE_STATE {
   SAVED,
@@ -48,11 +48,12 @@ export const EditNote = () => {
   const [ noteContent, setNoteContent ] = useState<string>('')
 
   const [ saveState, setSaveState ] = useState<SAVE_STATE>(SAVE_STATE.SAVED)
-  const [ modalVisible, setModalVisible ] = useState<boolean>(false)
   const [ publiclyVisible, setPubliclyVisible ] = useState<boolean | undefined>()
   const [ permissions, setPermissions ] = useState<NoteDetails['permissions']>()
 
   const initialLoadComplete = useRef(false)
+
+  const deleteModalRef = useRef<ChoiceModalHandler | null>(null)
 
   const navigate = useNavigate()
 
@@ -139,11 +140,11 @@ export const EditNote = () => {
               </label>
               <img src="/padlock-locked.svg" alt="private note"/>
             </div>) }
-          <button className="my-button deleteButton" onClick={ () => setModalVisible(true) }
+          <button className="my-button deleteButton" onClick={ () => deleteModalRef.current?.showModal() }
                   disabled={ !permissions?.delete }><img src="/paper-bin.svg"
                                                          alt="löschen"/></button>
 
-          <ChoiceModal initialVisibility={ modalVisible } message={ <span>Notiz wirklich löschen?</span> }
+          <ChoiceModal ref={deleteModalRef} message={ <span>Notiz wirklich löschen?</span> }
                        onConfirm={ handleDeleteNote }/>
 
         </div>

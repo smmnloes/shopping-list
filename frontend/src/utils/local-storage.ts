@@ -3,7 +3,6 @@
 export const getStoredValueForKey = <T> (key: string): T | null => {
   const values = localStorage.getItem(key)
   if (values === null) {
-    console.log('No values found, returning null')
     return null
   }
   return JSON.parse(values) as T

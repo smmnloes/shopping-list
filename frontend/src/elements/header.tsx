@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import useServerVersion from '../hooks/use-server-version.ts'
 import packageJson from '../../../package.json'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
-import ChoiceModal from './choice-modal.tsx'
-import { useEffect, useState } from 'react'
+import ChoiceModal, { ChoiceModalHandler } from './choice-modal.tsx'
+import { useEffect, useRef } from 'react'
 
 function Header() {
   const { authStatus } = useAuth()
@@ -12,12 +12,11 @@ function Header() {
   const location = useLocation()
   const serverVersion = useServerVersion()
   const isOnline = useOnlineStatus()
-
-  const [ versionModalVisible, setVersionModalVisible ] = useState<boolean>(false)
+  const modalRef = useRef<ChoiceModalHandler | null>(null)
 
   useEffect(() => {
     if (serverVersion && (serverVersion.version !== packageJson.version)) {
-      setVersionModalVisible(true)
+      modalRef.current?.showModal()
     }
   }, [ serverVersion?.version ])
 
@@ -44,8 +43,8 @@ function Header() {
         </div>
 
         <ChoiceModal
+          ref={ modalRef }
           onConfirm={ handleNewVersionReload }
-          initialVisibility={ versionModalVisible }
           message={ <span>Es gibt eine neuere Version der App ({ serverVersion?.version })<br/>Neu laden?</span> }/>
 
         <div className="userMenu" style={ { visibility: authStatus?.authenticated ? 'visible' : 'hidden' } }>
