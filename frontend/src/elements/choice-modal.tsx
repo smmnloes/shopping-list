@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
-const ChoiceModal = ({ initialVisibility, message, onConfirm }: {
+const ChoiceModal = ({ initialVisibility, message, onConfirm, onCancel }: {
   initialVisibility: boolean,
   message: React.JSX.Element,
-  onConfirm: () => void
+  onConfirm: () => void,
+  onCancel?: () => void
 }) => {
   const [ modalVisible, setModalVisible ] = useState<boolean>(initialVisibility)
 
@@ -11,19 +12,20 @@ const ChoiceModal = ({ initialVisibility, message, onConfirm }: {
     setModalVisible(initialVisibility)
   }, [ initialVisibility ])
 
-  console.log(initialVisibility)
-  console.log(modalVisible)
   return <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` }
               onClick={ (e) => {
                 if ((e.target as any).id === 'modal-overlay') setModalVisible(false)
               } }>
     <div className="choiceModal">
-      <span>{ message }</span>
+      { message }
       <div className="choiceModalButtons">
         <button className="my-button" onClick={ onConfirm }>Ja</button>
-        <button className="my-button" onClick={ () => setModalVisible(false) }>Nein</button>
+        <button className="my-button" onClick={ () => {
+          onCancel && onCancel()
+          setModalVisible(false)
+        } }>Nein
+        </button>
       </div>
-
     </div>
   </div>
 

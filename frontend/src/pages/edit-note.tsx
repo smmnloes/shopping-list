@@ -116,7 +116,8 @@ export const EditNote = () => {
 
   return (
     <div className="edit-note-container">
-      <PreventNavigation when={saveState !== SAVE_STATE.SAVED} message={'Ungespeicherte Änderungen'}/>
+      <PreventNavigation when={ saveState !== SAVE_STATE.SAVED }
+                         message={ <span>Ungespeicherte Änderungen<br/>Wirklich verlassen?</span> }/>
       <div className="editor-wrapper">
         <div className="editorControls">
           <div className="saveControls">
@@ -142,7 +143,8 @@ export const EditNote = () => {
                   disabled={ !permissions?.delete }><img src="/paper-bin.svg"
                                                          alt="löschen"/></button>
 
-          <ChoiceModal initialVisibility={modalVisible} message={ <span>Notiz wirklich löschen?</span> } onConfirm={handleDeleteNote }/>
+          <ChoiceModal initialVisibility={ modalVisible } message={ <span>Notiz wirklich löschen?</span> }
+                       onConfirm={ handleDeleteNote }/>
 
         </div>
         <CKEditor

@@ -14,7 +14,7 @@ export class ApiController {
   @Get('version')
   @Header('Cache-Control', 'no-store')
   async getVersion(): Promise<string> {
-    return 'xxx'
+    return version
   }
 
 }

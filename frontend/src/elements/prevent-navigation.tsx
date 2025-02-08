@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
 import { useBlocker } from 'react-router-dom'
+import ChoiceModal from './choice-modal.tsx'
 
 const PreventNavigation = ({
                              when,
                              message
-                           }: { when: boolean, message: string }) => {
+                           }: { when: boolean, message: React.JSX.Element }) => {
 
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) => {
@@ -12,18 +12,11 @@ const PreventNavigation = ({
     }
   )
 
-  useEffect(() => {
-    if (blocker.state === 'blocked') {
-      const proceed = window.confirm(message)
-      if (proceed) {
-        blocker.proceed()
-      } else {
-        blocker.reset()
-      }
-    }
-  }, [ blocker, message ])
+  return <ChoiceModal initialVisibility={ blocker.state === 'blocked' } message={ message }
+                      onConfirm={ () => blocker.state === 'blocked' && blocker.proceed() }
+                      onCancel={ () => blocker.state === 'blocked' && blocker.reset() }
+  />
 
-  return null
 }
 
 export default PreventNavigation
