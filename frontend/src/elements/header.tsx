@@ -1,9 +1,10 @@
 import { useAuth } from '../providers/auth-provider.tsx'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
 import useServerVersion from '../hooks/use-server-version.ts'
 import packageJson from '../../../package.json'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
+import ChoiceModal from './choice-modal.tsx'
+import { useEffect, useState } from 'react'
 
 function Header() {
   const { authStatus } = useAuth()
@@ -25,14 +26,14 @@ function Header() {
    * Delete the workbox-cache which caches index.html when new version is available
    */
   const handleNewVersionReload = async () => {
-      if ('serviceWorker' in navigator) {
-        const cacheNames = await caches.keys();
-        const workboxCache = cacheNames.find(name => name.includes('workbox'))
-        if (workboxCache) {
-          await caches.delete(workboxCache)
-        }
-        window.location.reload();
+    if ('serviceWorker' in navigator) {
+      const cacheNames = await caches.keys()
+      const workboxCache = cacheNames.find(name => name.includes('workbox'))
+      if (workboxCache) {
+        await caches.delete(workboxCache)
       }
+      window.location.reload()
+    }
   }
 
   return (
@@ -42,20 +43,10 @@ function Header() {
           du bist offline
         </div>
 
-        <div id="modal-overlay" className={ `modal-overlay ${ versionModalVisible ? 'visible' : '' }` }
-             onClick={ (e) => {
-               if ((e.target as any).id === 'modal-overlay') setVersionModalVisible(false)
-             } }>
-          <div className="choiceModal">
-            <span>Es gibt eine neuere Version der App ({ serverVersion?.version })<br/>Neu laden?</span>
-            <div className="choiceModalButtons">
-              <button className="my-button" onClick={ handleNewVersionReload }>Ja</button>
-              <button className="my-button" onClick={ () => setVersionModalVisible(false) }>Nein</button>
-            </div>
-
-          </div>
-        </div>
-
+        <ChoiceModal
+          onConfirm={ handleNewVersionReload }
+          initialVisibility={ versionModalVisible }
+          message={ <span>Es gibt eine neuere Version der App ({ serverVersion?.version })<br/>Neu laden?</span> }/>
 
         <div className="userMenu" style={ { visibility: authStatus?.authenticated ? 'visible' : 'hidden' } }>
           <div className={ `userCircle ${ location.pathname === '/account' ? 'active' : '' }` }

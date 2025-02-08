@@ -24,6 +24,7 @@ import {
 import 'ckeditor5/ckeditor5.css'
 import '../styles/ckeditor-additional.scss'
 import PreventNavigation from '../elements/prevent-navigation.tsx'
+import ChoiceModal from '../elements/choice-modal.tsx'
 
 enum SAVE_STATE {
   SAVED,
@@ -115,7 +116,7 @@ export const EditNote = () => {
 
   return (
     <div className="edit-note-container">
-      <PreventNavigation when={saveState !== SAVE_STATE.SAVED}/>
+      <PreventNavigation when={saveState !== SAVE_STATE.SAVED} message={'Ungespeicherte Änderungen'}/>
       <div className="editor-wrapper">
         <div className="editorControls">
           <div className="saveControls">
@@ -140,18 +141,9 @@ export const EditNote = () => {
           <button className="my-button deleteButton" onClick={ () => setModalVisible(true) }
                   disabled={ !permissions?.delete }><img src="/paper-bin.svg"
                                                          alt="löschen"/></button>
-          <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
-            if ((e.target as any).id === 'modal-overlay') setModalVisible(false)
-          } }>
-            <div className="choiceModal">
-              <span>Notiz wirklich löschen?</span>
-              <div className="choiceModalButtons">
-                <button className="my-button" onClick={ handleDeleteNote }>Ja</button>
-                <button className="my-button" onClick={ () => setModalVisible(false) }>Nein</button>
-              </div>
 
-            </div>
-          </div>
+          <ChoiceModal initialVisibility={modalVisible} message={ <span>Notiz wirklich löschen?</span> } onConfirm={handleDeleteNote }/>
+
         </div>
         <CKEditor
           editor={ ClassicEditor }
