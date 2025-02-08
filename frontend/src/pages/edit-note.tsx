@@ -23,6 +23,7 @@ import {
 
 import 'ckeditor5/ckeditor5.css'
 import '../styles/ckeditor-additional.scss'
+import PreventNavigation from '../elements/navigation-blocker.tsx'
 
 enum SAVE_STATE {
   SAVED,
@@ -113,56 +114,60 @@ export const EditNote = () => {
 
 
   return (
-    <div className="editor-wrapper">
-      <div className="editorControls">
-        <div className="saveControls">
-          <button className={ `my-button saveButton ${ classForSaveState[saveState] }` } onClick={ handleSaveNote }><img
-            src="/save.svg"
-            alt="speichern"/>
-            { saveState === SAVE_STATE.SAVING ? (<div className="spinner"></div>) : (
-              <img src={ iconForSaveState[saveState] } alt="saveState"/>) }
-          </button>
-        </div>
+    <div className="edit-note-container">
+      <PreventNavigation when={true}/>
+      <div className="editor-wrapper">
+        <div className="editorControls">
+          <div className="saveControls">
+            <button className={ `my-button saveButton ${ classForSaveState[saveState] }` } onClick={ handleSaveNote }>
+              <img
+                src="/save.svg"
+                alt="speichern"/>
+              { saveState === SAVE_STATE.SAVING ? (<div className="spinner"></div>) : (
+                <img src={ iconForSaveState[saveState] } alt="saveState"/>) }
+            </button>
+          </div>
 
-        { publiclyVisible !== undefined && (
-          <div className={ `visibilityToggle ${ permissions?.changeVisibility ? '' : 'disabled' }` }>
-            <img src="/padlock-unlocked.svg" alt="publicly visible"/>
-            <label className="switch">
-              <input type="checkbox" checked={ !publiclyVisible } onChange={ handleVisibilityChanged }/>
-              <span className="slider round"></span>
-            </label>
-            <img src="/padlock-locked.svg" alt="private note"/>
-          </div>) }
-        <button className="my-button deleteButton" onClick={ () => setModalVisible(true) }
-                disabled={ !permissions?.delete }><img src="/paper-bin.svg"
-                                                       alt="löschen"/></button>
-        <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
-          if ((e.target as any).id === 'modal-overlay') setModalVisible(false)
-        } }>
-          <div className="choiceModal">
-            <span>Notiz wirklich löschen?</span>
-            <div className="choiceModalButtons">
-              <button className="my-button" onClick={ handleDeleteNote }>Ja</button>
-              <button className="my-button" onClick={ () => setModalVisible(false) }>Nein</button>
+          { publiclyVisible !== undefined && (
+            <div className={ `visibilityToggle ${ permissions?.changeVisibility ? '' : 'disabled' }` }>
+              <img src="/padlock-unlocked.svg" alt="publicly visible"/>
+              <label className="switch">
+                <input type="checkbox" checked={ !publiclyVisible } onChange={ handleVisibilityChanged }/>
+                <span className="slider round"></span>
+              </label>
+              <img src="/padlock-locked.svg" alt="private note"/>
+            </div>) }
+          <button className="my-button deleteButton" onClick={ () => setModalVisible(true) }
+                  disabled={ !permissions?.delete }><img src="/paper-bin.svg"
+                                                         alt="löschen"/></button>
+          <div id="modal-overlay" className={ `modal-overlay ${ modalVisible ? 'visible' : '' }` } onClick={ (e) => {
+            if ((e.target as any).id === 'modal-overlay') setModalVisible(false)
+          } }>
+            <div className="choiceModal">
+              <span>Notiz wirklich löschen?</span>
+              <div className="choiceModalButtons">
+                <button className="my-button" onClick={ handleDeleteNote }>Ja</button>
+                <button className="my-button" onClick={ () => setModalVisible(false) }>Nein</button>
+              </div>
+
             </div>
-
           </div>
         </div>
+        <CKEditor
+          editor={ ClassicEditor }
+          config={ {
+            licenseKey: 'GPL',
+            plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, List, TodoList, Heading, Indent, IndentBlock, Image ],
+            toolbar: {
+              items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'numberedList', 'bulletedList', 'todoList', '|', 'outdent', 'indent' ],
+              shouldNotGroupWhenFull: true
+            },
+            initialData: noteContent,
+          } }
+          onChange={ handleOnChange }
+          onReady={ handleOnReady }
+        />
       </div>
-      <CKEditor
-        editor={ ClassicEditor }
-        config={ {
-          licenseKey: 'GPL',
-          plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, List, TodoList, Heading, Indent, IndentBlock, Image ],
-          toolbar: {
-            items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'numberedList', 'bulletedList', 'todoList', '|', 'outdent', 'indent' ],
-            shouldNotGroupWhenFull: true
-          },
-          initialData: noteContent,
-        } }
-        onChange={ handleOnChange }
-        onReady={ handleOnReady }
-      />
     </div>
   )
 }

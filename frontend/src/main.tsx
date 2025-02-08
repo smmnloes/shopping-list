@@ -1,12 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 import Login from './pages/login.tsx'
-import PrivateRoute from './routing/private-route.tsx'
+import RootWrapper from './routing/root-wrapper.tsx'
 import EditLists from './pages/edit-lists.tsx'
-import Layout from './elements/layout.tsx'
-import { AuthProvider } from './providers/auth-provider.tsx'
 import EditStaples from './pages/edit-staples.tsx'
 import './styles/main.scss'
 import './styles/spinner.scss'
@@ -18,71 +16,74 @@ import { EditNote } from './pages/edit-note.tsx'
 import Register from './pages/register.tsx'
 import LocationMap from './pages/location-map.tsx'
 import AccountSettings from './pages/account-settings.tsx'
-import { OnlineStatusProvider } from './providers/online-status-provider.tsx'
 import TakeOutTracker from './pages/take-out-tracker.tsx'
+
+
+const router = createBrowserRouter(
+  createRoutesFromElements([
+      <Route path="/" element={
+        <RootWrapper privateRoute={ true }>
+          <App/>
+        </RootWrapper>
+      }/>,
+      <Route path="/login" element={
+        <RootWrapper privateRoute={ false }>
+          <Login/>
+        </RootWrapper>
+      }/>,
+      <Route path="/register" element={
+        <RootWrapper privateRoute={ false }>
+          <Register/>
+        </RootWrapper>
+      }/>,
+      <Route path="/locations" element={
+        <RootWrapper privateRoute={ true }>
+          <LocationMap/>
+        </RootWrapper>
+      }/>,
+      <Route path="/account" element={
+        <RootWrapper privateRoute={ true }>
+          <AccountSettings/>
+        </RootWrapper>
+      }/>,
+      <Route path="/edit-lists" element={
+        <RootWrapper privateRoute={ true }>
+          <EditLists/>
+        </RootWrapper>
+      }/>,
+      <Route path="/staples" element={
+        <RootWrapper privateRoute={ true }>
+          <EditStaples/>
+        </RootWrapper>
+      }/>,
+      <Route path="/meal-plan" element={
+        <RootWrapper privateRoute={ true }>
+          <MealPlan/>
+        </RootWrapper>
+      }/>,
+      <Route path="/notes" element={
+        <RootWrapper privateRoute={ true }>
+          <Notes/>
+        </RootWrapper>
+      }/>,
+      <Route path="/notes/:id" element={
+        <RootWrapper privateRoute={ true }>
+          <EditNote/>
+        </RootWrapper>
+      }/>,
+      <Route path="/takeout-tracker" element={
+        <RootWrapper privateRoute={ true }>
+          <TakeOutTracker/>
+        </RootWrapper>
+      }/>
+    ]
+  )
+)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <OnlineStatusProvider>
-        <AuthProvider>
-          <Layout>
-            <Routes>
-              <Route path="/" element={
-                <PrivateRoute>
-                  <App/>
-                </PrivateRoute>
-              }/>
-              <Route path="/login" element={
-                <Login/>
-              }/>
-              <Route path="/register" element={
-                <Register/>
-              }/>
-              <Route path="/locations" element={
-                <PrivateRoute>
-                  <LocationMap/>
-                </PrivateRoute>
-              }/>
-              <Route path="/account" element={
-                <PrivateRoute>
-                  <AccountSettings/>
-                </PrivateRoute>
-              }/>
-              <Route path="/edit-lists" element={
-                <PrivateRoute>
-                  <EditLists/>
-                </PrivateRoute>
-              }/>
-              <Route path="/staples" element={
-                <PrivateRoute>
-                  <EditStaples/>
-                </PrivateRoute>
-              }/>
-              <Route path="/meal-plan" element={
-                <PrivateRoute>
-                  <MealPlan/>
-                </PrivateRoute>
-              }/>
-              <Route path="/notes" element={
-                <PrivateRoute>
-                  <Notes/>
-                </PrivateRoute>
-              }/>
-              <Route path="/notes/:id" element={
-                <PrivateRoute>
-                  <EditNote/>
-                </PrivateRoute>
-              }/>
-              <Route path="/takeout-tracker" element={
-                <PrivateRoute>
-                  <TakeOutTracker/>
-                </PrivateRoute>
-              }/>
-            </Routes>
-          </Layout>
-        </AuthProvider>
-      </OnlineStatusProvider>
-    </BrowserRouter>
+    <RouterProvider router={ router }/>
   </StrictMode>
 )
+
+
