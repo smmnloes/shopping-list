@@ -535,6 +535,7 @@ td.mealDoneCheck {
 }
 
 .edit-note-container {
+  margin-top: 50px;
   height: 100%;
 }
 
@@ -677,6 +678,9 @@ td.mealDoneCheck {
 }
 
 .accountSettingsContainer {
+  width: 75%;
+  margin: 50px auto;
+
   > * {
     margin-bottom: 60px;
   }

@@ -1,12 +1,16 @@
 .slideout {
+  margin-left: auto;
+  margin-right: auto;
 
   .slideoutHeader {
     margin-bottom: 10px;
   }
 
   .title {
-    font-weight: 700;
-    font-size: 23px;
+    font-weight: 500;
+    font-size: 20px;
+    text-align: left;
+    margin-left: 30px;
   }
 
 
@@ -29,7 +33,7 @@
       }
     }
     .line {
-      width: 60%;
+      width: 100%;
       border: 1px solid black;
       height: 0;
     }
