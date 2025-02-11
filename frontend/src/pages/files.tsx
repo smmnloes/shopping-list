@@ -1,10 +1,19 @@
-import { ChangeEvent, useState } from 'react'
-import { uploadFiles } from '../api/file.ts'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { getUploadedFiles, uploadFiles } from '../api/file.ts'
+import { SharedFileList } from '../../../shared/types/files'
 
 
 const Files = () => {
   const [ uploadProgress, setUploadProgress ] = useState<number | undefined>(undefined)
   const [ currentUploadAbortController, setCurrentUploadAbortController ] = useState<AbortController | undefined>()
+  const [ uploadedFiles, setUploadedFiles ] = useState<SharedFileList>([])
+
+
+  useEffect(() => {
+    refreshUploadedFiles()
+  }, [])
+
+  const refreshUploadedFiles = async () => setUploadedFiles(await getUploadedFiles())
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -18,6 +27,7 @@ const Files = () => {
     }
     // @ts-ignore
     e.target.value = null
+    refreshUploadedFiles()
   }
 
 
@@ -31,6 +41,11 @@ const Files = () => {
         setUploadProgress(undefined)
       } }>Cancel
       </button>
+
+      <h3>uploaded:</h3>
+      <ul>
+        { uploadedFiles.map((file, index) => (<li key={ index }>{ file.name }</li>)) }
+      </ul>
     </>
   )
 
