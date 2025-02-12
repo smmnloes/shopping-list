@@ -53,6 +53,9 @@ const EditShare = () => {
         <label htmlFor="descriptionInput">Beschreibung:
           <input id="descriptionInput" type="text" value={ description }
                  onChange={ (e) => setDescription(e.target.value) } onBlur={ updateDescription }/></label>
+
+        <p><b>Link:</b> { shareInfo?.shareLink }</p><a href="">Teilen</a>
+
         <input type="file" multiple onChange={ handleChange }/>
         <p>{ uploadProgress ? Math.floor(uploadProgress * 100) + ' %' : '' }</p>
         { currentUploadAbortController && <button onClick={ () => {

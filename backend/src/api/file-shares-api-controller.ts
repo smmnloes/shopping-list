@@ -68,11 +68,14 @@ export class FileSharesApiController {
       }
       throw e
     })
+    /* TODO create a files.mloesch.it subdomain, reroute to this url, correctly generate the share link   */
+    const shareLink = `https://shopping.mloesch.it/files/public/${share.code}`
+
     return {
       shareInfo: {
         description: share.description,
         files: fileNames.map(file => ({ name: file })),
-        shareLink: 'link'
+        shareLink
       }
     }
   }
