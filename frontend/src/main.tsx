@@ -17,7 +17,8 @@ import Register from './pages/register.tsx'
 import LocationMap from './pages/location-map.tsx'
 import AccountSettings from './pages/account-settings.tsx'
 import TakeOutTracker from './pages/take-out-tracker.tsx'
-import Files from './pages/files.tsx'
+import Shares from './pages/shares.tsx'
+import EditShare from './pages/edit-share.tsx'
 
 
 const router = createBrowserRouter(
@@ -79,7 +80,12 @@ const router = createBrowserRouter(
       }/>,
       <Route path="/files" element={
         <RootWrapper privateRoute={ true }>
-          <Files/>
+          <Shares/>
+        </RootWrapper>
+      }/>,
+      <Route path="/files/:shareId" element={
+        <RootWrapper privateRoute={ true }>
+          <EditShare/>
         </RootWrapper>
       }/>
     ]

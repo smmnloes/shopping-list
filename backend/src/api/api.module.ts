@@ -19,14 +19,16 @@ import { TakeoutApiController } from './takeout.api.controller'
 import { NotificationsApiController } from './notifications.api.controller'
 import { NotificationSubscription } from '../data/entities/notification-subscription'
 import { NotificationService } from './services/notification-service'
-import { FilesApiController } from './files.api.controller'
+import { FileShare } from '../data/entities/file-share'
+import { PassphraseGenerator } from './services/passphrase-generator/passphrase-generator'
+import { FileSharesApiController } from './file-shares-api-controller'
 
 @Module({
-  imports: [ AuthModule, TypeOrmModule.forFeature([ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription ]) ],
+  imports: [ AuthModule, TypeOrmModule.forFeature([ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription, FileShare ]) ],
   controllers: [
-    ApiController, MealApiController, ShoppingApiController, NotesApiController, LocationsApiController, TakeoutApiController, NotificationsApiController, FilesApiController
+    ApiController, MealApiController, ShoppingApiController, NotesApiController, LocationsApiController, TakeoutApiController, NotificationsApiController, FileSharesApiController
   ],
-  providers: [ UserKeyService, SuggestionsService, NotificationService ],
+  providers: [ UserKeyService, SuggestionsService, NotificationService, PassphraseGenerator ],
   exports: []
 })
 export class ApiModule {

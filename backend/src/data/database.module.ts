@@ -10,8 +10,9 @@ import { Location } from './entities/location'
 import { UserKeyService } from './crypto/user-key-service'
 import { TakeoutPayment } from './entities/takeout-payment'
 import { NotificationSubscription } from './entities/notification-subscription'
+import { FileShare } from './entities/file-share'
 
-export const entities = [ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription ]
+export const entities = [ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription, FileShare ]
 
 @Module({
   imports: [ TypeOrmModule.forRootAsync({

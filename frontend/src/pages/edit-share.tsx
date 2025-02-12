@@ -1,19 +1,25 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import { getUploadedFiles, uploadFiles } from '../api/file.ts'
-import { SharedFileList } from '../../../shared/types/files'
+import { getShareInfo, uploadFile } from '../api/file.ts'
+import { ShareInfo } from '../../../shared/types/files'
+import { useParams } from 'react-router-dom'
 
 
-const Files = () => {
+const EditShare = () => {
   const [ uploadProgress, setUploadProgress ] = useState<number | undefined>(undefined)
   const [ currentUploadAbortController, setCurrentUploadAbortController ] = useState<AbortController | undefined>()
-  const [ uploadedFiles, setUploadedFiles ] = useState<SharedFileList>([])
+  const [ shareInfo, setShareInfo ] = useState<ShareInfo>()
+
+  const shareIdParam = useParams<{ shareId: string }>().shareId
+  if (!shareIdParam) {
+    throw new Error('ShareId is required')
+  }
 
 
   useEffect(() => {
-    refreshUploadedFiles()
+    refreshShareInfo()
   }, [])
 
-  const refreshUploadedFiles = async () => setUploadedFiles(await getUploadedFiles())
+  const refreshShareInfo = async () => setShareInfo(await getShareInfo(shareIdParam))
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -22,12 +28,12 @@ const Files = () => {
       for (const file of files) {
         const abortController = new AbortController()
         setCurrentUploadAbortController(abortController)
-        await uploadFiles(file, (progress) => setUploadProgress(progress.progress), abortController)
+        await uploadFile(shareIdParam, file, (progress) => setUploadProgress(progress.progress), abortController)
       }
     }
     // @ts-ignore
     e.target.value = null
-    refreshUploadedFiles()
+    refreshShareInfo()
   }
 
 
@@ -42,13 +48,13 @@ const Files = () => {
       } }>Cancel
       </button>
 
-      <h3>uploaded:</h3>
+      <h3>Files:</h3>
       <ul>
-        { uploadedFiles.map((file, index) => (<li key={ index }>{ file.name }</li>)) }
+        { shareInfo?.files.map((file, index) => (<li key={ index }>{ file.name }</li>)) }
       </ul>
     </>
   )
 
 }
 
-export default Files
+export default EditShare

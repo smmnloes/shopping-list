@@ -1,12 +1,12 @@
 import { axiosInstance, backendHost } from './api.ts'
 import { AxiosProgressEvent } from 'axios'
-import { SharedFileList } from '../../../shared/types/files'
+import { ShareInfo, ShareOverview } from '../../../shared/types/files'
 
-export const uploadFiles = async (file: File, onProgress: (event: AxiosProgressEvent) => void, abortController: AbortController): Promise<void> => {
+export const uploadFile = async (shareId: string, file: File, onProgress: (event: AxiosProgressEvent) => void, abortController: AbortController): Promise<void> => {
   const formData = new FormData();
   formData.append('file', file);
 
-  return axiosInstance.post(`${ backendHost }/api/files`, formData, {
+  return axiosInstance.post(`${ backendHost }/api/fileshares/${shareId}`, formData, {
     signal: abortController.signal,
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -16,6 +16,14 @@ export const uploadFiles = async (file: File, onProgress: (event: AxiosProgressE
 }
 
 
-export const getUploadedFiles = async (): Promise<SharedFileList> => {
-  return axiosInstance.get(`${ backendHost }/api/files`).then(response => response.data.files)
+export const getShareInfo = async (shareId: string): Promise<ShareInfo> => {
+  return axiosInstance.get(`${ backendHost }/api/fileshares/${shareId}`).then(response => response.data.shareInfo)
+}
+
+export const getShares = async (): Promise<ShareOverview[]> => {
+  return axiosInstance.get(`${ backendHost }/api/fileshares`).then(response => response.data.shares)
+}
+
+export const newShare = async (): Promise<{id: string}> => {
+  return axiosInstance.post(`${ backendHost }/api/fileshares`).then(response => response.data.id)
 }
