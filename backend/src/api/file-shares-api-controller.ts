@@ -1,10 +1,10 @@
 import {
-  Controller,
+  Controller, Delete,
   Get,
   Inject,
   Param,
   Patch,
-  Post,
+  Post, Query,
   Request,
   UploadedFile,
   UseGuards,
@@ -16,7 +16,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { User } from '../data/entities/user'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { readdir, writeFile, access, mkdir } from 'node:fs/promises'
+import { readdir, writeFile, access, mkdir, rm } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { ShareInfo, ShareOverview } from '../../../shared/types/files'
 import { FileShare } from '../data/entities/file-share'
@@ -45,6 +45,14 @@ export class FileSharesApiController {
     // create share folder if not exists
     await access(shareStorageDir).catch(_ => mkdir(shareStorageDir))
     await writeFile(resolve(shareStorageDir, file.originalname), file.buffer)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('fileshares/:shareId')
+  async deleteFile(@Param('shareId') shareId: string, @Query('filename') filename: string): Promise<void> {
+    const shareStorageDir = resolve(STORAGE_DIR, shareId)
+
+    await rm(resolve(shareStorageDir, filename)).catch(e => console.log('Could not remove file', e.message))
   }
 
 

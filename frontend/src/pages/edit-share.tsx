@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import { getShareInfo, updateShareInfo, uploadFile } from '../api/file.ts'
+import { deleteFile, getShareInfo, updateShareInfo, uploadFile } from '../api/file.ts'
 import { ShareInfo } from '../../../shared/types/files'
 import { useParams } from 'react-router-dom'
 import '../styles/files.scss'
@@ -34,6 +34,7 @@ const EditShare = () => {
         const abortController = new AbortController()
         setCurrentUploadAbortController(abortController)
         await uploadFile(shareId, file, (progress) => setUploadProgress(progress.progress), abortController)
+        setCurrentUploadAbortController(undefined)
       }
     }
     // @ts-ignore
@@ -41,25 +42,32 @@ const EditShare = () => {
     refreshShareInfo()
   }
 
-  const updateDescription = async (e: React.FocusEvent<HTMLInputElement>) => updateShareInfo(shareId, {description: e.target.value})
+  const updateDescription = async (e: React.FocusEvent<HTMLInputElement>) => updateShareInfo(shareId, { description: e.target.value })
+  const handleFileDelete = async (filename: string) => {
+    await deleteFile(shareId, filename)
+    await refreshShareInfo()
+  }
 
   return (<>
       <div className="filesContainer">
         <label htmlFor="descriptionInput">Beschreibung:
           <input id="descriptionInput" type="text" value={ description }
-                 onChange={ (e) => setDescription(e.target.value)} onBlur={updateDescription}/></label>
+                 onChange={ (e) => setDescription(e.target.value) } onBlur={ updateDescription }/></label>
         <input type="file" multiple onChange={ handleChange }/>
         <p>{ uploadProgress ? Math.floor(uploadProgress * 100) + ' %' : '' }</p>
-        <button onClick={ () => {
+        { currentUploadAbortController && <button onClick={ () => {
           currentUploadAbortController?.abort()
           setUploadProgress(undefined)
         } }>Cancel
-        </button>
+        </button> }
 
         <h3>Files:</h3>
-        <ul>
-          { shareInfo?.files.map((file, index) => (<li key={ index }>{ file.name }</li>)) }
-        </ul>
+        { shareInfo?.files.length ?? 0 > 0 ?
+          <ul>
+            { shareInfo?.files.map((file, index) => (
+              <li key={ index }>{ file.name }<span onClick={ () => handleFileDelete(file.name) }> X </span></li>)) }
+          </ul> : <p>Noch keine Dateien hochgeladen</p>
+        }
       </div>
     </>
 

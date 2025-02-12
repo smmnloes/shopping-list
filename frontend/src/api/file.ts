@@ -15,6 +15,9 @@ export const uploadFile = async (shareId: string, file: File, onProgress: (event
   }).then(response => response.data)
 }
 
+export const deleteFile = async (shareId: string, filename: string): Promise<void> => {
+  return axiosInstance.delete(`${ backendHost }/api/fileshares/${shareId}`, {params: {filename}})
+}
 
 export const getShareInfo = async (shareId: string): Promise<ShareInfo> => {
   return axiosInstance.get(`${ backendHost }/api/fileshares/${shareId}`).then(response => response.data.shareInfo)
