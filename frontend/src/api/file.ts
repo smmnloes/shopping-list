@@ -20,6 +20,11 @@ export const getShareInfo = async (shareId: string): Promise<ShareInfo> => {
   return axiosInstance.get(`${ backendHost }/api/fileshares/${shareId}`).then(response => response.data.shareInfo)
 }
 
+export const updateShareInfo = async (shareId: string, content: Partial<ShareInfo>): Promise<void> => {
+  return axiosInstance.patch(`${ backendHost }/api/fileshares/${shareId}`, content)
+}
+
+
 export const getShares = async (): Promise<ShareOverview[]> => {
   return axiosInstance.get(`${ backendHost }/api/fileshares`).then(response => response.data.shares)
 }

@@ -1,0 +1,12 @@
+.filesContainer {
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    margin-bottom: 30px;
+  }
+}
+
+#descriptionInput {
+  margin-left: 10px;
+}

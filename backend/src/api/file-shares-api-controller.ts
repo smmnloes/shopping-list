@@ -1,4 +1,15 @@
-import { Controller, Get, Inject, Param, Post, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  Request,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
@@ -10,7 +21,7 @@ import { resolve } from 'node:path'
 import { ShareInfo, ShareOverview } from '../../../shared/types/files'
 import { FileShare } from '../data/entities/file-share'
 import { PassphraseGenerator } from './services/passphrase-generator/passphrase-generator'
-
+import merge from 'lodash.merge'
 
 const STORAGE_DIR = 'uploaded-files'
 
@@ -56,6 +67,14 @@ export class FileSharesApiController {
         shareLink: 'link'
       }
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('fileshares/:shareId')
+  async updateShareInfo(@Param('shareId') shareId: string, @Request() req: ExtendedJWTGuardRequest<Partial<ShareInfo>>): Promise<void> {
+    const share = await this.fileShareRepository.findOneOrFail({ where: { shareId } })
+    const merged = merge(share, req.body)
+    await this.fileShareRepository.save(merged)
   }
 
   @UseGuards(JwtAuthGuard)

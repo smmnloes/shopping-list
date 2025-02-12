@@ -55,9 +55,9 @@ importers:
       fuse.js:
         specifier: 7.0.0
         version: 7.0.0
-      lodash.uniqby:
+      lodash.merge:
         specifier: ^4.5.0
-        version: 4.7.0
+        version: 4.6.2
       passport-jwt:
         specifier: ^4.0.1
         version: 4.0.1
@@ -92,9 +92,9 @@ importers:
       '@types/express':
         specifier: ^4.17.17
         version: 4.17.21
-      '@types/lodash.uniqby':
+      '@types/lodash.merge':
         specifier: ^4.5.9
-        version: 4.7.9
+        version: 4.6.9
       '@types/multer':
         specifier: ^1.4.12
         version: 1.4.12
@@ -2026,8 +2026,8 @@ packages:
   '@types/leaflet@1.9.15':
     resolution: {integrity: sha512-7UuggAuAs+mva66gtf2OTB1nEhzU/9JED93TIaOEgvFMvG/dIGQaukHE7izHo1Zd+Ko1L4ETUw7TBc8yUxevpg==}
 
-  '@types/lodash.uniqby@4.7.9':
-    resolution: {integrity: sha512-rjrXji/seS6BZJRgXrU2h6FqxRVufsbq/HE0Tx0SdgbtlWr2YmD/M64BlYEYYlaMcpZwy32IYVkMfUMYlPuv0w==}
+  '@types/lodash.merge@4.6.9':
+    resolution: {integrity: sha512-23sHDPmzd59kUgWyKGiOMO2Qb9YtqRO/x4IhkgNUiPQ1+5MUVqi6bCZeq9nBJ17msjIMbEIO5u+XW4Kz6aGUhQ==}
 
   '@types/lodash@4.17.14':
     resolution: {integrity: sha512-jsxagdikDiDBeIRaPYtArcT8my4tN1og7MtMRquFT3XNA6axxyHDRUemqDz/taRDdOUn0GnGHRCuff4q48sW9A==}
@@ -3699,9 +3699,6 @@ packages:
 
   lodash.sortby@4.7.0:
     resolution: {integrity: sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA==}
-
-  lodash.uniqby@4.7.0:
-    resolution: {integrity: sha512-e/zcLx6CSbmaEgFHCA7BnoQKyCtKMxnuWrJygbwPs/AIn+IMKl66L8/s+wBUn5LRw2pZx3bUHibiV1b6aTWIww==}
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
@@ -8035,7 +8032,7 @@ snapshots:
     dependencies:
       '@types/geojson': 7946.0.15
 
-  '@types/lodash.uniqby@4.7.9':
+  '@types/lodash.merge@4.6.9':
     dependencies:
       '@types/lodash': 4.17.14
 
@@ -10097,8 +10094,6 @@ snapshots:
   lodash.once@4.1.1: {}
 
   lodash.sortby@4.7.0: {}
-
-  lodash.uniqby@4.7.0: {}
 
   lodash@4.17.21: {}
 
