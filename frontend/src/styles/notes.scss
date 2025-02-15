@@ -1,0 +1,135 @@
+.notesContainer {
+  margin: 75px auto;
+}
+
+.notesListElement {
+  background-color: var(--color-list-item);
+  padding: 10px;
+
+  display: flex;
+  flex-direction: row;
+
+  border-radius: 10px;
+  margin: 5px auto;
+  border: 1px solid white;
+}
+
+.newNoteElement {
+  background-color: rgba(176, 207, 237, 0.5);
+  text-align: center;
+  display: block;
+  border: 1px dashed white;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+
+.noteContainer {
+  text-align: left;
+  width: 100%;
+  position: relative;
+
+  img {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+  }
+}
+
+.noteTitle {
+  display: -webkit-box;
+  font-weight: 400;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin-bottom: 10px;
+
+}
+
+.noteDetails {
+  font-size: 14px;
+
+  > * {
+    padding: 3px 0;
+  }
+}
+
+.notesListControls {
+  display: flex;
+  justify-content: end;
+
+  img {
+    height: 30px;
+    width: 30px;
+  }
+
+  > * {
+    margin-left: 10px;
+  }
+}
+
+.edit-note-container {
+  margin-top: 50px;
+  height: 100%;
+}
+
+.editor-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.editorControls {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.saveButton {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+
+  > * {
+    height: 20px;
+    width: 20px;
+    margin: auto 4px;
+  }
+
+  &.saved {
+    background-color: var(--color-green-ok)
+  }
+
+  &.unsaved {
+    background-color: var(--color-error)
+  }
+
+  &.saving {
+    background-color: #fbf5bc
+  }
+}
+
+
+.visibilityToggle {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+
+  img {
+    height: 30px;
+    width: 30px;
+    margin: 0 5px;
+  }
+
+  &.disabled {
+    .slider {
+      filter: grayscale(1) brightness(0.9);
+    }
+
+    img {
+      filter: invert(0.5);
+    }
+  }
+}

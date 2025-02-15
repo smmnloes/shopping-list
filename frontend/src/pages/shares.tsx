@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { ShareOverview } from '../../../shared/types/files'
 import { getShares, newShare } from '../api/file.ts'
 import { useNavigate } from 'react-router-dom'
-
+import '../styles/shares.scss'
 
 const Shares = () => {
   const [ shares, setShares ] = useState<ShareOverview[]>([])
@@ -22,14 +22,14 @@ const Shares = () => {
 
   return (
     <div className="sharesContainer">
-        <div className="newNoteElement" onClick={ newShareHandler }>Neue Freigabe</div>
+        <div className="newShareElement" onClick={ newShareHandler }>Neue Freigabe</div>
         { shares.map((share, index) => (
-          <div key={ index } className="listElementContainer">
-            <div className="notesListElement" onClick={ () => navigate(`/files/${ share.id }`) }>
-              <div className="noteContainer">
-                <div className="noteTitle">{ share.description }</div>
-                <div className="noteDetails">
-                  <div><b>erstellt von:</b>{ share.createdBy }</div>
+          <div key={ index }>
+            <div className="sharesListElement" onClick={ () => navigate(`/files/${ share.id }`) }>
+              <div>
+                <div className="shareTitle">{ share.description }</div>
+                <div className="shareDetails">
+                  <div><b>erstellt von: </b>{ share.createdBy }</div>
                   </div>
                 </div>
               </div>

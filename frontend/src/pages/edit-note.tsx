@@ -25,6 +25,7 @@ import 'ckeditor5/ckeditor5.css'
 import '../styles/ckeditor-additional.scss'
 import PreventNavigation from '../elements/prevent-navigation.tsx'
 import ChoiceModal, { ChoiceModalHandler } from '../elements/choice-modal.tsx'
+import '../styles/notes.scss'
 
 enum SAVE_STATE {
   SAVED,

@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import { deleteFile, getShareInfo, updateShareInfo, uploadFile } from '../api/file.ts'
 import { ShareInfo } from '../../../shared/types/files'
 import { useParams } from 'react-router-dom'
-import '../styles/files.scss'
+import '../styles/shares.scss'
 
 const EditShare = () => {
   const [ uploadProgress, setUploadProgress ] = useState<number | undefined>(undefined)

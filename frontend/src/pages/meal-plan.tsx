@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { getMealsForWeek, saveMealsForWeek } from '../api/meals.ts'
 import objectHash from 'object-hash'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
+import '../styles/meals.scss'
 
 const COMMON_WEEK_OPTIONS: GetWeekOptions = { weekStartsOn: 1, firstWeekContainsDate: 4  }
 

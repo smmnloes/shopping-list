@@ -3,6 +3,7 @@ import { register } from '../api/api.ts'
 import { useState } from 'react'
 import { isAxiosError } from 'axios'
 import { useAuth } from '../providers/auth-provider.tsx'
+import '../styles/login-register.scss'
 
 function Register() {
   const [ registrationSecret, setRegistrationSecret ] = useState('')

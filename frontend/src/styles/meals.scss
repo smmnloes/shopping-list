@@ -1,0 +1,75 @@
+.weekButtons {
+  display: flex;
+  justify-content: center;
+
+  img {
+    width: 35px;
+    margin: 0 20px;
+
+
+    &.rotated {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.kwSelect button {
+  height: 24px;
+  padding-bottom: 40px;
+  margin: auto;
+  box-shadow: 0 0 0;
+  font-size: 25px;
+  font-weight: bold;
+  color: white;
+}
+
+.mealPlanContainer {
+  margin: 50px auto;
+}
+
+.mealTable {
+  margin: 40px auto;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: var(--color-list-item);
+  width: 95%;
+  border: 1px solid white;
+
+  td {
+    padding: 10px;
+    border-bottom: 1px solid var(--color-background);
+  }
+
+  tr:last-child td {
+    border-bottom: 0;
+  }
+
+  tr:first-child {
+    text-align: center;
+  }
+
+  textarea {
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    padding: 5px;
+    height: 50px;
+    width: 90%;
+    font-size: 18px;
+    resize: vertical;
+  }
+
+}
+
+.dateDisplay {
+  font-size: 0.8rem;
+}
+
+.kwDate {
+  display: flex;
+  flex-direction: column;
+}
+
+td.mealDoneCheck {
+  padding: 0;
+}

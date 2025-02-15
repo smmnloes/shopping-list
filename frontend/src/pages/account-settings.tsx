@@ -7,6 +7,7 @@ import { subscribeToPushNotifications } from '../serviceworker/push-notification
 import { getNotificationsStatus, setNotificationsStatus, testNotification } from '../api/notifications.ts'
 import { StoredSubscription } from '../../../shared/types/push-notifications'
 import Slideout from '../elements/slideout.tsx'
+import '../styles/account-settings.scss'
 
 const AccountSettings = () => {
   const { authStatus, setAuthStatus } = useAuth()

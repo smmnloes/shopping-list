@@ -4,6 +4,7 @@ import { createRef, Ref, useEffect, useState } from 'react'
 import { getLocation, postLocation } from '../api/locations.ts'
 import type { LocationFrontendView } from '../../../shared/types/location.ts'
 import { formatDateAndTime } from '../utils/date-time-format.ts'
+import '../styles/locations.scss'
 
 const carIcon = icon({
   iconUrl: 'car.png',

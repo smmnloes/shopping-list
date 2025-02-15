@@ -1,0 +1,65 @@
+.shareContainer {
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    margin-bottom: 30px;
+  }
+}
+
+#descriptionInput {
+  margin-left: 10px;
+}
+
+.sharesContainer {
+  text-align: left;
+  width: 100%;
+  position: relative;
+
+  img {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+  }
+}
+
+.shareTitle {
+  display: -webkit-box;
+  font-weight: 400;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin-bottom: 10px;
+
+}
+
+.shareDetails {
+  font-size: 14px;
+
+  > * {
+    padding: 3px 0;
+  }
+}
+
+.sharesListElement {
+  background-color: var(--color-list-item);
+  padding: 10px;
+
+  display: flex;
+  flex-direction: row;
+
+  border-radius: 10px;
+  margin: 5px auto;
+  border: 1px solid white;
+}
+
+.newShareElement {
+  background-color: rgba(176, 207, 237, 0.5);
+  text-align: center;
+  display: block;
+  border: 1px dashed white;
+  padding: 10px;
+  border-radius: 10px;
+}

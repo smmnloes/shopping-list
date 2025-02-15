@@ -3,6 +3,7 @@ import { login } from '../api/api.ts'
 import { useState } from 'react'
 import { isAxiosError } from 'axios'
 import { useAuth } from '../providers/auth-provider.tsx'
+import '../styles/login-register.scss'
 
 function Login() {
   const [ username, setUsername ] = useState('')

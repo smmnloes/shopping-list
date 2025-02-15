@@ -5,7 +5,7 @@ import { SELECTED_CATEGORY } from '../constants/query-params.ts'
 import useQueryParamState from '../hooks/use-query-param-state.ts'
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
-
+import '../styles/shopping.scss'
 
 const EditStaples = () => {
   const [ staples, setStaples ] = useState<ListItemFrontend[]>([])
@@ -70,7 +70,7 @@ const EditStaples = () => {
         <div className="listContainer">
           { staples.length === 0 ? (<div className="noElementsMessage">Noch keine Staples angelegt...</div>) :
             staples.map((item, index) => (
-              <div key={ index } className="listElementContainer">
+              <div key={ index }>
                 <div className="shoppingListElement">
                   <div className="label ">{ item.name }</div>
                   <div className={ `deleteButton ${ !isOnline ? 'disabled' : '' }` }><img src="/paper-bin.svg"

@@ -1,0 +1,62 @@
+.accountSettingsContainer {
+  width: 75%;
+  margin: 50px auto;
+
+  > * {
+    margin-bottom: 60px;
+  }
+}
+
+.userName {
+  font-weight: bold;
+}
+
+.accountPageButton {
+  width: 100px;
+  padding: 10px;
+  margin: auto;
+}
+
+.notificationsContainer {
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    margin: 10px auto 0;
+  }
+
+  .testbutton {
+    padding: 8px;
+  }
+
+}
+
+
+
+
+.notificationToggleContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.notificationHealthIndicator {
+  padding: 5px;
+  img {
+    height: 25px;
+  }
+
+  &.hidden {
+    display: none;
+  }
+
+  .notificationStatusAndIcon {
+    display: flex;
+    flex-direction: row;
+
+    > * {
+      margin: 0 5px;
+    }
+  }
+}

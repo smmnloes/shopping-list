@@ -1,0 +1,216 @@
+.shoppingListContainer {
+  margin: 75px auto;
+}
+
+.listContainer {
+  border-radius: 15px;
+
+  &.notes {
+    width: 90%;
+    margin: auto;
+
+    > * {
+      margin: 15px auto;
+    }
+  }
+}
+
+.shoppingListElement {
+  background-color: var(--color-list-item);
+  padding: 10px;
+
+  display: flex;
+  flex-direction: row;
+
+  border-radius: 10px;
+  margin: 5px auto;
+  border: 1px solid white;
+
+  height: 25px;
+
+  .label {
+    width: 90%;
+    white-space: nowrap;
+    text-align: left;
+    margin-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+
+
+.addItemForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 25px;
+
+  input {
+    flex: 1;
+  }
+
+  button {
+    margin-left: 10px;
+  }
+
+  .inputAndButton {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &.lessMarginTop {
+    margin-top: 15px;
+  }
+}
+
+.listAndInput {
+  padding: 5px;
+  margin-top: 20px;
+
+  hr {
+    width: 50%;
+    margin: 25px auto;
+  }
+}
+
+
+.shopCategoryContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.shopCategoryIcon {
+  width: 200px;
+  margin: 1em;
+  padding: 0.2em;
+  background-color: var(--color-background);
+
+  img {
+    height: 2em;
+    filter: grayscale(100%) brightness(6) invert(5%);
+    mix-blend-mode: hard-light;
+    padding-top: 5px;
+  }
+
+  &.selected {
+    background-color: var(--color-highlight);
+    border-radius: 7px;
+    border: 1px solid white;
+  }
+}
+
+
+.listTopControlsContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  img {
+    height: 30px;
+    width: 36px;
+  }
+}
+
+
+.openModalBtn {
+  display: flex;
+  justify-content: space-between;
+
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modalAddBtn {
+  padding: 7px;
+  font-size: 15px;
+  margin-bottom: 10px;
+  width: 40%;
+}
+
+
+.selectedStaple {
+  border: white solid 2px;
+  padding: 8px;
+}
+
+
+.stapleAddSign {
+  font-size: 25px;
+  font-weight: bolder;
+}
+
+.modalSelectBtnContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+
+
+.suggestionElement {
+  display: flex;
+  align-items: center;
+
+
+  font-size: 18px;
+
+  white-space: nowrap;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  img {
+    height: 25px;
+    width: 25px;
+    margin-left: 10px;
+  }
+
+  background-color: var(--color-highlight);
+  border-radius: 5px;
+  border: 1px solid white;
+
+}
+
+.inputAndSuggestions {
+  background-color: white;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: row;
+  min-height: 40px;
+  overflow: hidden;
+  width: 100%;
+
+  input {
+    padding-right: 0;
+    flex: 0;
+
+
+    &.empty {
+      flex: 1;
+    }
+  }
+
+  .suggestionsContainer {
+    display: flex;
+    overflow: auto;
+    padding-left: 20px;
+    flex: 1;
+
+    &.empty {
+      flex: 0;
+    }
+    > * {
+      margin: 6px 3px;
+      padding: 3px;
+    }
+  }
+}

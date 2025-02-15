@@ -6,6 +6,7 @@ import { booleanFromString } from '../utils/boolean.ts'
 import { useEffect, useState } from 'react'
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
+import '../styles/modal.scss'
 
 interface SelectStapleModalProps {
   selectedCategory?: ShopCategory,
@@ -85,7 +86,7 @@ const SelectStapleModal = ({ selectedCategory, addedStaples, onModalClose }: Sel
           <div className="listContainer">
             { availableStaples.length === 0 ? (<div className="noElementsMessage">Keine Staples angelegt.</div>) :
               availableStaples.map((item, index) =>
-                (<div key={ index } className="listElementContainer">
+                (<div key={ index }>
                     <div
                       onClick={ () => handleStapleSelected(item) }
                       className={ `shoppingListElement ${ selectedStaples.some(staple => staple.id === item.id) ? 'selectedStaple' : '' }` }>

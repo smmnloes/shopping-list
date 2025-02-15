@@ -13,6 +13,7 @@ import {
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 import useLocalStorageState from '../hooks/use-local-storage-state.ts'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
+import '../styles/shopping.scss'
 
 export type CheckedItem = { id: number, category: ShopCategory }
 export const CHECKED_ITEMS_KEY = 'checkedItems'

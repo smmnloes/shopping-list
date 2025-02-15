@@ -3,6 +3,7 @@ import { getNotes, newNote } from '../api/notes.ts'
 import { useNavigate } from 'react-router-dom'
 import type { NoteOverview } from '../../../shared/types/notes.ts'
 import useLocalStorageState from '../hooks/use-local-storage-state.ts'
+import '../styles/notes.scss'
 
 export type NOTES_ORDER = { sortCriteria: number, sortOrder: number }
 export const NOTES_ORDER_KEY = 'notesOrder'
@@ -98,7 +99,7 @@ const Notes = () => {
 
         <div className="newNoteElement" onClick={ newNoteHandler }>Neue Notiz</div>
         { sortNotes([ ...notes ]).map((note, index) => (
-          <div key={ index } className="listElementContainer">
+          <div key={ index }>
             <div className="notesListElement" onClick={ () => navigate(`/notes/${ note.id }`) }>
               <div className="noteContainer">
                 <img className="visibilityIcon" hidden={ note.publiclyVisible } src="/padlock-locked.svg"

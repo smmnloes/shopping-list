@@ -1,4 +1,5 @@
 import { forwardRef, Ref, useImperativeHandle, useState } from 'react'
+import '../styles/modal.scss'
 
 export type ChoiceModalHandler = {
   showModal: () => void
