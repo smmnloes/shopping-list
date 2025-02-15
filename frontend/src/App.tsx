@@ -33,7 +33,7 @@ function App() {
           <span>Takeout</span>
         </div>
         <div className="navElement">
-          <Link to="/files"><img src="/take-away.svg" alt="files"/>
+          <Link to="/files"><img src="/file-share.svg" alt="files"/>
           </Link>
           <span>Files</span>
         </div>

@@ -7,8 +7,15 @@
   }
 }
 
+.editShareContainer {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
 #descriptionInput {
   margin-left: 10px;
+  margin-bottom: 30px;
 }
 
 .sharesContainer {
@@ -62,4 +69,48 @@
   border: 1px dashed white;
   padding: 10px;
   border-radius: 10px;
+}
+
+.descriptionInputLabel {
+  font-weight: 700;
+}
+
+.uploadFilesContainer {
+  border-radius: 10px;
+  padding: 20px;
+}
+
+input[type="file"] {
+  display: none
+}
+
+.custom-file-upload {
+  border: 1px solid white;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.uploadedFileListElement {
+  background-color: var(--color-list-item);
+  padding: 10px;
+
+  display: flex;
+  flex-direction: row;
+
+  border-radius: 10px;
+  margin: 5px auto;
+  border: 1px solid white;
+  justify-content: space-between;
+
+  height: 25px;
+
+  .label {
+    width: 90%;
+    white-space: nowrap;
+    text-align: left;
+    margin-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

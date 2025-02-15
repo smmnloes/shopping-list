@@ -49,28 +49,34 @@ const EditShare = () => {
   }
 
   return (<>
-      <div className="filesContainer">
-        <label htmlFor="descriptionInput">Beschreibung:
+      <div className="editShareContainer">
+        <label className="descriptionInputLabel" htmlFor="descriptionInput">Beschreibung:
           <input id="descriptionInput" type="text" value={ description }
                  onChange={ (e) => setDescription(e.target.value) } onBlur={ updateDescription }/></label>
 
-        <p><b>Link:</b> { shareInfo?.shareLink }</p><a href="">Teilen</a>
-
-        <input type="file" multiple onChange={ handleChange }/>
-        <p>{ uploadProgress ? Math.floor(uploadProgress * 100) + ' %' : '' }</p>
-        { currentUploadAbortController && <button onClick={ () => {
-          currentUploadAbortController?.abort()
-          setUploadProgress(undefined)
-        } }>Cancel
-        </button> }
-
-        <h3>Files:</h3>
-        { shareInfo?.files.length ?? 0 > 0 ?
-          <ul>
+        <div className="uploadFilesContainer">
+          <label className="custom-file-upload my-button">Dateien hochladen<input type="file" multiple
+                                                                                  onChange={ handleChange }/></label>
+          <p>{ uploadProgress ? Math.floor(uploadProgress * 100) + ' %' : '' }</p>
+          { currentUploadAbortController && <button onClick={ () => {
+            currentUploadAbortController?.abort()
+            setUploadProgress(undefined)
+          } }>Cancel
+          </button> }
+          <div className="uploadedFiles">
+            { shareInfo?.files.length ?? 0 > 0 ? <h4>Hochgeladene Dateien:</h4> :
+              <h4>Noch keine Dateien hochgeladen</h4> }
             { shareInfo?.files.map((file, index) => (
-              <li key={ index }>{ file.name }<span onClick={ () => handleFileDelete(file.name) }> X </span></li>)) }
-          </ul> : <p>Noch keine Dateien hochgeladen</p>
-        }
+              <div className="uploadedFileListElement">
+                <div key={ index }>{ file.name }</div>
+                <div className="deleteButton"><img src="/paper-bin.svg"
+                                                   onClick={ () => handleFileDelete(file.name) }
+                                                   alt="delete item"/>
+                </div>
+              </div>)) }
+          </div>
+        </div>
+        <p><b>Link:</b> { shareInfo?.shareLink }</p><a href="">Teilen</a>
       </div>
     </>
 
