@@ -1,10 +1,13 @@
 import {
-  Controller, Delete,
+  Controller,
+  Delete,
   Get,
   Inject,
+  NotFoundException,
   Param,
   Patch,
-  Post, Query,
+  Post,
+  Query,
   Request,
   UploadedFile,
   UseGuards,
@@ -16,9 +19,9 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { User } from '../data/entities/user'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { readdir, writeFile, access, mkdir, rm } from 'node:fs/promises'
+import { access, mkdir, readdir, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { ShareInfo, ShareOverview } from '../../../shared/types/files'
+import { ShareInfo, ShareInfoPublic, ShareOverview } from '../../../shared/types/files'
 import { FileShare } from '../data/entities/file-share'
 import { PassphraseGenerator } from './services/passphrase-generator/passphrase-generator'
 import merge from 'lodash.merge'
@@ -60,21 +63,15 @@ export class FileSharesApiController {
   @Get('fileshares/:shareId')
   async getShareInfo(@Param('shareId') shareId: string): Promise<{ shareInfo: ShareInfo }> {
     const share = await this.fileShareRepository.findOneOrFail({ where: { shareId } })
-    const shareStorageDir = resolve(STORAGE_DIR, share.shareId)
-    const fileNames: string[] = await readdir(shareStorageDir).catch(e => {
-      if (e.code === 'ENOENT'){
-        console.log('No uploaded files yet')
-        return []
-      }
-      throw e
-    })
-    /* TODO create a files.mloesch.it subdomain, reroute to this url, correctly generate the share link   */
-    const shareLink = `https://shopping.mloesch.it/files/public/${share.code}`
+
+    const files = await this.getFileListForShare(share.shareId)
+    
+    const shareLink = `https://shopping.mloesch.it/files/public/${ share.code }`
 
     return {
       shareInfo: {
         description: share.description,
-        files: fileNames.map(file => ({ name: file })),
+        files,
         shareLink
       }
     }
@@ -110,6 +107,33 @@ export class FileSharesApiController {
     newShare.shareId = crypto.randomUUID()
     await this.fileShareRepository.save(newShare)
     return { id: newShare.shareId }
+  }
+
+
+  @UseGuards(JwtAuthGuard)
+  @Get('fileshares/public')
+  async getShareInfoPublic(@Param('shareCode') shareCode: string): Promise<ShareInfoPublic> {
+    const share = await this.fileShareRepository.findOne({ where: { code: shareCode } })
+    if (!share) {
+      throw new NotFoundException('Requested file share was not found')
+    }
+    return {
+      description: share.description,
+      sharedByUserName: share.createdBy.name,
+      files: await this.getFileListForShare(share.shareId)
+    }
+  }
+
+  private async getFileListForShare(shareId: string): Promise<{ name: string }[]> {
+    const shareStorageDir = resolve(STORAGE_DIR, shareId)
+    const fileNames: string[] = await readdir(shareStorageDir).catch(e => {
+      if (e.code === 'ENOENT') {
+        console.log('No uploaded files yet')
+        return []
+      }
+      throw e
+    })
+    return fileNames.map(filename => ({ name: filename }))
   }
 }
 

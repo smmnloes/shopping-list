@@ -39,16 +39,10 @@
 
 .sharesContainer {
   text-align: left;
-  width: 100%;
   position: relative;
+  margin: 60px auto;
+  padding: 20px;
 
-  img {
-    width: 15px;
-    height: 15px;
-    position: absolute;
-    top: 2px;
-    right: 2px;
-  }
 }
 
 .shareTitle {
@@ -79,6 +73,9 @@
   border-radius: 10px;
   margin: 5px auto;
   border: 1px solid white;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .newShareElement {
@@ -97,6 +94,7 @@
 .uploadFilesContainer {
   border-radius: 10px;
   padding: 20px;
+  margin-top: 30px;
 }
 
 input[type="file"] {
@@ -157,4 +155,17 @@ input[type="file"] {
   .cancel-button {
     margin-left: 20px;
   }
+}
+
+.clipboard-copy-button {
+  margin: 10px auto;
+  font-size: 16px;
+}
+
+
+.linkWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

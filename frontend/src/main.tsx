@@ -19,6 +19,7 @@ import AccountSettings from './pages/account-settings.tsx'
 import TakeOutTracker from './pages/take-out-tracker.tsx'
 import Shares from './pages/shares.tsx'
 import EditShare from './pages/edit-share.tsx'
+import SharesPublic from './pages/shares-public.tsx'
 
 
 const router = createBrowserRouter(
@@ -78,16 +79,21 @@ const router = createBrowserRouter(
           <TakeOutTracker/>
         </RootWrapper>
       }/>,
-      <Route path="/files" element={
+      <Route path="/shares" element={
         <RootWrapper privateRoute={ true }>
           <Shares/>
         </RootWrapper>
       }/>,
-      <Route path="/files/:shareId" element={
+      <Route path="/shares/:shareId" element={
         <RootWrapper privateRoute={ true }>
           <EditShare/>
         </RootWrapper>
-      }/>
+      }/>,
+    <Route path="/shares-public/:shareCode" element={
+      <RootWrapper privateRoute={ false }>
+        <SharesPublic/>
+      </RootWrapper>
+    }/>
     ]
   )
 )

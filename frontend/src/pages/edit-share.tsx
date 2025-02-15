@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react'
-import { deleteFile, getShareInfo, updateShareInfo, uploadFile } from '../api/file.ts'
+import { deleteFile, getShareInfo, updateShareInfo, uploadFile } from '../api/shares.ts'
 import { ShareInfo } from '../../../shared/types/files'
 import { useParams } from 'react-router-dom'
 import '../styles/shares.scss'
@@ -9,6 +9,7 @@ const EditShare = () => {
   const [ currentUploadAbortController, setCurrentUploadAbortController ] = useState<AbortController | undefined>()
   const [ shareInfo, setShareInfo ] = useState<ShareInfo>()
   const [ description, setDescription ] = useState('')
+  const [ linkCopyButtonText, setLinkCopyButtonText ] = useState('Kopieren')
 
   const shareId = useParams<{ shareId: string }>().shareId
   if (!shareId) {
@@ -51,21 +52,32 @@ const EditShare = () => {
 
   return (<>
       <div className="editShareContainer">
-        <div className="descriptionInputAndLabel"><div className="descriptionLabel">Beschreibung:</div>
+        <div className="descriptionInputAndLabel">
+          <div className="descriptionLabel">Beschreibung:</div>
           <input type="text" value={ description }
                  onChange={ (e) => setDescription(e.target.value) } onBlur={ updateDescription }/></div>
 
+        <div className="linkwrapper">
+          <div>
+          <b>Link:</b><br/>{ shareInfo?.shareLink }
+          </div>
+            <button className="my-button clipboard-copy-button"
+            onClick={ () => navigator.clipboard.writeText(shareInfo?.shareLink ?? '').then(() => setLinkCopyButtonText('Kopiert!')) }>{linkCopyButtonText}
+          </button>
+        </div>
         <div className="uploadFilesContainer">
           <div className="uploadButtonAndStatus">
-            {!uploadInProgress && <label className="custom-file-upload my-button">Dateien hochladen<input type="file" multiple
-                                                                                    onChange={ handleChange }/></label>}
+            { !uploadInProgress &&
+              <label className="custom-file-upload my-button">Dateien hochladen<input type="file" multiple
+                                                                                      onChange={ handleChange }/></label> }
             <div className="uploadStatus">  { uploadInProgress ? (<div className="spinner"></div>) : (
               <img src="/checkmark-circle.svg" alt="saveState"/>) }</div>
-            { currentUploadAbortController && uploadInProgress && <button className="my-button cancel-button" onClick={ () => {
-              currentUploadAbortController?.abort()
-              setUploadInProgress(false)
-            } }>Cancel
-            </button> }
+            { currentUploadAbortController && uploadInProgress &&
+              <button className="my-button cancel-button" onClick={ () => {
+                currentUploadAbortController?.abort()
+                setUploadInProgress(false)
+              } }>Cancel
+              </button> }
           </div>
 
           <div className="uploadedFiles">
@@ -81,7 +93,6 @@ const EditShare = () => {
               </div>)) }
           </div>
         </div>
-        <p><b>Link:</b> { shareInfo?.shareLink }</p><a href="">Teilen</a>
       </div>
     </>
 

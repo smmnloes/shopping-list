@@ -10,3 +10,9 @@ export type ShareOverview = {
   description: string
   createdBy: string
 }
+
+export type ShareInfoPublic = {
+  description: string
+  files: {name: string}[]
+  sharedByUserName: string
+}

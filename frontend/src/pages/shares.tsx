@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ShareOverview } from '../../../shared/types/files'
-import { getShares, newShare } from '../api/file.ts'
+import { getShares, newShare } from '../api/shares.ts'
 import { useNavigate } from 'react-router-dom'
 import '../styles/shares.scss'
 
@@ -25,7 +25,7 @@ const Shares = () => {
         <div className="newShareElement" onClick={ newShareHandler }>Neue Freigabe</div>
         { shares.map((share, index) => (
           <div key={ index }>
-            <div className="sharesListElement" onClick={ () => navigate(`/files/${ share.id }`) }>
+            <div className="sharesListElement" onClick={ () => navigate(`/shares/${ share.id }`) }>
               <div>
                 <div className="shareTitle">{ share.description }</div>
                 <div className="shareDetails">
