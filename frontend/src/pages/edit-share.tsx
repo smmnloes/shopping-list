@@ -84,8 +84,8 @@ const EditShare = () => {
             { shareInfo?.files.length ?? 0 > 0 ? <h4>Hochgeladene Dateien:</h4> :
               <h4>Noch keine Dateien hochgeladen</h4> }
             { shareInfo?.files.map((file, index) => (
-              <div className="uploadedFileListElement">
-                <div key={ index }>{ file.name }</div>
+              <div key={ index } className="uploadedFileListElement">
+                <div>{ file.name }</div>
                 <div className="deleteButton"><img src="/paper-bin.svg"
                                                    onClick={ () => handleFileDelete(file.name) }
                                                    alt="delete item"/>

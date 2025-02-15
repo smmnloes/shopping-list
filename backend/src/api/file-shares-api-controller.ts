@@ -8,7 +8,7 @@ import {
   Patch,
   Post,
   Query,
-  Request,
+  Request, UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors
@@ -25,6 +25,7 @@ import { ShareInfo, ShareInfoPublic, ShareOverview } from '../../../shared/types
 import { FileShare } from '../data/entities/file-share'
 import { PassphraseGenerator } from './services/passphrase-generator/passphrase-generator'
 import merge from 'lodash.merge'
+import { ConfigService } from '@nestjs/config'
 
 const STORAGE_DIR = 'uploaded-files'
 
@@ -34,7 +35,8 @@ export class FileSharesApiController {
   constructor(
     @InjectRepository(User) readonly userRepository: Repository<User>,
     @InjectRepository(FileShare) readonly fileShareRepository: Repository<FileShare>,
-    @Inject() readonly passPhraseGenerator: PassphraseGenerator
+    @Inject() readonly passPhraseGenerator: PassphraseGenerator,
+    @Inject() readonly configService: ConfigService
   ) {
   }
 
@@ -65,8 +67,9 @@ export class FileSharesApiController {
     const share = await this.fileShareRepository.findOneOrFail({ where: { shareId } })
 
     const files = await this.getFileListForShare(share.shareId)
-    
-    const shareLink = `https://shopping.mloesch.it/files/public/${ share.code }`
+
+    const shareBaseUrl = this.configService.get<string>('FILE_SHARE_PUBLIC_URL')
+    const shareLink = `${shareBaseUrl}/${ share.code }`
 
     return {
       shareInfo: {
@@ -111,8 +114,11 @@ export class FileSharesApiController {
 
 
   @UseGuards(JwtAuthGuard)
-  @Get('fileshares/public')
-  async getShareInfoPublic(@Param('shareCode') shareCode: string): Promise<ShareInfoPublic> {
+  @Get('fileshares-public')
+  async getShareInfoPublic(@Query('shareCode') shareCode: string): Promise<ShareInfoPublic> {
+    if (!shareCode) {
+      throw new UnauthorizedException('No code in the link')
+    }
     const share = await this.fileShareRepository.findOne({ where: { code: shareCode } })
     if (!share) {
       throw new NotFoundException('Requested file share was not found')

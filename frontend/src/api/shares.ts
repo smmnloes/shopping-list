@@ -36,5 +36,5 @@ export const newShare = async (): Promise<{ id: string }> => {
 
 
 export const getShareInfoPublic = async (shareCode: string): Promise<ShareInfoPublic> => {
-  return axiosInstance.get(`${ backendHost }/api/fileshares/public`, { params: { shareCode } })
+  return axiosInstance.get(`${ backendHost }/api/fileshares-public`, { params: { shareCode } }).then(response => response.data)
 }

@@ -22,10 +22,13 @@ const SharesPublic = () => {
         } catch (e) {
           if ((e as AxiosError).isAxiosError) {
             if ((e as AxiosError).status === 404) {
-              setFeedbackMessages([...feedbackMessages, 'Der angegebene Code ist nicht gültig. Bitte prüfe den Link.'])
+              setFeedbackMessages([ ...feedbackMessages, 'Der angegebene Code ist nicht gültig. Bitte prüfe den Link.' ])
+            } else if ((e as AxiosError).status === 401) {
+              setFeedbackMessages([ ...feedbackMessages, 'Kein Code im Link vorhanden. Bitte prüfe den Link.' ])
             }
           }
         }
+        console.log(info)
         setShareInfoPublic(info)
       }
     })()
@@ -36,9 +39,14 @@ const SharesPublic = () => {
       <div className="sharesPublicContainer">
         Share for code { shareCode }
         <div className="feedbackMessagesContainer">
-          { feedbackMessages.map(message => (<div>{ message }</div>)) }
+          { feedbackMessages.map((message, index) => (<div key={ index }>{ message }</div>)) }
         </div>
-        {shareInfoPublic && <div className="shareContentsPublic">Description: {shareInfoPublic.description} shared by {shareInfoPublic.sharedByUserName}</div>}
+        { shareInfoPublic && <div className="shareContentsPublic">Description: { shareInfoPublic.description } shared
+          by { shareInfoPublic.sharedByUserName }
+          <div>
+            {shareInfoPublic.files.map((file, index) => <div key={index}>{file.name}</div>)}
+          </div>
+        </div> }
       </div>
     </>
 
