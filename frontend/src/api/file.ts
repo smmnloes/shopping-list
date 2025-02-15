@@ -1,8 +1,7 @@
 import { axiosInstance, backendHost } from './api.ts'
-import { AxiosProgressEvent } from 'axios'
 import { ShareInfo, ShareOverview } from '../../../shared/types/files'
 
-export const uploadFile = async (shareId: string, file: File, onProgress: (event: AxiosProgressEvent) => void, abortController: AbortController): Promise<void> => {
+export const uploadFile = async (shareId: string, file: File, abortController: AbortController): Promise<void> => {
   const formData = new FormData();
   formData.append('file', file);
 
@@ -11,7 +10,6 @@ export const uploadFile = async (shareId: string, file: File, onProgress: (event
     headers: {
       'Content-Type': 'multipart/form-data',
     },
-    onUploadProgress: onProgress
   }).then(response => response.data)
 }
 

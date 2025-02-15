@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import '../styles/shares.scss'
 
 const EditShare = () => {
-  const [ uploadProgress, setUploadProgress ] = useState<number | undefined>(undefined)
+  const [ uploadInProgress, setUploadInProgress ] = useState<boolean>(false)
   const [ currentUploadAbortController, setCurrentUploadAbortController ] = useState<AbortController | undefined>()
   const [ shareInfo, setShareInfo ] = useState<ShareInfo>()
   const [ description, setDescription ] = useState('')
@@ -28,15 +28,16 @@ const EditShare = () => {
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
-
+    setUploadInProgress(true)
     if (files) {
       for (const file of files) {
         const abortController = new AbortController()
         setCurrentUploadAbortController(abortController)
-        await uploadFile(shareId, file, (progress) => setUploadProgress(progress.progress), abortController)
+        await uploadFile(shareId, file, abortController)
         setCurrentUploadAbortController(undefined)
       }
     }
+    setUploadInProgress(false)
     // @ts-ignore
     e.target.value = null
     refreshShareInfo()
@@ -50,19 +51,23 @@ const EditShare = () => {
 
   return (<>
       <div className="editShareContainer">
-        <label className="descriptionInputLabel" htmlFor="descriptionInput">Beschreibung:
-          <input id="descriptionInput" type="text" value={ description }
-                 onChange={ (e) => setDescription(e.target.value) } onBlur={ updateDescription }/></label>
+        <div className="descriptionInputAndLabel"><div className="descriptionLabel">Beschreibung:</div>
+          <input type="text" value={ description }
+                 onChange={ (e) => setDescription(e.target.value) } onBlur={ updateDescription }/></div>
 
         <div className="uploadFilesContainer">
-          <label className="custom-file-upload my-button">Dateien hochladen<input type="file" multiple
-                                                                                  onChange={ handleChange }/></label>
-          <p>{ uploadProgress ? Math.floor(uploadProgress * 100) + ' %' : '' }</p>
-          { currentUploadAbortController && <button onClick={ () => {
-            currentUploadAbortController?.abort()
-            setUploadProgress(undefined)
-          } }>Cancel
-          </button> }
+          <div className="uploadButtonAndStatus">
+            {!uploadInProgress && <label className="custom-file-upload my-button">Dateien hochladen<input type="file" multiple
+                                                                                    onChange={ handleChange }/></label>}
+            <div className="uploadStatus">  { uploadInProgress ? (<div className="spinner"></div>) : (
+              <img src="/checkmark-circle.svg" alt="saveState"/>) }</div>
+            { currentUploadAbortController && uploadInProgress && <button className="my-button cancel-button" onClick={ () => {
+              currentUploadAbortController?.abort()
+              setUploadInProgress(false)
+            } }>Cancel
+            </button> }
+          </div>
+
           <div className="uploadedFiles">
             { shareInfo?.files.length ?? 0 > 0 ? <h4>Hochgeladene Dateien:</h4> :
               <h4>Noch keine Dateien hochgeladen</h4> }

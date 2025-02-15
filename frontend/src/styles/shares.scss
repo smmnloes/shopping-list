@@ -13,9 +13,28 @@
   flex-direction: column;
 }
 
-#descriptionInput {
-  margin-left: 10px;
+
+.descriptionInputAndLabel {
   margin-bottom: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-left: 30px;
+  margin-right: 30px;
+
+  input {
+    margin-left: 10px;
+    background-color: white;
+    border-radius: 7px;
+    border-style: none;
+    padding: 8px;
+    flex-grow: 1;
+  }
+
+  .descriptionLabel {
+    font-weight: 600;
+  }
+
 }
 
 .sharesContainer {
@@ -112,5 +131,30 @@ input[type="file"] {
     margin-left: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+.uploadStatus {
+  img {
+    width: 30px;
+    height: 30px;
+    margin-left: 20px;
+  }
+
+  .spinner {
+    width: 30px;
+    height: 30px;
+    margin-left: 20px;
+  }
+}
+
+.uploadButtonAndStatus {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  .cancel-button {
+    margin-left: 20px;
   }
 }
