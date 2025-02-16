@@ -126,7 +126,7 @@ export class FileSharesApiController {
   }
 
 
-  @UseGuards(JwtAuthGuard)
+
   @Get('fileshares-public')
   async getShareInfoPublic(@Query('shareCode') shareCode: string): Promise<ShareInfoPublic> {
     const { description, createdBy, shareId } = await this.validateShareCode(shareCode)
@@ -137,7 +137,7 @@ export class FileSharesApiController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+
   @Get('fileshares-public/download')
   async downloadFile(@Query('shareCode') shareCode: string, @Query('fileName') fileName: string): Promise<StreamableFile> {
     const { shareId } = await this.validateShareCode(shareCode)
