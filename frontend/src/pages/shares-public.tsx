@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
 import '../styles/shares.scss'
 import { useEffect, useState } from 'react'
-import { getShareInfoPublic } from '../api/shares.ts'
+import { downloadFile, getShareInfoPublic } from '../api/shares.ts'
 import { ShareInfoPublic } from '../../../shared/types/files'
 import { AxiosError } from 'axios'
 
@@ -28,25 +28,53 @@ const SharesPublic = () => {
             }
           }
         }
-        console.log(info)
         setShareInfoPublic(info)
       }
     })()
   }, [])
 
 
+  const handleDownloadFile = async (filename: string) => {
+    if (shareCode) {
+      try {
+        const response = await downloadFile(shareCode, filename)
+        const url = window.URL.createObjectURL(new Blob([ response ]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', filename)
+        document.body.appendChild(link)
+        link.click()
+
+        link.parentNode?.removeChild(link)
+      } catch (error) {
+        console.error('Error downloading the file', error)
+      }
+
+    }
+  }
+
   return (<>
       <div className="sharesPublicContainer">
-        Share for code { shareCode }
         <div className="feedbackMessagesContainer">
           { feedbackMessages.map((message, index) => (<div key={ index }>{ message }</div>)) }
         </div>
-        { shareInfoPublic && <div className="shareContentsPublic">Description: { shareInfoPublic.description } shared
-          by { shareInfoPublic.sharedByUserName }
-          <div>
-            {shareInfoPublic.files.map((file, index) => <div key={index}>{file.name}</div>)}
+        { shareInfoPublic &&
+          <div className="shareContentsPublic">
+            <div className="sharePublicDescription">
+              <div className="publicContentDescriptionHeader">Freigabe von { shareInfoPublic.sharedByUserName }</div>
+              Beschreibung: { shareInfoPublic.description }
+            </div>
+            <div className="sharePublicFiles">
+              { shareInfoPublic.files.map((file, index) => <div key={ index } className="uploadedFileListElement">
+                <div>{ file.name }</div>
+                <div className="downloadbutton"><img src="/download.svg"
+                                                     onClick={ () => handleDownloadFile(file.name) }
+                                                     alt="download file"/>
+                </div>
+              </div>) }
+            </div>
           </div>
-        </div> }
+        }
       </div>
     </>
 

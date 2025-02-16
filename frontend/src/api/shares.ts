@@ -5,7 +5,7 @@ export const uploadFiles = async (shareId: string, files: FileList, abortControl
   const formData = new FormData()
 
   for (let i = 0; i < files.length; i++) {
-    formData.append(`files`, files[i]);
+    formData.append(`files`, files[i])
   }
 
   return axiosInstance.post(`${ backendHost }/api/fileshares/${ shareId }`, formData, {
@@ -44,4 +44,14 @@ export const getShareInfoPublic = async (shareCode: string): Promise<ShareInfoPu
 
 export const deleteShare = async (shareId: string): Promise<void> => {
   return axiosInstance.delete(`${ backendHost }/api/fileshares/${ shareId }`)
+}
+
+export const downloadFile = async (shareCode: string, fileName: string): Promise<any> => {
+  return axiosInstance.get(`${ backendHost }/api/fileshares-public/download`, {
+    params: {
+      shareCode,
+      fileName
+    },
+    responseType: 'blob'
+  }).then(response => response.data)
 }

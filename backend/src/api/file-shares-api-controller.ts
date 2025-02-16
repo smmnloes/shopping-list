@@ -9,6 +9,7 @@ import {
   Post,
   Query,
   Request,
+  StreamableFile,
   UnauthorizedException,
   UploadedFiles,
   UseGuards,
@@ -27,6 +28,7 @@ import { FileShare } from '../data/entities/file-share'
 import { PassphraseGenerator } from './services/passphrase-generator/passphrase-generator'
 import merge from 'lodash.merge'
 import { ConfigService } from '@nestjs/config'
+import { createReadStream } from 'node:fs'
 
 const STORAGE_DIR = 'uploaded-files'
 
@@ -68,7 +70,7 @@ export class FileSharesApiController {
       recursive: true,
       force: true
     }).catch(e => console.log('Could not remove share storage dir', e.message))
-    await this.fileShareRepository.delete({shareId})
+    await this.fileShareRepository.delete({ shareId })
   }
 
 
@@ -127,6 +129,28 @@ export class FileSharesApiController {
   @UseGuards(JwtAuthGuard)
   @Get('fileshares-public')
   async getShareInfoPublic(@Query('shareCode') shareCode: string): Promise<ShareInfoPublic> {
+    const { description, createdBy, shareId } = await this.validateShareCode(shareCode)
+    return {
+      description,
+      sharedByUserName: createdBy.name,
+      files: await this.getFileListForShare(shareId)
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('fileshares-public/download')
+  async downloadFile(@Query('shareCode') shareCode: string, @Query('fileName') fileName: string): Promise<StreamableFile> {
+    const { shareId } = await this.validateShareCode(shareCode)
+    const filePath = resolve(STORAGE_DIR, shareId, fileName)
+
+    // res.setHeader('Content-Disposition', `attachment; filename=${fileName};`)
+    // res.setHeader('Content-Type', 'application/octet-stream')
+
+    const file = createReadStream(filePath);
+    return new StreamableFile(file, {disposition:`attachment; filename="${fileName}"`});
+  }
+
+  private async validateShareCode(shareCode: string): Promise<FileShare> {
     if (!shareCode) {
       throw new UnauthorizedException('No code in the link')
     }
@@ -134,11 +158,7 @@ export class FileSharesApiController {
     if (!share) {
       throw new NotFoundException('Requested file share was not found')
     }
-    return {
-      description: share.description,
-      sharedByUserName: share.createdBy.name,
-      files: await this.getFileListForShare(share.shareId)
-    }
+    return share
   }
 
   private async getFileListForShare(shareId: string): Promise<{ name: string }[]> {

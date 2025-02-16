@@ -172,3 +172,25 @@ input[type="file"] {
   justify-content: center;
   align-items: center;
 }
+
+.downloadbutton {
+  img {
+    width: 25px;
+    height: 25px;
+  }
+  cursor: pointer;
+}
+
+.shareContentsPublic {
+  margin-top: 60px;
+}
+
+.sharePublicDescription {
+  margin-bottom: 40px;
+}
+
+.publicContentDescriptionHeader {
+  font-size: 25px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
