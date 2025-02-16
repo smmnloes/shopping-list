@@ -17,7 +17,7 @@ const Shares = () => {
 
   const newShareHandler = async () => {
     const id = await newShare().then(response => response.id)
-    navigate(`/files/${ id }`)
+    navigate(`/shares/${ id }`)
   }
 
   return (

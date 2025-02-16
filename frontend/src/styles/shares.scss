@@ -13,6 +13,11 @@
   flex-direction: column;
 }
 
+button.delete-share {
+  margin: 40px auto;
+  font-size: 16px;
+  font-weight: bold;
+}
 
 .descriptionInputAndLabel {
   margin-bottom: 30px;
@@ -136,24 +141,22 @@ input[type="file"] {
   img {
     width: 30px;
     height: 30px;
-    margin-left: 20px;
   }
 
   .spinner {
     width: 30px;
     height: 30px;
-    margin-left: 20px;
   }
 }
 
 .uploadButtonAndStatus {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
   .cancel-button {
-    margin-left: 20px;
+    margin-top: 20px;
   }
 }
 

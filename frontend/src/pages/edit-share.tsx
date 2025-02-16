@@ -1,8 +1,9 @@
-import { ChangeEvent, useEffect, useState } from 'react'
-import { deleteFile, getShareInfo, updateShareInfo, uploadFile } from '../api/shares.ts'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { deleteFile, deleteShare, getShareInfo, updateShareInfo, uploadFile } from '../api/shares.ts'
 import { ShareInfo } from '../../../shared/types/files'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import '../styles/shares.scss'
+import ChoiceModal, { ChoiceModalHandler } from '../elements/choice-modal.tsx'
 
 const EditShare = () => {
   const [ uploadInProgress, setUploadInProgress ] = useState<boolean>(false)
@@ -10,6 +11,7 @@ const EditShare = () => {
   const [ shareInfo, setShareInfo ] = useState<ShareInfo>()
   const [ description, setDescription ] = useState('')
   const [ linkCopyButtonText, setLinkCopyButtonText ] = useState('Kopieren')
+  const navigate = useNavigate()
 
   const shareId = useParams<{ shareId: string }>().shareId
   if (!shareId) {
@@ -50,6 +52,13 @@ const EditShare = () => {
     await refreshShareInfo()
   }
 
+  const handleDeleteShare = async () => {
+    await deleteShare(shareId)
+    navigate('/shares')
+  }
+
+  const deleteModalRef = useRef<ChoiceModalHandler | null>(null)
+
   return (<>
       <div className="editShareContainer">
         <div className="descriptionInputAndLabel">
@@ -59,10 +68,10 @@ const EditShare = () => {
 
         <div className="linkwrapper">
           <div>
-          <b>Link:</b><br/>{ shareInfo?.shareLink }
+            <b>Link:</b><br/>{ shareInfo?.shareLink }
           </div>
-            <button className="my-button clipboard-copy-button"
-            onClick={ () => navigator.clipboard.writeText(shareInfo?.shareLink ?? '').then(() => setLinkCopyButtonText('Kopiert!')) }>{linkCopyButtonText}
+          <button className="my-button clipboard-copy-button"
+                  onClick={ () => navigator.clipboard.writeText(shareInfo?.shareLink ?? '').then(() => setLinkCopyButtonText('Kopiert!')) }>{ linkCopyButtonText }
           </button>
         </div>
         <div className="uploadFilesContainer">
@@ -70,8 +79,7 @@ const EditShare = () => {
             { !uploadInProgress &&
               <label className="custom-file-upload my-button">Dateien hochladen<input type="file" multiple
                                                                                       onChange={ handleChange }/></label> }
-            <div className="uploadStatus">  { uploadInProgress ? (<div className="spinner"></div>) : (
-              <img src="/checkmark-circle.svg" alt="saveState"/>) }</div>
+            <div className="uploadStatus">  { uploadInProgress && (<div className="spinner"></div>) }</div>
             { currentUploadAbortController && uploadInProgress &&
               <button className="my-button cancel-button" onClick={ () => {
                 currentUploadAbortController?.abort()
@@ -93,6 +101,12 @@ const EditShare = () => {
               </div>)) }
           </div>
         </div>
+        <button className="my-button delete-share" onClick={ () => deleteModalRef.current?.showModal() }>Freigabe
+          löschen
+        </button>
+
+        <ChoiceModal ref={ deleteModalRef } message={ <span>Freigabe und alle enthaltenen Dateien wirklich löschen?</span> }
+                     onConfirm={ handleDeleteShare }/>
       </div>
     </>
 

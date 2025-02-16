@@ -8,7 +8,8 @@ import {
   Patch,
   Post,
   Query,
-  Request, UnauthorizedException,
+  Request,
+  UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors
@@ -53,11 +54,21 @@ export class FileSharesApiController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('fileshares/:shareId')
-  async deleteFile(@Param('shareId') shareId: string, @Query('filename') filename: string): Promise<void> {
+  @Delete('fileshares/:shareId/:filename')
+  async deleteFile(@Param('shareId') shareId: string, @Param('filename') filename: string): Promise<void> {
     const shareStorageDir = resolve(STORAGE_DIR, shareId)
-
     await rm(resolve(shareStorageDir, filename)).catch(e => console.log('Could not remove file', e.message))
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('fileshares/:shareId')
+  async deleteShare(@Param('shareId') shareId: string): Promise<void> {
+    const shareStorageDir = resolve(STORAGE_DIR, shareId)
+    await rm(shareStorageDir, {
+      recursive: true,
+      force: true
+    }).catch(e => console.log('Could not remove share storage dir', e.message))
+    await this.fileShareRepository.delete({shareId})
   }
 
 
@@ -69,7 +80,7 @@ export class FileSharesApiController {
     const files = await this.getFileListForShare(share.shareId)
 
     const shareBaseUrl = this.configService.get<string>('FILE_SHARE_PUBLIC_URL')
-    const shareLink = `${shareBaseUrl}/${ share.code }`
+    const shareLink = `${ shareBaseUrl }/${ share.code }`
 
     return {
       shareInfo: {

@@ -14,7 +14,7 @@ export const uploadFile = async (shareId: string, file: File, abortController: A
 }
 
 export const deleteFile = async (shareId: string, filename: string): Promise<void> => {
-  return axiosInstance.delete(`${ backendHost }/api/fileshares/${ shareId }`, { params: { filename } })
+  return axiosInstance.delete(`${ backendHost }/api/fileshares/${ shareId }/${filename}`)
 }
 
 export const getShareInfo = async (shareId: string): Promise<ShareInfo> => {
@@ -37,4 +37,8 @@ export const newShare = async (): Promise<{ id: string }> => {
 
 export const getShareInfoPublic = async (shareCode: string): Promise<ShareInfoPublic> => {
   return axiosInstance.get(`${ backendHost }/api/fileshares-public`, { params: { shareCode } }).then(response => response.data)
+}
+
+export const deleteShare = async (shareId: string): Promise<void> => {
+  return axiosInstance.delete(`${ backendHost }/api/fileshares/${ shareId }`)
 }
