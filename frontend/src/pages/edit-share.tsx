@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { deleteFile, deleteShare, getShareInfo, updateShareInfo, uploadFile } from '../api/shares.ts'
+import { deleteFile, deleteShare, getShareInfo, updateShareInfo, uploadFiles } from '../api/shares.ts'
 import { ShareInfo } from '../../../shared/types/files'
 import { useNavigate, useParams } from 'react-router-dom'
 import '../styles/shares.scss'
@@ -31,15 +31,14 @@ const EditShare = () => {
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
-    setUploadInProgress(true)
-    if (files) {
-      for (const file of files) {
-        const abortController = new AbortController()
-        setCurrentUploadAbortController(abortController)
-        await uploadFile(shareId, file, abortController)
-        setCurrentUploadAbortController(undefined)
-      }
+    if (!files) {
+      return
     }
+    setUploadInProgress(true)
+    const abortController = new AbortController()
+    setCurrentUploadAbortController(abortController)
+    await uploadFiles(shareId, files, abortController)
+    setCurrentUploadAbortController(undefined)
     setUploadInProgress(false)
     // @ts-ignore
     e.target.value = null
@@ -105,7 +104,8 @@ const EditShare = () => {
           löschen
         </button>
 
-        <ChoiceModal ref={ deleteModalRef } message={ <span>Freigabe und alle enthaltenen Dateien wirklich löschen?</span> }
+        <ChoiceModal ref={ deleteModalRef }
+                     message={ <span>Freigabe und alle enthaltenen Dateien wirklich löschen?</span> }
                      onConfirm={ handleDeleteShare }/>
       </div>
     </>

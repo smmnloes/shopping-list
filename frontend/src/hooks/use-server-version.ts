@@ -6,8 +6,10 @@ const useServerVersion = () => {
 
   useEffect(() => {
     const checkVersion = async () => {
-      const serverVersion = await getServerVersion()
-      setServerVersion({ version: serverVersion })
+      const serverVersion = await getServerVersion().catch(() => console.log('Could not get server version'))
+      if (serverVersion) {
+        setServerVersion({ version: serverVersion })
+      }
     }
 
     checkVersion()

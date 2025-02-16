@@ -10,7 +10,7 @@ import {
   Query,
   Request,
   UnauthorizedException,
-  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors
 } from '@nestjs/common'
@@ -19,7 +19,7 @@ import { Repository } from 'typeorm'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { User } from '../data/entities/user'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
-import { FileInterceptor } from '@nestjs/platform-express'
+import { FilesInterceptor } from '@nestjs/platform-express'
 import { access, mkdir, readdir, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { ShareInfo, ShareInfoPublic, ShareOverview } from '../../../shared/types/files'
@@ -44,13 +44,13 @@ export class FileSharesApiController {
   @UseGuards(JwtAuthGuard)
   @Post('fileshares/:shareId')
   @UseInterceptors(
-    FileInterceptor('file'),
+    FilesInterceptor('files'),
   )
-  async uploadFile(@Param('shareId') shareId: string, @UploadedFile() file: Express.Multer.File): Promise<void> {
+  async uploadFile(@Param('shareId') shareId: string, @UploadedFiles() files: Array<Express.Multer.File>): Promise<void> {
     const shareStorageDir = resolve(STORAGE_DIR, shareId)
     // create share folder if not exists
     await access(shareStorageDir).catch(_ => mkdir(shareStorageDir))
-    await writeFile(resolve(shareStorageDir, file.originalname), file.buffer)
+    await Promise.all(files.map(file => writeFile(resolve(shareStorageDir, file.originalname), file.buffer)))
   }
 
   @UseGuards(JwtAuthGuard)

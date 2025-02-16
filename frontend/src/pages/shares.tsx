@@ -16,8 +16,8 @@ const Shares = () => {
   }, [])
 
   const newShareHandler = async () => {
-    const id = await newShare().then(response => response.id)
-    navigate(`/shares/${ id }`)
+    const id = await newShare()
+    navigate(`/shares/${id }`)
   }
 
   return (

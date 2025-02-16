@@ -1,9 +1,12 @@
 import { axiosInstance, backendHost } from './api.ts'
 import { ShareInfo, ShareInfoPublic, ShareOverview } from '../../../shared/types/files'
 
-export const uploadFile = async (shareId: string, file: File, abortController: AbortController): Promise<void> => {
+export const uploadFiles = async (shareId: string, files: FileList, abortController: AbortController): Promise<void> => {
   const formData = new FormData()
-  formData.append('file', file)
+
+  for (let i = 0; i < files.length; i++) {
+    formData.append(`files`, files[i]);
+  }
 
   return axiosInstance.post(`${ backendHost }/api/fileshares/${ shareId }`, formData, {
     signal: abortController.signal,
@@ -14,7 +17,7 @@ export const uploadFile = async (shareId: string, file: File, abortController: A
 }
 
 export const deleteFile = async (shareId: string, filename: string): Promise<void> => {
-  return axiosInstance.delete(`${ backendHost }/api/fileshares/${ shareId }/${filename}`)
+  return axiosInstance.delete(`${ backendHost }/api/fileshares/${ shareId }/${ filename }`)
 }
 
 export const getShareInfo = async (shareId: string): Promise<ShareInfo> => {
