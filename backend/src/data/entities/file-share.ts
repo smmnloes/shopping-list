@@ -20,6 +20,6 @@ export class FileShare {
   constructor(createdBy: User) {
     this.createdBy = createdBy
     this.createdAt = new Date()
-    this.description = 'Neuer share'
+    this.description = 'Neue Freigabe'
   }
 }

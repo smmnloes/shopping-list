@@ -12,6 +12,7 @@ const SharesPublic = () => {
   const shareCode = useParams<{ shareCode: string }>().shareCode
 
   useEffect(() => {
+    document.title = 'Dateifreigabe';
     (async () => {
       if (!shareCode) {
         setFeedbackMessages([ ...feedbackMessages, 'Kein Share Code angegeben. Bitte prüfe den Link.' ])
@@ -65,6 +66,7 @@ const SharesPublic = () => {
               Beschreibung: { shareInfoPublic.description }
             </div>
             <div className="sharePublicFiles">
+              {(shareInfoPublic?.files.length ?? 0) === 0 && <div className="noFilesUploadedMessage">Noch keine Dateien hochgeladen.</div>}
               { shareInfoPublic.files.map((file, index) => <div key={ index } className="uploadedFileListElement">
                 <div>{ file.name }</div>
                 <div className="downloadbutton"><img src="/download.svg"

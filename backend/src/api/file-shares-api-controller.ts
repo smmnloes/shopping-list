@@ -142,10 +142,6 @@ export class FileSharesApiController {
   async downloadFile(@Query('shareCode') shareCode: string, @Query('fileName') fileName: string): Promise<StreamableFile> {
     const { shareId } = await this.validateShareCode(shareCode)
     const filePath = resolve(STORAGE_DIR, shareId, fileName)
-
-    // res.setHeader('Content-Disposition', `attachment; filename=${fileName};`)
-    // res.setHeader('Content-Type', 'application/octet-stream')
-
     const file = createReadStream(filePath);
     return new StreamableFile(file, {disposition:`attachment; filename="${fileName}"`});
   }

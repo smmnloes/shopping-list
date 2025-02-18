@@ -67,29 +67,30 @@ const EditShare = () => {
 
         <div className="linkwrapper">
           <div>
-            <b>Link:</b><br/>{ shareInfo?.shareLink }
+            <b>Link zum Teilen:</b><br/><a href={ shareInfo?.shareLink }>{ shareInfo?.shareLink }</a>
           </div>
           <button className="my-button clipboard-copy-button"
                   onClick={ () => navigator.clipboard.writeText(shareInfo?.shareLink ?? '').then(() => setLinkCopyButtonText('Kopiert!')) }>{ linkCopyButtonText }
           </button>
         </div>
-        <div className="uploadFilesContainer">
-          <div className="uploadButtonAndStatus">
-            { !uploadInProgress &&
-              <label className="custom-file-upload my-button">Dateien hochladen<input type="file" multiple
-                                                                                      onChange={ handleChange }/></label> }
-            <div className="uploadStatus">  { uploadInProgress && (<div className="spinner"></div>) }</div>
-            { currentUploadAbortController && uploadInProgress &&
-              <button className="my-button cancel-button" onClick={ () => {
-                currentUploadAbortController?.abort()
-                setUploadInProgress(false)
-              } }>Cancel
-              </button> }
-          </div>
 
-          <div className="uploadedFiles">
-            { shareInfo?.files.length ?? 0 > 0 ? <h4>Hochgeladene Dateien:</h4> :
-              <h4>Noch keine Dateien hochgeladen</h4> }
+
+        <div className="uploadedFiles">
+          <div><b>Hochgeladene Dateien:</b></div>
+          <div className="uploadFilesContainer">
+            <div className="uploadButtonAndStatus">
+              { !uploadInProgress &&
+                <label className="custom-file-upload my-button">Hochladen<input type="file" multiple
+                                                                                        onChange={ handleChange }/></label> }
+              <div className="uploadStatus">  { uploadInProgress && (<div className="spinner"></div>) }</div>
+              { currentUploadAbortController && uploadInProgress &&
+                <button className="my-button cancel-button" onClick={ () => {
+                  currentUploadAbortController?.abort()
+                  setUploadInProgress(false)
+                } }>Cancel
+                </button> }
+            </div>
+            {(shareInfo?.files.length ?? 0) === 0 && <div className="noFilesUploadedMessage">Noch keine Dateien hochgeladen.</div>}
             { shareInfo?.files.map((file, index) => (
               <div key={ index } className="uploadedFileListElement">
                 <div>{ file.name }</div>
