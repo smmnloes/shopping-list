@@ -8,6 +8,7 @@ import { AxiosError } from 'axios'
 const SharesPublic = () => {
   const [ feedbackMessages, setFeedbackMessages ] = useState<string[]>([])
   const [ shareInfoPublic, setShareInfoPublic ] = useState<ShareInfoPublic>()
+  const [ downloadAllInProgress, setDownloadAllInProgress ] = useState(false)
 
   const shareCode = useParams<{ shareCode: string }>().shareCode
 
@@ -49,7 +50,9 @@ const SharesPublic = () => {
 
   const handleDownloadAllFiles = async () => {
     if (shareCode) {
+      setDownloadAllInProgress(true)
       const response = await downloadAllFiles(shareCode)
+      setDownloadAllInProgress(false)
       reactDownloadWorkaround(response, 'all.zip')
     }
   }
@@ -76,9 +79,15 @@ const SharesPublic = () => {
               <div className="publicContentDescriptionHeader">Freigabe von { shareInfoPublic.sharedByUserName }</div>
               Beschreibung: { shareInfoPublic.description }
             </div>
-            <button onClick={handleDownloadAllFiles}>Alles downloaden</button>
+            <div className="download-all-container">
+              { downloadAllInProgress ? (<div className="spinner"></div>) :
+                <button className="my-button download-all-button" onClick={ handleDownloadAllFiles }>Alles downloaden
+                </button> }
+
+            </div>
             <div className="sharePublicFiles">
-              {(shareInfoPublic?.files.length ?? 0) === 0 && <div className="noFilesUploadedMessage">Noch keine Dateien hochgeladen.</div>}
+              { (shareInfoPublic?.files.length ?? 0) === 0 &&
+                <div className="noFilesUploadedMessage">Noch keine Dateien hochgeladen.</div> }
               { shareInfoPublic.files.map((file, index) => <div key={ index } className="uploadedFileListElement">
                 <div>{ file.name }</div>
                 <div className="downloadbutton"><img src="/download.svg"

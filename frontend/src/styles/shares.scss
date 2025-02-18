@@ -205,3 +205,13 @@ input[type="file"] {
 .noFilesUploadedMessage {
   margin-top: 10px;
 }
+
+.download-all-button {
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.download-all-container .spinner {
+  width: 30px;
+  height: 30px;
+}
