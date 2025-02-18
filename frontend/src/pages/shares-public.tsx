@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
 import '../styles/shares.scss'
 import { useEffect, useState } from 'react'
-import { downloadFile, getShareInfoPublic } from '../api/shares.ts'
+import { downloadAllFiles, downloadFile, getShareInfoPublic } from '../api/shares.ts'
 import { ShareInfoPublic } from '../../../shared/types/files'
 import { AxiosError } from 'axios'
 
@@ -39,19 +39,30 @@ const SharesPublic = () => {
     if (shareCode) {
       try {
         const response = await downloadFile(shareCode, filename)
-        const url = window.URL.createObjectURL(new Blob([ response ]))
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', filename)
-        document.body.appendChild(link)
-        link.click()
-
-        link.parentNode?.removeChild(link)
+        reactDownloadWorkaround(response, filename)
       } catch (error) {
         console.error('Error downloading the file', error)
       }
 
     }
+  }
+
+  const handleDownloadAllFiles = async () => {
+    if (shareCode) {
+      const response = await downloadAllFiles(shareCode)
+      reactDownloadWorkaround(response, 'all.zip')
+    }
+  }
+
+  const reactDownloadWorkaround = (data: any, downloadedFileName: string) => {
+    const url = window.URL.createObjectURL(new Blob([ data ]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', downloadedFileName)
+    document.body.appendChild(link)
+    link.click()
+
+    link.parentNode?.removeChild(link)
   }
 
   return (<>
@@ -65,6 +76,7 @@ const SharesPublic = () => {
               <div className="publicContentDescriptionHeader">Freigabe von { shareInfoPublic.sharedByUserName }</div>
               Beschreibung: { shareInfoPublic.description }
             </div>
+            <button onClick={handleDownloadAllFiles}>Alles downloaden</button>
             <div className="sharePublicFiles">
               {(shareInfoPublic?.files.length ?? 0) === 0 && <div className="noFilesUploadedMessage">Noch keine Dateien hochgeladen.</div>}
               { shareInfoPublic.files.map((file, index) => <div key={ index } className="uploadedFileListElement">

@@ -55,3 +55,12 @@ export const downloadFile = async (shareCode: string, fileName: string): Promise
     responseType: 'blob'
   }).then(response => response.data)
 }
+
+export const downloadAllFiles = async (shareCode: string): Promise<any> => {
+  return axiosInstance.get(`${ backendHost }/api/fileshares-public/download/all`, {
+    params: {
+      shareCode
+    },
+    responseType: 'blob'
+  }).then(response => response.data)
+}

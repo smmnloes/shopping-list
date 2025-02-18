@@ -29,6 +29,7 @@ import { PassphraseGenerator } from './services/passphrase-generator/passphrase-
 import merge from 'lodash.merge'
 import { ConfigService } from '@nestjs/config'
 import { createReadStream } from 'node:fs'
+import { ArchiveService } from './services/archive-service'
 
 const STORAGE_DIR = 'uploaded-files'
 
@@ -39,7 +40,8 @@ export class FileSharesApiController {
     @InjectRepository(User) readonly userRepository: Repository<User>,
     @InjectRepository(FileShare) readonly fileShareRepository: Repository<FileShare>,
     @Inject() readonly passPhraseGenerator: PassphraseGenerator,
-    @Inject() readonly configService: ConfigService
+    @Inject() readonly configService: ConfigService,
+    @Inject() readonly archiveService: ArchiveService
   ) {
   }
 
@@ -144,6 +146,16 @@ export class FileSharesApiController {
     const filePath = resolve(STORAGE_DIR, shareId, fileName)
     const file = createReadStream(filePath);
     return new StreamableFile(file, {disposition:`attachment; filename="${fileName}"`});
+  }
+
+  @Get('fileshares-public/download/all')
+  async downloadAllFiles(@Query('shareCode') shareCode: string): Promise<StreamableFile> {
+    const { shareId } = await this.validateShareCode(shareCode)
+    const shareStorageDir = resolve(STORAGE_DIR, shareId)
+    const files = await readdir(shareStorageDir).then(fileNames => fileNames.map(fileName => resolve(shareStorageDir, fileName)))
+    const archive = await this.archiveService.archive(files)
+
+    return new StreamableFile(archive, {disposition:`attachment; filename="${shareCode}-all.zip"`});
   }
 
   private async validateShareCode(shareCode: string): Promise<FileShare> {
