@@ -10,7 +10,7 @@ const EditShare = () => {
   const [ currentUploadAbortController, setCurrentUploadAbortController ] = useState<AbortController | undefined>()
   const [ shareInfo, setShareInfo ] = useState<ShareInfo>()
   const [ description, setDescription ] = useState('')
-  const [ linkCopyButtonText, setLinkCopyButtonText ] = useState('Kopieren')
+  const [ buttonHighlighted, setButtonHighlighted ] = useState(false)
   const navigate = useNavigate()
 
   const shareId = useParams<{ shareId: string }>().shareId
@@ -58,6 +58,29 @@ const EditShare = () => {
 
   const deleteModalRef = useRef<ChoiceModalHandler | null>(null)
 
+  const handleCopyClipboard = () => {
+    navigator.clipboard.writeText(shareInfo?.shareLink ?? '')
+    setButtonHighlighted(true)
+    setTimeout(() => setButtonHighlighted(false), 500)
+  }
+
+  const handleShareShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Neue Dateifreigabe`,
+          text: 'Es wurden Dateien für dich freigegeben.',
+          url: shareInfo?.shareLink,
+        })
+        console.log('shared')
+      } catch (error) {
+        console.error('Error sharing:', error)
+      }
+    } else {
+      console.warn('Web Share API is not supported in this browser.')
+    }
+  }
+
   return (<>
       <div className="editShareContainer">
         <div className="descriptionInputAndLabel">
@@ -67,11 +90,17 @@ const EditShare = () => {
 
         <div className="linkwrapper">
           <div>
-            <b>Link zum Teilen:</b><br/><a href={ shareInfo?.shareLink }>{ shareInfo?.shareLink }</a>
+            <div><b>Link zum Abruf:</b></div>
+            <div className="shareLink"><a href={ shareInfo?.shareLink }>{ shareInfo?.shareLink }</a></div>
           </div>
-          <button className="my-button clipboard-copy-button"
-                  onClick={ () => navigator.clipboard.writeText(shareInfo?.shareLink ?? '').then(() => setLinkCopyButtonText('Kopiert!')) }>{ linkCopyButtonText }
-          </button>
+          <div className="link-buttons">
+            <button className={ `my-button clipboard-copy-button ${ buttonHighlighted ? 'highlighted' : '' }` }
+                    onClick={ handleCopyClipboard }><img src="/copy.svg"
+                                                         alt="copy"/>
+            </button>
+            <button className="my-button share-button" onClick={ handleShareShare }><img src="/share.svg" alt="share"/>
+            </button>
+          </div>
         </div>
 
 
@@ -81,7 +110,7 @@ const EditShare = () => {
             <div className="uploadButtonAndStatus">
               { !uploadInProgress &&
                 <label className="custom-file-upload my-button">Hochladen<input type="file" multiple
-                                                                                        onChange={ handleChange }/></label> }
+                                                                                onChange={ handleChange }/></label> }
               <div className="uploadStatus">  { uploadInProgress && (<div className="spinner"></div>) }</div>
               { currentUploadAbortController && uploadInProgress &&
                 <button className="my-button cancel-button" onClick={ () => {
@@ -90,7 +119,8 @@ const EditShare = () => {
                 } }>Cancel
                 </button> }
             </div>
-            {(shareInfo?.files.length ?? 0) === 0 && <div className="noFilesUploadedMessage">Noch keine Dateien hochgeladen.</div>}
+            { (shareInfo?.files.length ?? 0) === 0 &&
+              <div className="noFilesUploadedMessage">Noch keine Dateien hochgeladen.</div> }
             { shareInfo?.files.map((file, index) => (
               <div key={ index } className="uploadedFileListElement">
                 <div>{ file.name }</div>
