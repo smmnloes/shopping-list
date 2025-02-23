@@ -53,7 +53,7 @@ const EditShare = () => {
 
   const handleDeleteShare = async () => {
     await deleteShare(shareId)
-    navigate('/shares')
+    navigate(-1)
   }
 
   const deleteModalRef = useRef<ChoiceModalHandler | null>(null)
@@ -72,7 +72,6 @@ const EditShare = () => {
           text: 'Es wurden Dateien für dich freigegeben.',
           url: shareInfo?.shareLink,
         })
-        console.log('shared')
       } catch (error) {
         console.error('Error sharing:', error)
       }
@@ -123,7 +122,7 @@ const EditShare = () => {
               <div className="noFilesUploadedMessage">Noch keine Dateien hochgeladen.</div> }
             { shareInfo?.files.map((file, index) => (
               <div key={ index } className="uploadedFileListElement">
-                <div>{ file.name }</div>
+                <div className="label">{ file.name }</div>
                 <div className="deleteButton"><img src="/paper-bin.svg"
                                                    onClick={ () => handleFileDelete(file.name) }
                                                    alt="delete item"/>

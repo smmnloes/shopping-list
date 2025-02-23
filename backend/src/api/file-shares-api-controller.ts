@@ -54,7 +54,12 @@ export class FileSharesApiController {
     const shareStorageDir = resolve(STORAGE_DIR, shareId)
     // create share folder if not exists
     await access(shareStorageDir).catch(_ => mkdir(shareStorageDir))
-    await Promise.all(files.map(file => writeFile(resolve(shareStorageDir, file.originalname), file.buffer)))
+
+    await Promise.all(files.map(file => {
+      // https://github.com/expressjs/multer/issues/1104
+      const fileName = Buffer.from(file.originalname, 'latin1').toString('utf8')
+      writeFile(resolve(shareStorageDir, fileName), file.buffer)
+    }))
   }
 
   @UseGuards(JwtAuthGuard)
@@ -128,7 +133,6 @@ export class FileSharesApiController {
   }
 
 
-
   @Get('fileshares-public')
   async getShareInfoPublic(@Query('shareCode') shareCode: string): Promise<ShareInfoPublic> {
     const { description, createdBy, shareId } = await this.validateShareCode(shareCode)
@@ -144,8 +148,8 @@ export class FileSharesApiController {
   async downloadFile(@Query('shareCode') shareCode: string, @Query('fileName') fileName: string): Promise<StreamableFile> {
     const { shareId } = await this.validateShareCode(shareCode)
     const filePath = resolve(STORAGE_DIR, shareId, fileName)
-    const file = createReadStream(filePath);
-    return new StreamableFile(file, {disposition:`attachment; filename="${fileName}"`});
+    const file = createReadStream(filePath)
+    return new StreamableFile(file, { disposition: `attachment; filename="${ fileName }"` })
   }
 
   @Get('fileshares-public/download/all')
@@ -155,7 +159,7 @@ export class FileSharesApiController {
     const files = await readdir(shareStorageDir).then(fileNames => fileNames.map(fileName => resolve(shareStorageDir, fileName)))
     const archive = await this.archiveService.archive(files)
 
-    return new StreamableFile(archive, {disposition:`attachment; filename="${shareCode}-all.zip"`});
+    return new StreamableFile(archive, { disposition: `attachment; filename="${ shareCode }-all.zip"` })
   }
 
   private async validateShareCode(shareCode: string): Promise<FileShare> {
