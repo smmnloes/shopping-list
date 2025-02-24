@@ -27,6 +27,8 @@ const SharesPublic = () => {
               setFeedbackMessages([ ...feedbackMessages, 'Der angegebene Code ist nicht gültig. Bitte prüfe den Link.' ])
             } else if ((e as AxiosError).status === 401) {
               setFeedbackMessages([ ...feedbackMessages, 'Kein Code im Link vorhanden. Bitte prüfe den Link.' ])
+            } else if ((e as AxiosError).status === 403) {
+              setFeedbackMessages([ ...feedbackMessages, 'Die Freigabe ist abgelaufen.' ])
             }
           }
         }

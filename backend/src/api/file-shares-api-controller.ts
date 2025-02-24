@@ -1,6 +1,6 @@
 import {
   Controller,
-  Delete,
+  Delete, ForbiddenException,
   Get,
   Inject,
   NotFoundException,
@@ -95,7 +95,8 @@ export class FileSharesApiController {
       shareInfo: {
         description: share.description,
         files,
-        shareLink
+        shareLink,
+        expiration: share.expiration?.toISOString() ?? null
       }
     }
   }
@@ -107,6 +108,15 @@ export class FileSharesApiController {
     const merged = merge(share, req.body)
     await this.fileShareRepository.save(merged)
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('fileshares/:shareId/expiration')
+  async setShareExpiration(@Param('shareId') shareId: string, @Request() req: ExtendedJWTGuardRequest<{expiration: string | null}>): Promise<void> {
+    const share = await this.fileShareRepository.findOneOrFail({ where: { shareId } })
+    share.expiration = req.body.expiration === null ? null : new Date(req.body.expiration)
+    await this.fileShareRepository.save(share)
+  }
+
 
   @UseGuards(JwtAuthGuard)
   @Get('fileshares')
@@ -169,6 +179,10 @@ export class FileSharesApiController {
     const share = await this.fileShareRepository.findOne({ where: { code: shareCode } })
     if (!share) {
       throw new NotFoundException('Requested file share was not found')
+    }
+
+    if (share.expiration && (Date.now() > share.expiration.getTime())) {
+      throw new ForbiddenException('Share has expired')
     }
     return share
   }

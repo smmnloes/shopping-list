@@ -1,5 +1,12 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { deleteFile, deleteShare, getShareInfo, updateShareInfo, uploadFiles } from '../api/shares.ts'
+import {
+  deleteFile,
+  deleteShare,
+  getShareInfo,
+  setShareExpiration,
+  updateShareInfo,
+  uploadFiles
+} from '../api/shares.ts'
 import { ShareInfo } from '../../../shared/types/files'
 import { useNavigate, useParams } from 'react-router-dom'
 import '../styles/shares.scss'
@@ -11,6 +18,7 @@ const EditShare = () => {
   const [ shareInfo, setShareInfo ] = useState<ShareInfo>()
   const [ description, setDescription ] = useState('')
   const [ buttonHighlighted, setButtonHighlighted ] = useState(false)
+  const [ expirationActive, setExpirationActive ] = useState<boolean | undefined>()
   const navigate = useNavigate()
 
   const shareId = useParams<{ shareId: string }>().shareId
@@ -27,6 +35,7 @@ const EditShare = () => {
     const newShareInfo = await getShareInfo(shareId)
     setShareInfo(newShareInfo)
     setDescription(newShareInfo.description)
+    setExpirationActive(newShareInfo.expiration !== null)
   }
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +55,7 @@ const EditShare = () => {
   }
 
   const updateDescription = async (e: React.FocusEvent<HTMLInputElement>) => updateShareInfo(shareId, { description: e.target.value })
+
   const handleFileDelete = async (filename: string) => {
     await deleteFile(shareId, filename)
     await refreshShareInfo()
@@ -80,13 +90,36 @@ const EditShare = () => {
     }
   }
 
+  const handleDateChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    await setShareExpiration(shareId, e.target.value)
+    refreshShareInfo()
+  }
+
+  const handleExpirationActiveChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setExpirationActive(true)
+    } else {
+      await setShareExpiration(shareId, null)
+      refreshShareInfo()
+    }
+
+  }
+
   return (<>
       <div className="editShareContainer">
         <div className="descriptionInputAndLabel">
           <div className="descriptionLabel">Beschreibung:</div>
           <input type="text" value={ description }
                  onChange={ (e) => setDescription(e.target.value) } onBlur={ updateDescription }/></div>
-
+        { expirationActive !== undefined && <div className="shareExpirationControl">
+          <div><b>Ablaufdatum</b></div>
+          <label htmlFor="expirationactivate">Aktivieren <input id="expirationactivate" type="checkbox"
+                                                                checked={ expirationActive }
+                                                                onChange={ handleExpirationActiveChange }/></label>
+          <input disabled={ !expirationActive } aria-label="Date and time" type="datetime-local"
+                 onChange={ handleDateChange }
+                 value={ shareInfo?.expiration === null || shareInfo?.expiration === undefined ? undefined : convertToDateTimeLocalString(new Date(shareInfo.expiration)) }/>
+        </div> }
         <div className="linkwrapper">
           <div>
             <div><b>Link zum Abruf:</b></div>
@@ -143,5 +176,16 @@ const EditShare = () => {
   )
 
 }
+
+const convertToDateTimeLocalString = (date: Date) => {
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+
+  return `${ year }-${ month }-${ day }T${ hours }:${ minutes }`
+}
+
 
 export default EditShare

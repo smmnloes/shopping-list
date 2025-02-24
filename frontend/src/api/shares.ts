@@ -29,6 +29,10 @@ export const updateShareInfo = async (shareId: string, content: Partial<ShareInf
 }
 
 
+export const setShareExpiration = async (shareId: string, expiration: string | null): Promise<void> => {
+  return axiosInstance.post(`${ backendHost }/api/fileshares/${ shareId }/expiration`, {expiration})
+}
+
 export const getShares = async (): Promise<ShareOverview[]> => {
   return axiosInstance.get(`${ backendHost }/api/fileshares`).then(response => response.data.shares)
 }
