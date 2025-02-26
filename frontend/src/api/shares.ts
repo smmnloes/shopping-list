@@ -1,7 +1,7 @@
 import { axiosInstance, backendHost } from './api.ts'
 import { ShareInfo, ShareInfoPublic, ShareOverview } from '../../../shared/types/files'
 
-export const uploadFiles = async (shareId: string, files: FileList, abortController: AbortController): Promise<void> => {
+export const uploadFiles = async (shareId: string, files: FileList, abortController: AbortController, onProgress: (progressPercent: number) => void): Promise<void> => {
   const formData = new FormData()
 
   for (let i = 0; i < files.length; i++) {
@@ -13,6 +13,7 @@ export const uploadFiles = async (shareId: string, files: FileList, abortControl
     headers: {
       'Content-Type': 'multipart/form-data',
     },
+    onUploadProgress: (progressEvent) => onProgress(Math.round((progressEvent.progress ?? 0) * 100))
   }).then(response => response.data)
 }
 
@@ -30,7 +31,7 @@ export const updateShareInfo = async (shareId: string, content: Partial<ShareInf
 
 
 export const setShareExpiration = async (shareId: string, expiration: string | null): Promise<void> => {
-  return axiosInstance.post(`${ backendHost }/api/fileshares/${ shareId }/expiration`, {expiration})
+  return axiosInstance.post(`${ backendHost }/api/fileshares/${ shareId }/expiration`, { expiration })
 }
 
 export const getShares = async (): Promise<ShareOverview[]> => {

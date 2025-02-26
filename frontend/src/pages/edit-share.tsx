@@ -14,6 +14,7 @@ import ChoiceModal, { ChoiceModalHandler } from '../elements/choice-modal.tsx'
 
 const EditShare = () => {
   const [ uploadInProgress, setUploadInProgress ] = useState<boolean>(false)
+  const [ uploadProgress, setUploadProgress ] = useState<number>(0)
   const [ currentUploadAbortController, setCurrentUploadAbortController ] = useState<AbortController | undefined>()
   const [ shareInfo, setShareInfo ] = useState<ShareInfo>()
   const [ description, setDescription ] = useState('')
@@ -46,7 +47,7 @@ const EditShare = () => {
     setUploadInProgress(true)
     const abortController = new AbortController()
     setCurrentUploadAbortController(abortController)
-    await uploadFiles(shareId, files, abortController)
+    await uploadFiles(shareId, files, abortController, setUploadProgress)
     setCurrentUploadAbortController(undefined)
     setUploadInProgress(false)
     // @ts-ignore
@@ -143,12 +144,16 @@ const EditShare = () => {
               { !uploadInProgress &&
                 <label className="custom-file-upload my-button">Hochladen<input type="file" multiple
                                                                                 onChange={ handleChange }/></label> }
-              <div className="uploadStatus">  { uploadInProgress && (<div className="spinner"></div>) }</div>
+              <div className="uploadStatus">
+                { uploadInProgress && (<><div className="spinner"></div><div className="uploadProgressPercent">{ uploadProgress }%</div></>) }
+
+              </div>
+
               { currentUploadAbortController && uploadInProgress &&
                 <button className="my-button cancel-button" onClick={ () => {
                   currentUploadAbortController?.abort()
                   setUploadInProgress(false)
-                } }>Cancel
+                } }>Abbrechen
                 </button> }
             </div>
             { (shareInfo?.files.length ?? 0) === 0 &&
