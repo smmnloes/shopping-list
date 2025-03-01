@@ -23,11 +23,12 @@ import { FileShare } from '../data/entities/file-share'
 import { PassphraseGenerator } from './services/passphrase-generator/passphrase-generator'
 import { FileSharesApiController } from './file-shares-api-controller'
 import { ArchiveService } from './services/archive-service'
+import { InsultApiController } from './insult.api.controller'
 
 @Module({
   imports: [ AuthModule, TypeOrmModule.forFeature([ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription, FileShare ]) ],
   controllers: [
-    ApiController, MealApiController, ShoppingApiController, NotesApiController, LocationsApiController, TakeoutApiController, NotificationsApiController, FileSharesApiController
+    ApiController, MealApiController, ShoppingApiController, NotesApiController, LocationsApiController, TakeoutApiController, NotificationsApiController, FileSharesApiController, InsultApiController
   ],
   providers: [ UserKeyService, SuggestionsService, NotificationService, PassphraseGenerator, ArchiveService ],
   exports: []

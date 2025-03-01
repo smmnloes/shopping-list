@@ -1,4 +1,4 @@
-import { changePassword, logout } from '../api/api.ts'
+import { changePassword, insult, logout } from '../api/api.ts'
 import { useAuth } from '../providers/auth-provider.tsx'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -125,6 +125,7 @@ const AccountSettings = () => {
           <button className="my-button testbutton"
                   onClick={ testNotification }>Test!
           </button>
+          <button className="my-button" onClick={insult}>!$%#</button>
         </div>
       </Slideout>
 

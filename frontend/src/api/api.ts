@@ -52,3 +52,7 @@ export const onlineStatus = async () => {
 export const getServerVersion = async (): Promise<string> => {
   return axiosInstance.get(`${ backendHost }/api/version`).then(response => response.data)
 }
+
+export const insult = async (): Promise<void> => {
+  return axiosInstance.post(`${ backendHost }/api/insult`).then(response => response.data)
+}
