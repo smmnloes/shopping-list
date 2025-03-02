@@ -20,6 +20,7 @@ import TakeOutTracker from './pages/take-out-tracker.tsx'
 import Shares from './pages/shares.tsx'
 import EditShare from './pages/edit-share.tsx'
 import SharesPublic from './pages/shares-public.tsx'
+import InsultView from './pages/insult-view.tsx'
 
 
 const router = createBrowserRouter(
@@ -92,6 +93,11 @@ const router = createBrowserRouter(
     <Route path="/shares-public/:shareCode" element={
       <RootWrapper privateRoute={ false }>
         <SharesPublic/>
+      </RootWrapper>
+    }/>,
+    <Route path="/insult-view" element={
+      <RootWrapper privateRoute={ true }>
+        <InsultView/>
       </RootWrapper>
     }/>
     ]

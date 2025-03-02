@@ -10,7 +10,7 @@ import { NotificationSubscription } from '../data/entities/notification-subscrip
 @Controller('api')
 export class InsultApiController {
 
-  static readonly INSULTS = ['Fiiiick diiiiiich', 'Schmock',]
+  static readonly INSULTS = [ 'Fiiiick diiiiiich!', 'Schmock!', 'Pipiface!', 'Get yerself tae fock!', 'Bist du BLÖÖD?', 'Badabing, Badabung', 'Wer das liest ist doof' ]
 
   constructor(
     @InjectRepository(User) readonly userRepository: Repository<User>,
@@ -27,7 +27,7 @@ export class InsultApiController {
     if (!otherUser) {
       throw new Error('Could not find other user')
     }
-    const randomInsult = InsultApiController.INSULTS[Math.floor(Math.random() * InsultApiController.INSULTS.length)] + '!'
-    await this.notificationService.sendPushNotification(otherUser, {title: randomInsult, message: randomInsult})
+    const randomInsult = InsultApiController.INSULTS[Math.floor(Math.random() * InsultApiController.INSULTS.length)]
+    await this.notificationService.sendPushNotification(otherUser, { title: `Du wurdest von ${req.user.name} beleidigt!`, message: 'Klick mich', onClickRedirect: `/insult-view?insult=${encodeURIComponent(randomInsult)}` })
   }
 }
