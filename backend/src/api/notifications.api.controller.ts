@@ -54,7 +54,7 @@ export class NotificationsApiController {
     await this.notificationService.sendPushNotification(user, {
       title: 'Test title',
       message: 'This is a test message!',
-      onClickRedirect: '/notes'
+      onClickRedirect: `/insult-view?insult=${encodeURIComponent('Dies ist eine Test-Beleidigung!')}`
     })
   }
 
