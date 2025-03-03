@@ -11,6 +11,7 @@ const InsultView = () => {
   const randomAnimation = Math.floor(Math.random() * nrOfAnimations + 1)
 
   const randomRGB = Math.floor(Math.random() * 3)
+  console.log(insult?.split(''))
 
   return (<>
       <div className="insult-view-wrapper">
@@ -24,7 +25,7 @@ const InsultView = () => {
                                                              '--randomG': randomRGB === 1 ? 1 : 0,
                                                              '--randomB': randomRGB === 2 ? 1 : 0,
                                                              '--randomVal': Math.random()
-                                                           } as CSSProperties }>{ char }</span>)
+                                                           } as CSSProperties }>{ char === ' ' ? '\u00A0' : char}</span>)
             : insult }
         </div>
       </div>
