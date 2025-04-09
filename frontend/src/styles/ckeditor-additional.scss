@@ -7,9 +7,16 @@
   &.ck-content {
     font-size: 16px;
     height: 100%;
-    position: absolute;
     width: 100%;
     box-sizing: border-box;
+    background-color: white;
+    p {
+      margin: 0;
+    }
+
+    &.ck-focused {
+      border: 1px solid var(--ck-color-base-border) !important;
+    }
   }
 
   &.ck-editor {
@@ -20,7 +27,6 @@
 
   &.ck-editor__main {
     flex-grow: 1;
-    position: relative;
   }
 }
 
@@ -33,12 +39,6 @@
   display: none;
 }
 
-.ck.ck-content {
-  p {
-    margin: 0;
-  }
-
-  &.ck-focused {
-    border: 1px solid var(--ck-color-base-border) !important;
-  }
+.ck.ck-block-toolbar-button {
+  transform: translateX( 5px );
 }

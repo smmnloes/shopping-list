@@ -4,8 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import type { NoteDetails } from '../../../shared/types/notes.ts'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import {
+  BalloonEditor,
   Bold,
-  ClassicEditor,
   Editor,
   Essentials,
   EventInfo,
@@ -115,6 +115,10 @@ export const EditNote = () => {
     await initialize().then(content => editor.setData(content)).then(() => initialLoadComplete.current = true)
   }
 
+  const toolbarConfig = {
+    items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'numberedList', 'bulletedList', 'todoList', '|', 'outdent', 'indent' ],
+    shouldNotGroupWhenFull: true
+  }
 
   return (
     <div className="edit-note-container">
@@ -145,19 +149,16 @@ export const EditNote = () => {
                   disabled={ !permissions?.delete }><img src="/paper-bin.svg"
                                                          alt="löschen"/></button>
 
-          <ChoiceModal ref={deleteModalRef} message={ <span>Notiz wirklich löschen?</span> }
+          <ChoiceModal ref={ deleteModalRef } message={ <span>Notiz wirklich löschen?</span> }
                        onConfirm={ handleDeleteNote }/>
 
         </div>
         <CKEditor
-          editor={ ClassicEditor }
+          editor={ BalloonEditor }
           config={ {
             licenseKey: 'GPL',
             plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, List, TodoList, Heading, Indent, IndentBlock, Image ],
-            toolbar: {
-              items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'numberedList', 'bulletedList', 'todoList', '|', 'outdent', 'indent' ],
-              shouldNotGroupWhenFull: true
-            },
+            toolbar: toolbarConfig,
             initialData: noteContent,
           } }
           onChange={ handleOnChange }
