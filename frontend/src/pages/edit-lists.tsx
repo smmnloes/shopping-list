@@ -60,7 +60,7 @@ const EditLists = () => {
       return
     }
     try {
-      const { id } = await createNewItem(newItemName, selectedCategory, false)
+      const { id } = await createNewItem(newItemName, selectedCategory)
       await addExistingItemsToList([ id ], selectedCategory)
       await refreshItems(selectedCategory)
       setNewItemName('')
