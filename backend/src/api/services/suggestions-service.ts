@@ -39,7 +39,7 @@ export class SuggestionsService {
     const trimmed = items.map((item) => ({ ...item, name: item.name.trim() }))
 
     // Eliminate any duplicates in the item set (check by name).
-    // Precedence: If addedCounter is higher, always take that element. If added counter is same, staple has precedence
+    // Precedence: If addedCounter is higher, always take that element.
     return trimmed.reduce((acc: ListItem[], current: ListItem) => {
       const alreadySeenIndex = acc.findIndex(item => this.laxEquals(item, current))
       if (alreadySeenIndex === -1) {
@@ -47,7 +47,7 @@ export class SuggestionsService {
         return acc
       }
       const alreadySeen = acc[alreadySeenIndex]
-      if (current.addedCounter > alreadySeen.addedCounter || (current.addedCounter === alreadySeen.addedCounter && current.isStaple && !alreadySeen.isStaple)) {
+      if (current.addedCounter > alreadySeen.addedCounter) {
         acc[alreadySeenIndex] = current
       }
       return acc

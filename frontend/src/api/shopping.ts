@@ -5,11 +5,10 @@ export const getItemsForCategory = async (category: ShopCategory): Promise<{ ite
   return axiosInstance.get(`${ backendHost }/api/shopping-lists/${ category }`).then(response => response.data)
 }
 
-export const createNewItem = async (name: string, category: ShopCategory, isStaple: boolean) => {
+export const createNewItem = async (name: string, category: ShopCategory) => {
   return axiosInstance.post(`${ backendHost }/api/shopping-lists/${ category }/items`, {
     item: {
       name,
-      isStaple
     }
   }).then(response => response.data)
 }
@@ -22,14 +21,6 @@ export const deleteItemsFromCategoryBulk = async (itemIds: number[], category: S
   return axiosInstance.delete(`${ backendHost }/api/shopping-lists/${ category }/items`, {
     data: { ids: itemIds }
   }).then(response => response.data)
-}
-
-export const getStaples = async (category: ShopCategory): Promise<ListItemFrontend[]> => {
-  return axiosInstance.get(`${ backendHost }/api/staples`, { params: { category } }).then(response => response.data)
-}
-
-export const deleteStaple = async (stapleId: number) => {
-  return axiosInstance.delete(`${ backendHost }/api/staples/${ stapleId }`).then(response => response.data)
 }
 
 export const getSuggestions = async (category: ShopCategory, input: string, addedItemIds: number[]): Promise<ListItemFrontend[]> => {

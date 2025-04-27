@@ -5,7 +5,6 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 import Login from './pages/login.tsx'
 import RootWrapper from './routing/root-wrapper.tsx'
 import EditLists from './pages/edit-lists.tsx'
-import EditStaples from './pages/edit-staples.tsx'
 import './styles/main.scss'
 import './styles/spinner.scss'
 import './styles/toggle-switch.scss'
@@ -53,11 +52,6 @@ const router = createBrowserRouter(
       <Route path="/edit-lists" element={
         <RootWrapper privateRoute={ true }>
           <EditLists/>
-        </RootWrapper>
-      }/>,
-      <Route path="/staples" element={
-        <RootWrapper privateRoute={ true }>
-          <EditStaples/>
         </RootWrapper>
       }/>,
       <Route path="/meal-plan" element={

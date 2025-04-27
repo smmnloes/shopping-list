@@ -11,8 +11,6 @@ export class ListItem {
   @Column()
   name: string
   @Column()
-  isStaple: boolean = false
-  @Column()
   shopCategory: ShopCategory
   @ManyToMany(() => ShoppingList, shoppingList => shoppingList.items)
   shoppingLists: ShoppingList[]
@@ -21,10 +19,9 @@ export class ListItem {
   @Column({ default: null })
   lastAddedAt: Date | null
 
-  constructor(name: string, category: ShopCategory, isStaple = false) {
+  constructor(name: string, category: ShopCategory) {
     this.createdAt = new Date()
     this.name = name
-    this.isStaple = isStaple
     this.shopCategory = category
   }
 }

@@ -1,8 +1,4 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { configForCategory } from '../types/types.ts'
-import useQueryParamState from '../hooks/use-query-param-state.ts'
-import { SELECTED_CATEGORY } from '../constants/query-params.ts'
-import SelectStapleModal from './select-staple-modal.tsx'
 import {
   addExistingItemsToList,
   createNewItem,
@@ -18,13 +14,18 @@ import '../styles/shopping.scss'
 export type CheckedItem = { id: number, category: ShopCategory }
 export const CHECKED_ITEMS_KEY = 'checkedItems'
 
+const configForCategory = {
+  GROCERY: { iconPath: '/rewe_logo.svg' },
+  DRUG_STORE: { iconPath: '/dm_logo.svg' }
+}
+
+
 const SUGGESTION_DELAY_MS = 600
 
 const EditLists = () => {
-  const [ selectedCategory, setSelectedCategory ] = useQueryParamState<ShopCategory>(SELECTED_CATEGORY, 'GROCERY')
+  const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>('GROCERY')
 
   const [ listItems, setListItems ] = useState<ListItemFrontend[]>([])
-  const [ addedStaples, setAddedStaples ] = useState<ListItemFrontend[]>([])
   const [ checkedItems, setCheckedItems ] = useLocalStorageState<CheckedItem[]>(CHECKED_ITEMS_KEY, [])
 
   const [ newItemName, setNewItemName ] = useState<string>('')
@@ -50,8 +51,7 @@ const EditLists = () => {
 
   const refreshItems = async (selectedCategory: ShopCategory) => {
     const { items } = await getItemsForCategory(selectedCategory)
-    setAddedStaples(items.filter(item => item.isStaple))
-    setListItems(items.filter(item => !item.isStaple))
+    setListItems(items)
   }
 
   const handleSubmit = async (event: any) => {
@@ -109,7 +109,7 @@ const EditLists = () => {
         window.clearTimeout(suggestionTimeoutId.current)
         if (newItemName) {
           suggestionTimeoutId.current = window.setTimeout(async () => {
-            const suggestions = await getSuggestionsApi(selectedCategory, newItemName, [ ...addedStaples.map(s => s.id), ...listItems.map(i => i.id) ])
+            const suggestions = await getSuggestionsApi(selectedCategory, newItemName, listItems.map(i => i.id))
             setSuggestions(suggestions)
           }, SUGGESTION_DELAY_MS)
         } else {
@@ -165,16 +165,7 @@ const EditLists = () => {
               src="/clear-all.svg"
               alt="clear-checked-items"/>
           </button>
-          <SelectStapleModal selectedCategory={ selectedCategory } addedStaples={ addedStaples }
-                             onModalClose={ () => selectedCategory && refreshItems(selectedCategory) }/>
         </div>
-        <div className="listContainer">
-          { addedStaples.length === 0 ? (<div className="noElementsMessage">Noch keine Staples hinzugefügt.</div>) :
-            addedStaples.map((item, index) =>
-              (<EditableCheckableListItem key={ index } index={ index } item={ item }/>)
-            ) }
-        </div>
-        <hr/>
         { listItems.length > 0 &&
           (<div className="listContainer">
             { listItems.map((item, index) =>
@@ -200,7 +191,6 @@ const EditLists = () => {
                     } }
                   >
                     <span>{ suggestion.name }</span>
-                    { suggestion.isStaple && <img src="/stapler.svg" alt="staple"/> }
                   </div>
                 )) }
               </div>
