@@ -1,11 +1,11 @@
-import { Controller, Delete, Get, Inject, Param, Post, Put, Request, UseGuards } from '@nestjs/common'
+import { Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { In, Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
 import { ListItem } from '../data/entities/list-item'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { InjectRepository } from '@nestjs/typeorm'
-import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping'
+import type { ListItemFrontend, SavedListItem, ShopCategory } from '../../../shared/types/shopping'
 import { SuggestionsService } from './services/suggestions-service'
 
 @Controller('api')
@@ -64,7 +64,10 @@ export class ShoppingApiController {
 
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists/:category/suggestions')
-  async getSuggestions(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{input: string, addedItemIds: number[]}>): Promise<ListItemFrontend[]> {
+  async getSuggestions(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
+    input: string,
+    addedItemIds: number[]
+  }>): Promise<ListItemFrontend[]> {
     return this.suggestionsService.getSuggestions(category, req.body.input, req.body.addedItemIds)
       .then(items => items.map((
         {
@@ -77,6 +80,20 @@ export class ShoppingApiController {
         })))
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('shopping-lists/saved/:category')
+  async getAllSavedItems(@Param('category') category: ShopCategory): Promise<{ items: SavedListItem[] }> {
+    const items = await this.listItemRepository.find({ where: { shopCategory: category } })
+    const mapped: SavedListItem[] = items.map(({ name, id, addedCounter }) => ({ name, id, addedCounter }))
+    const sorted = [ ...mapped.sort((a, b) => a.name.localeCompare(b.name)) ]
+    return { items: sorted }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('shopping-lists/saved/:itemId')
+  async deleteSavedItem(@Param('itemId', ParseIntPipe) itemId: number){
+    await this.listItemRepository.remove({id: itemId} as ListItem)
+  }
 
   /**
    * @param category

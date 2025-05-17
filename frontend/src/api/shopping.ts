@@ -1,5 +1,6 @@
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 import { axiosInstance, backendHost } from './api.ts'
+import { SavedListItem } from '../../../shared/types/shopping'
 
 export const getItemsForCategory = async (category: ShopCategory): Promise<{ items: ListItemFrontend[] }> => {
   return axiosInstance.get(`${ backendHost }/api/shopping-lists/${ category }`).then(response => response.data)
@@ -28,4 +29,12 @@ export const getSuggestions = async (category: ShopCategory, input: string, adde
     input,
     addedItemIds
   }).then(response => response.data)
+}
+
+export const getAllSavedItems = async (category: ShopCategory): Promise<{ items: SavedListItem[] }> => {
+  return axiosInstance.get(`${ backendHost }/api/shopping-lists/saved/${ category }`).then(response => response.data)
+}
+
+export const deleteSavedItem = async (itemId: number): Promise<void> => {
+  return axiosInstance.delete(`${ backendHost }/api/shopping-lists/saved/${itemId}`)
 }

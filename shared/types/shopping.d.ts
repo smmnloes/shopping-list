@@ -3,4 +3,8 @@ export type ListItemFrontend = {
   id: number,
 }
 
+export type SavedListItem = ListItemFrontend & {
+  addedCounter: number
+}
+
 export type ShopCategory = 'GROCERY' | 'DRUG_STORE'

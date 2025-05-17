@@ -10,6 +10,7 @@ import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopp
 import useLocalStorageState from '../hooks/use-local-storage-state.ts'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
 import '../styles/shopping.scss'
+import EditItemsModal from './cleanup-items-modal.tsx'
 
 export type CheckedItem = { id: number, category: ShopCategory }
 export const CHECKED_ITEMS_KEY = 'checkedItems'
@@ -20,7 +21,7 @@ const configForCategory = {
 }
 
 
-const SUGGESTION_DELAY_MS = 600
+const SUGGESTION_DELAY_MS = 500
 
 const EditLists = () => {
   const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>('GROCERY')
@@ -34,18 +35,17 @@ const EditLists = () => {
 
   const isOnline = useOnlineStatus()
 
+
   const suggestionTimeoutId = useRef<number | undefined>()
 
   useEffect(() => {
-    if (selectedCategory) {
-      (async () => {
-        try {
-          await refreshItems(selectedCategory)
-        } catch (error) {
-          console.error('Error fetching list items', error)
-        }
-      })()
-    }
+    (async () => {
+      try {
+        await refreshItems(selectedCategory)
+      } catch (error) {
+        console.error('Error fetching list items', error)
+      }
+    })()
   }, [ selectedCategory ])
 
 
@@ -56,11 +56,12 @@ const EditLists = () => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
-    if (!newItemName || !selectedCategory) {
+    if (!newItemName) {
       return
     }
     try {
-      const { id } = await createNewItem(newItemName, selectedCategory)
+      const trimmed = newItemName.trim()
+      const { id } = await createNewItem(trimmed, selectedCategory)
       await addExistingItemsToList([ id ], selectedCategory)
       await refreshItems(selectedCategory)
       setNewItemName('')
@@ -71,9 +72,6 @@ const EditLists = () => {
   }
 
   const removeItems = async (toRemoveIds: number[]) => {
-    if (!selectedCategory) {
-      return
-    }
     try {
       await deleteItemsFromCategoryBulk(toRemoveIds, selectedCategory)
       await refreshItems(selectedCategory)
@@ -84,9 +82,6 @@ const EditLists = () => {
   }
 
   const handleCheckedItemsOnChange = (event: ChangeEvent<HTMLInputElement>, itemId: number) => {
-    if (!selectedCategory) {
-      return
-    }
     let newCheckedItems = [ ...checkedItems ]
     const checked = event.target.checked
     if (checked) {
@@ -103,9 +98,6 @@ const EditLists = () => {
 
   useEffect(() => {
       (async () => {
-        if (!selectedCategory) {
-          return
-        }
         window.clearTimeout(suggestionTimeoutId.current)
         if (newItemName) {
           suggestionTimeoutId.current = window.setTimeout(async () => {
@@ -138,9 +130,6 @@ const EditLists = () => {
   }
 
   async function addItemFromSuggestion(suggestion: ListItemFrontend) {
-    if (!selectedCategory) {
-      return
-    }
     await addExistingItemsToList([ suggestion.id ], selectedCategory)
     setNewItemName('')
     await refreshItems(selectedCategory)
@@ -165,6 +154,8 @@ const EditLists = () => {
               src="/clear-all.svg"
               alt="clear-checked-items"/>
           </button>
+          <EditItemsModal selectedCategory={ selectedCategory }
+                          onModalClose={ () => refreshItems(selectedCategory) }/>
         </div>
         { listItems.length > 0 &&
           (<div className="listContainer">
