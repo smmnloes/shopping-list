@@ -19,7 +19,7 @@ import { transformNoteToOverview } from './transformers/note-transformers'
 import { User } from '../data/entities/user'
 import { UserInformation } from '../auth/auth.service'
 import { UserKeyService } from '../data/crypto/user-key-service'
-import type { NoteDetails, NoteOverview } from '../../../shared/types/notes'
+import type { NoteDetails, NoteOverview, UserPermission } from '../../../shared/types/notes'
 
 @Controller('api')
 export class NotesApiController {
@@ -36,7 +36,8 @@ export class NotesApiController {
     return this.notesRepository.find()
       .then(results =>
         ({
-          notes: results.filter(note => !note.deleted && this.hasUserReadAccess(note, req.user)).map(note => {
+          notes: results.filter(note => !note.deleted && this.getUserPermissions(note, req.user).includes('VIEW'))
+            .map(note => {
             note.content = note.encrypted ? this.userKeyService.decryptData(note.content, req.user.userDataKey) : note.content
             return note
           }).map(transformNoteToOverview)
@@ -48,13 +49,10 @@ export class NotesApiController {
   @Get('notes/:id')
   async getNote(@Param('id', ParseIntPipe) id: number, @Request() req: ExtendedJWTGuardRequest<void>): Promise<NoteDetails> {
     const note = await this.notesRepository.findOneOrFail({ where: { id, deleted: false } })
-    this.assertUserReadAccess(note, req.user)
+    this.assertUserPermission(note, req.user, 'VIEW')
     const content = note.encrypted ? this.userKeyService.decryptData(note.content, req.user.userDataKey) : note.content
     return {
-      id: note.id, content, publiclyVisible: note.publiclyVisible, permissions: {
-        delete: this.hasUserWriteAccess(note, req.user),
-        changeVisibility: this.hasUserWriteAccess(note, req.user)
-      }
+      id: note.id, content, publiclyVisible: note.publiclyVisible, permissions: this.getUserPermissions(note, req.user)
     }
   }
 
@@ -73,7 +71,7 @@ export class NotesApiController {
   }>): Promise<void> {
     const user = await this.userRepository.findOneOrFail({ where: { id: req.user.id } })
     const note = await this.notesRepository.findOneOrFail({ where: { id: noteId } })
-    this.assertUserReadAccess(note, req.user)
+    this.assertUserPermission(note, req.user, 'EDIT')
     let newContent = req.body.content
     note.content = note.encrypted ? this.userKeyService.encryptData(newContent, req.user.userDataKey) : newContent
     note.lastUpdatedBy = user
@@ -85,7 +83,7 @@ export class NotesApiController {
   @Delete('notes/:id')
   async deleteNote(@Param('id', ParseIntPipe) id: number, @Request() req: ExtendedJWTGuardRequest<void>): Promise<void> {
     const note = await this.notesRepository.findOneOrFail({ where: { id } })
-    this.assertUserWriteAccess(note, req.user)
+    this.assertUserPermission(note, req.user, 'DELETE')
     note.deleted = true
     await this.notesRepository.save(note)
   }
@@ -116,23 +114,24 @@ export class NotesApiController {
     await this.notesRepository.save(note)
   }
 
-  private assertUserReadAccess(note: Note, user: UserInformation) {
-    if (!this.hasUserReadAccess(note, user)) {
-      throw new UnauthorizedException('User has no read access')
+
+  private assertUserPermission(note: Note, user: UserInformation, permission: UserPermission) {
+    if (!this.getUserPermissions(note, user).includes(permission)) {
+      throw new UnauthorizedException('User has no access')
     }
   }
 
-  private hasUserReadAccess(note: Note, user: UserInformation): boolean {
-    return (note.createdBy.id === user.id) || note.publiclyVisible
-  }
-
-  private assertUserWriteAccess(note: Note, user: UserInformation) {
-    if (!this.hasUserWriteAccess(note, user)) {
-      throw new UnauthorizedException('User has no write access')
+  private getUserPermissions(note: Note, user: UserInformation): UserPermission[] {
+    const permissions: UserPermission[] = []
+    if (note.publiclyVisible) {
+      permissions.push('EDIT', 'DELETE', 'VIEW')
     }
+
+    if (note.createdBy.id === user.id) {
+      permissions.push('EDIT', 'DELETE', 'VIEW', 'CHANGE_VISIBILITY')
+    }
+
+    return permissions
   }
 
-  private hasUserWriteAccess(note: Note, user: UserInformation): boolean {
-    return (note.createdBy.id === user.id)
-  }
 }

@@ -137,7 +137,7 @@ export const EditNote = () => {
           </div>
 
           { publiclyVisible !== undefined && (
-            <div className={ `visibilityToggle ${ permissions?.changeVisibility ? '' : 'disabled' }` }>
+            <div className={ `visibilityToggle ${ permissions?.includes('CHANGE_VISIBILITY') ? '' : 'disabled' }` }>
               <img src="/padlock-unlocked.svg" alt="publicly visible"/>
               <label className="switch">
                 <input type="checkbox" checked={ !publiclyVisible } onChange={ handleVisibilityChanged }/>
@@ -146,7 +146,7 @@ export const EditNote = () => {
               <img src="/padlock-locked.svg" alt="private note"/>
             </div>) }
           <button className="my-button deleteButton" onClick={ () => deleteModalRef.current?.showModal() }
-                  disabled={ !permissions?.delete }><img src="/paper-bin.svg"
+                  disabled={ !permissions?.includes('DELETE') }><img src="/paper-bin.svg"
                                                          alt="löschen"/></button>
 
           <ChoiceModal ref={ deleteModalRef } message={ <span>Notiz wirklich löschen?</span> }

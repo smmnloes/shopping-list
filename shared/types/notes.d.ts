@@ -12,5 +12,7 @@ export type NoteDetails = {
   id: number
   content: string
   publiclyVisible: boolean
-  permissions: { delete: boolean, changeVisibility: boolean }
+  permissions: UserPermission[]
 }
+
+export type UserPermission = 'VIEW' | 'EDIT' | 'DELETE' | 'CHANGE_VISIBILITY'
