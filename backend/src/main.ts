@@ -10,7 +10,7 @@ async function bootstrap() {
   app.use(cookieParser())
   app.use(bodyParser.json({ limit: '50mb' }))
   app.enableCors({
-    origin: app.get(ConfigService).get('FRONTEND_HOST'),
+    origin: app.get(ConfigService).get('ALLOWED_ORIGIN'),
     methods: [ 'GET', 'POST', 'DELETE', 'PUT', 'PATCH' ],
     credentials: true
   })
