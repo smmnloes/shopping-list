@@ -95,13 +95,6 @@ const router = createBrowserRouter(
           <SharesPublic/>
         </RootWrapper>
       }/>,
-
-    // custom transition route
-    <Route path="rake-chewable-pleat" element={
-      <RootWrapper privateRoute={ false }>
-        <SharesPublic/>
-      </RootWrapper>
-    }/>,
     ]
   )
 )
