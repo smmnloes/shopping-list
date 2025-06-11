@@ -91,7 +91,7 @@ const SharesPublic = () => {
               { (shareInfoPublic?.files.length ?? 0) === 0 &&
                 <div className="noFilesUploadedMessage">Noch keine Dateien hochgeladen.</div> }
               { shareInfoPublic.files.map((file, index) => <div key={ index } className="uploadedFileListElement">
-                <div>{ file.name }</div>
+                <div className="label">{ file.name }</div>
                 <div className="downloadbutton"><img src="/download.svg"
                                                      onClick={ () => handleDownloadFile(file.name) }
                                                      alt="download file"/>
