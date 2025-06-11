@@ -12,7 +12,13 @@ cd ../frontend
 
 pnpm install
 pnpm run build:prod
- rsync -av --delete --progress ./dist ubuntu@mloesch.it:/var/www/shopping-list/frontend
+ cd dist
+ cp index.html index-shopping.html
+ sed -i 's/<title>/Einkaufsliste/g' index-shopping.html
+ cp index.html index-shares.html
+  sed -i 's/<title>/Dateifreigabe/g' index-shares.html
+  rm index.html
+ rsync -av --delete --progress . ubuntu@mloesch.it:/var/www/shopping-list/frontend/dist
 
 
 # Backend - built on server
