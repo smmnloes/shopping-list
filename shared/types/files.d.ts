@@ -16,4 +16,5 @@ export type ShareInfoPublic = {
   description: string
   files: {name: string}[]
   sharedByUserName: string
+  expirationDate?: string
 }

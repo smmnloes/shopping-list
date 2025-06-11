@@ -79,7 +79,10 @@ const SharesPublic = () => {
           <div className="shareContentsPublic">
             <div className="sharePublicDescription">
               <div className="publicContentDescriptionHeader">Freigabe von { shareInfoPublic.sharedByUserName }</div>
-              Beschreibung: { shareInfoPublic.description }
+              <div>Beschreibung: { shareInfoPublic.description }</div>
+              { shareInfoPublic.expirationDate &&
+                <div>Gültig bis: { new Date(shareInfoPublic.expirationDate).toLocaleString() } </div>
+              }
             </div>
             <div className="download-all-container">
               { downloadAllInProgress ? (<div className="spinner"></div>) :

@@ -19,8 +19,10 @@ const EditShare = () => {
   const [ shareInfo, setShareInfo ] = useState<ShareInfo>()
   const [ description, setDescription ] = useState('')
   const [ buttonHighlighted, setButtonHighlighted ] = useState(false)
-  const [ expirationActive, setExpirationActive ] = useState<boolean | undefined>()
+  const [ expirationDate, setExpirationDate ] = useState<string | null>()
   const navigate = useNavigate()
+
+  const defaultExpiration = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
   const shareId = useParams<{ shareId: string }>().shareId
   if (!shareId) {
@@ -36,7 +38,7 @@ const EditShare = () => {
     const newShareInfo = await getShareInfo(shareId)
     setShareInfo(newShareInfo)
     setDescription(newShareInfo.description)
-    setExpirationActive(newShareInfo.expiration !== null)
+    setExpirationDate(newShareInfo.expiration)
   }
 
   const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -97,13 +99,9 @@ const EditShare = () => {
   }
 
   const handleExpirationActiveChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setExpirationActive(true)
-    } else {
-      await setShareExpiration(shareId, null)
-      refreshShareInfo()
-    }
 
+    await setShareExpiration(shareId, e.target.checked ? defaultExpiration.toISOString() : null)
+    refreshShareInfo()
   }
 
   return (<>
@@ -112,15 +110,15 @@ const EditShare = () => {
           <div className="descriptionLabel">Beschreibung:</div>
           <input type="text" value={ description }
                  onChange={ (e) => setDescription(e.target.value) } onBlur={ updateDescription }/></div>
-        { expirationActive !== undefined && <div className="shareExpirationControl">
+        <div className="shareExpirationControl">
           <div><b>Ablaufdatum</b></div>
           <label htmlFor="expirationactivate">Aktivieren <input id="expirationactivate" type="checkbox"
-                                                                checked={ expirationActive }
+                                                                checked={ !!expirationDate }
                                                                 onChange={ handleExpirationActiveChange }/></label>
-          <input disabled={ !expirationActive } aria-label="Date and time" type="datetime-local"
+          <input disabled={ expirationDate === null } aria-label="Date and time" type="datetime-local"
                  onChange={ handleDateChange }
-                 value={ shareInfo?.expiration === null || shareInfo?.expiration === undefined ? undefined : convertToDateTimeLocalString(new Date(shareInfo.expiration)) }/>
-        </div> }
+                 value={ convertToDateTimeLocalString(shareInfo?.expiration ? new Date(shareInfo.expiration) : new Date(defaultExpiration)) }/>
+        </div>
         <div className="linkwrapper">
           <div>
             <div><b>Link zum Abruf:</b></div>
@@ -145,7 +143,10 @@ const EditShare = () => {
                 <label className="custom-file-upload my-button">Hochladen<input type="file" multiple
                                                                                 onChange={ handleChange }/></label> }
               <div className="uploadStatus">
-                { uploadInProgress && (<><div className="spinner"></div><div className="uploadProgressPercent">{ uploadProgress }%</div></>) }
+                { uploadInProgress && (<>
+                  <div className="spinner"></div>
+                  <div className="uploadProgressPercent">{ uploadProgress }%</div>
+                </>) }
 
               </div>
 

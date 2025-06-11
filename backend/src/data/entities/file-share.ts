@@ -16,7 +16,7 @@ export class FileShare {
   @Column()
   description: string
   @Column({ nullable: true })
-  expiration: Date
+  expiration: Date | null
 
 
   constructor(createdBy: User) {

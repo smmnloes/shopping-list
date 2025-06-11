@@ -120,7 +120,7 @@ export class FileSharesApiController {
 
   @UseGuards(JwtAuthGuard)
   @Get('fileshares')
-  async getAllShares(@Param('shareId') shareId: string): Promise<{ shares: ShareOverview[] }> {
+  async getAllShares(): Promise<{ shares: ShareOverview[] }> {
     return this.fileShareRepository.find().then(result => ({
       shares: result.map(share => ({
         id: share.shareId,
@@ -145,11 +145,12 @@ export class FileSharesApiController {
 
   @Get('fileshares-public')
   async getShareInfoPublic(@Query('shareCode') shareCode: string): Promise<ShareInfoPublic> {
-    const { description, createdBy, shareId } = await this.validateShareCode(shareCode)
+    const { description, createdBy, shareId, expiration } = await this.validateShareCode(shareCode)
     return {
       description,
       sharedByUserName: createdBy.name,
-      files: await this.getFileListForShare(shareId)
+      files: await this.getFileListForShare(shareId),
+      expirationDate: expiration?.toISOString()
     }
   }
 
