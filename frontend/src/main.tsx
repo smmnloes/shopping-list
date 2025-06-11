@@ -84,16 +84,17 @@ const router = createBrowserRouter(
           <EditShare/>
         </RootWrapper>
       }/>,
-    <Route path="/shares-public/:shareCode" element={
-      <RootWrapper privateRoute={ false }>
-        <SharesPublic/>
-      </RootWrapper>
-    }/>,
-    <Route path="/insult-view" element={
-      <RootWrapper privateRoute={ true }>
-        <InsultView/>
-      </RootWrapper>
-    }/>
+      <Route path="/insult-view" element={
+        <RootWrapper privateRoute={ true }>
+          <InsultView/>
+        </RootWrapper>
+      }/>,
+
+      <Route path="/shares-public/:shareCode" element={
+        <RootWrapper privateRoute={ false }>
+          <SharesPublic/>
+        </RootWrapper>
+      }/>,
     ]
   )
 )
