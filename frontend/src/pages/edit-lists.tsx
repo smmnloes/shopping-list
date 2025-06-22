@@ -4,7 +4,8 @@ import {
   createNewItem,
   deleteItemsFromCategoryBulk,
   getItemsForCategory,
-  getSuggestions as getSuggestionsApi
+  getSuggestions as getSuggestionsApi,
+  switchItemsToNextCategory
 } from '../api/shopping.ts'
 import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
 import useLocalStorageState from '../hooks/use-local-storage-state.ts'
@@ -71,15 +72,19 @@ const EditLists = () => {
     }
   }
 
-  const removeItems = async (toRemoveIds: number[]) => {
+  const handleSwitchItems = async () => {
+    if (checkedItems.length === 0) return
     try {
-      await deleteItemsFromCategoryBulk(toRemoveIds, selectedCategory)
+      const toSwitchIds = checkedItems.filter(item => item.category === selectedCategory)
+        .map(item => item.id)
+      await switchItemsToNextCategory(toSwitchIds, selectedCategory)
       await refreshItems(selectedCategory)
-      setCheckedItems(checkedItems.filter(item => !toRemoveIds.includes(item.id)))
+      setCheckedItems(checkedItems.filter(item => !toSwitchIds.includes(item.id)))
     } catch (error) {
-      console.error('There was a problem removing the item', error)
+      console.error('There was a problem switching the item', error)
     }
   }
+
 
   const handleCheckedItemsOnChange = (event: ChangeEvent<HTMLInputElement>, itemId: number) => {
     let newCheckedItems = [ ...checkedItems ]
@@ -93,7 +98,15 @@ const EditLists = () => {
   }
 
   const handleClearCheckedItems = async () => {
-    await removeItems(checkedItems.filter(item => item.category === selectedCategory).map(item => item.id))
+    if (checkedItems.length === 0) return
+
+    try {
+      await deleteItemsFromCategoryBulk(checkedItems.filter(item => item.category === selectedCategory).map(item => item.id), selectedCategory)
+      await refreshItems(selectedCategory)
+      setCheckedItems(checkedItems.filter(item => !checkedItems.filter(item => item.category === selectedCategory).map(item => item.id).includes(item.id)))
+    } catch (error) {
+      console.error('There was a problem removing the item', error)
+    }
   }
 
   useEffect(() => {
@@ -121,10 +134,6 @@ const EditLists = () => {
                                                  onChange={ (event) => handleCheckedItemsOnChange(event, item.id) }/>
         </div>
         <div className={ 'label ' + (isItemChecked(item.id) ? 'strike-through' : '') }>{ item.name }</div>
-        <div className={ `deleteButton ${ !isOnline ? 'disabled' : '' }` }><img src="/paper-bin.svg"
-                                                                                onClick={ () => isOnline && removeItems([ item.id ]) }
-                                                                                alt="delete item"/>
-        </div>
       </div>
     )
   }
@@ -149,11 +158,18 @@ const EditLists = () => {
       </div>
       <div className="listAndInput">
         <div className="listTopControlsContainer">
-          <button className="clearCheckedItems my-button" onClick={ handleClearCheckedItems } disabled={ !isOnline }>
-            <img
-              src="/clear-all.svg"
-              alt="clear-checked-items"/>
-          </button>
+          <div className="listTopControlsButtonsLeft">
+            <button className="my-button" onClick={ handleClearCheckedItems } disabled={ !isOnline }>
+              <img
+                src="/paper-bin.svg"
+                alt="clear-checked-items"/>
+            </button>
+            <button className="my-button" onClick={ handleSwitchItems } disabled={ !isOnline }>
+              <img
+                src="/switch.svg"
+                alt="clear-checked-items"/>
+            </button>
+          </div>
           <EditItemsModal selectedCategory={ selectedCategory }
                           onModalClose={ () => refreshItems(selectedCategory) }/>
         </div>

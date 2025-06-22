@@ -36,5 +36,9 @@ export const getAllSavedItems = async (category: ShopCategory): Promise<{ items:
 }
 
 export const deleteSavedItem = async (itemId: number): Promise<void> => {
-  return axiosInstance.delete(`${ backendHost }/api/shopping-lists/saved/${itemId}`)
+  return axiosInstance.delete(`${ backendHost }/api/shopping-lists/saved/${ itemId }`)
+}
+
+export const switchItemsToNextCategory = async (ids: number[], category: ShopCategory): Promise<void> => {
+  return axiosInstance.patch(`${ backendHost }/api/shopping-lists/${ category }/items`, { ids })
 }

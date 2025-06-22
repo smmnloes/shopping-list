@@ -1,4 +1,16 @@
-import { Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Put,
+  Request,
+  UseGuards
+} from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { In, Repository } from 'typeorm'
 import { ShoppingList } from '../data/entities/shopping-list'
@@ -62,6 +74,47 @@ export class ShoppingApiController {
     await this.shoppingListRepository.save(shoppingList)
   }
 
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('shopping-lists/:category/items')
+  async switchItemToOtherList(@Param('category') currentCategory: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
+    ids: number[]
+  }>): Promise<void> {
+    for (const id of req.body.ids) {
+      const allCategories: { [key in ShopCategory]: key } = {
+        GROCERY: 'GROCERY',
+        DRUG_STORE: 'DRUG_STORE'
+      }
+
+      const categoryNames = Object.values(allCategories)
+      const newCategory = categoryNames[(categoryNames.indexOf(currentCategory) + 1) % categoryNames.length]
+
+      const [ currentList, newList ] = await Promise.all([ currentCategory, newCategory ].map(value =>
+        this.getOrCreateListForCategory(value)
+      ))
+
+      const item = currentList.items.find(item => item.id === id)
+      currentList.items = currentList.items.filter(i => i !== item)
+
+      const existingItem = await this.listItemRepository.findOne({
+        where: {
+          name: item.name,
+          shopCategory: newCategory
+        }
+      })
+
+      // We only want to create the item for the other category if it doesn't exist yet (same name)
+      if (existingItem) {
+        newList.items.push(existingItem)
+      } else {
+        newList.items.push(new ListItem(item.name, newCategory))
+      }
+
+      await this.shoppingListRepository.save([ newList, currentList ])
+    }
+  }
+
+
   @UseGuards(JwtAuthGuard)
   @Post('shopping-lists/:category/suggestions')
   async getSuggestions(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
@@ -91,8 +144,8 @@ export class ShoppingApiController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('shopping-lists/saved/:itemId')
-  async deleteSavedItem(@Param('itemId', ParseIntPipe) itemId: number){
-    await this.listItemRepository.remove({id: itemId} as ListItem)
+  async deleteSavedItem(@Param('itemId', ParseIntPipe) itemId: number) {
+    await this.listItemRepository.remove({ id: itemId } as ListItem)
   }
 
   /**
