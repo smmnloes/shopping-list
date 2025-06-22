@@ -23,5 +23,6 @@ export class ListItem {
     this.createdAt = new Date()
     this.name = name
     this.shopCategory = category
+    this.lastAddedAt = new Date()
   }
 }

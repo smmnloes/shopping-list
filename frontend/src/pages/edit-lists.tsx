@@ -133,7 +133,7 @@ const EditLists = () => {
                                                  checked={ isItemChecked(item.id) }
                                                  onChange={ (event) => handleCheckedItemsOnChange(event, item.id) }/>
         </div>
-        <div className={ 'label ' + (isItemChecked(item.id) ? 'strike-through' : '') }>{ item.name }</div>
+        <div className='label'>{ item.name }</div>
       </div>
     )
   }
