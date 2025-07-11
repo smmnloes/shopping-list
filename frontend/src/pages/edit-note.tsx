@@ -56,6 +56,8 @@ export const EditNote = () => {
 
   const deleteModalRef = useRef<ChoiceModalHandler | null>(null)
 
+  const editorRef = useRef<Editor>()
+
   const navigate = useNavigate()
 
   const noteIdParam = useParams<{ id: string }>().id
@@ -112,9 +114,38 @@ export const EditNote = () => {
   }
 
   const handleOnReady = async (editor: Editor) => {
+    editorRef.current = editor
     await initialize().then(content => editor.setData(content)).then(() => initialLoadComplete.current = true)
   }
 
+
+  const handleCleanupCheckedItems = () => {
+    const model = editorRef.current?.model
+    if (!model) {
+      return
+    }
+
+    model.change(writer => {
+      const root = model.document.getRoot()
+      if (!root) {
+        return
+      }
+      const range = writer.createRangeIn(root)
+
+      const itemsToRemove = []
+
+      for (const value of range.getWalker()) {
+        console.log(value.item)
+        if (value.item.getAttribute('listType') === 'todo' && value.item.getAttribute('todoListChecked')) {
+          itemsToRemove.push(value.item)
+        }
+      }
+
+      itemsToRemove.forEach(item => {
+        writer.remove(item)
+      })
+    })
+  }
 
   return (
     <div className="edit-note-container">
@@ -131,7 +162,13 @@ export const EditNote = () => {
                 <img src={ iconForSaveState[saveState] } alt="saveState"/>) }
             </button>
           </div>
-
+          <div className="checkmark-cleanup-controls">
+            <button className={ `my-button checkmark-cleanup-button` } onClick={ handleCleanupCheckedItems }>
+              <img
+                src="/broom.svg"
+                alt="cleanup checked items"/>
+            </button>
+          </div>
           { publiclyVisible !== undefined && (
             <div className={ `visibilityToggle ${ permissions?.includes('CHANGE_VISIBILITY') ? '' : 'disabled' }` }>
               <img src="/padlock-unlocked.svg" alt="publicly visible"/>
@@ -143,11 +180,10 @@ export const EditNote = () => {
             </div>) }
           <button className="my-button deleteButton" onClick={ () => deleteModalRef.current?.showModal() }
                   disabled={ !permissions?.includes('DELETE') }><img src="/paper-bin.svg"
-                                                         alt="löschen"/></button>
+                                                                     alt="löschen"/></button>
 
-          <ChoiceModal ref={deleteModalRef} message={ <span>Notiz wirklich löschen?</span> }
+          <ChoiceModal ref={ deleteModalRef } message={ <span>Notiz wirklich löschen?</span> }
                        onConfirm={ handleDeleteNote }/>
-
         </div>
         <CKEditor
           editor={ ClassicEditor }

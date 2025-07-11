@@ -10,10 +10,10 @@ interface EditItemsModalProps {
   onModalClose?: Function
 }
 
-const EditItemsModal = ({ selectedCategory, onModalClose }: EditItemsModalProps) => {
+const CleanupItemsModal = ({ selectedCategory, onModalClose }: EditItemsModalProps) => {
 
   const [ savedItems, setSavedItems ] = useState<SavedListItem[]>([])
-  const [ editItemsModalVisible, setEditItemsModalVisible ] = useState(false)
+  const [ cleanupItemsModalVisible, setCleanupItemsModalVisible ] = useState(false)
 
   const isOnline = useOnlineStatus()
 
@@ -28,12 +28,12 @@ const EditItemsModal = ({ selectedCategory, onModalClose }: EditItemsModalProps)
   }
 
   const handleOpenModal = async () => {
-    setEditItemsModalVisible(true)
+    setCleanupItemsModalVisible(true)
     return refresh()
   }
 
   const handleModalClose = () => {
-    setEditItemsModalVisible(false)
+    setCleanupItemsModalVisible(false)
 
     if (onModalClose) {
       onModalClose()
@@ -47,7 +47,7 @@ const EditItemsModal = ({ selectedCategory, onModalClose }: EditItemsModalProps)
         src="/broom.svg"
         alt="modal-open"/>
       </button>
-      <div id="modal-overlay" className={ `modal-overlay ${ editItemsModalVisible ? 'visible' : '' }` }
+      <div id="modal-overlay" className={ `modal-overlay ${ cleanupItemsModalVisible ? 'visible' : '' }` }
            onClick={ (e) => {
              if ((e.target as any).id === 'modal-overlay') handleModalClose()
            } }>
@@ -72,4 +72,4 @@ const EditItemsModal = ({ selectedCategory, onModalClose }: EditItemsModalProps)
   )
 }
 
-export default EditItemsModal
+export default CleanupItemsModal

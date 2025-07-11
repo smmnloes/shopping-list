@@ -11,7 +11,7 @@ import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopp
 import useLocalStorageState from '../hooks/use-local-storage-state.ts'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
 import '../styles/shopping.scss'
-import EditItemsModal from './cleanup-items-modal.tsx'
+import CleanupItemsModal from './cleanup-items-modal.tsx'
 
 export type CheckedItem = { id: number, category: ShopCategory }
 export const CHECKED_ITEMS_KEY = 'checkedItems'
@@ -170,8 +170,8 @@ const EditLists = () => {
                 alt="clear-checked-items"/>
             </button>
           </div>
-          <EditItemsModal selectedCategory={ selectedCategory }
-                          onModalClose={ () => refreshItems(selectedCategory) }/>
+          <CleanupItemsModal selectedCategory={ selectedCategory }
+                             onModalClose={ () => refreshItems(selectedCategory) }/>
         </div>
         { listItems.length > 0 &&
           (<div className="listContainer">
