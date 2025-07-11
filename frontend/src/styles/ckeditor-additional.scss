@@ -42,3 +42,8 @@
     border: 1px solid var(--ck-color-base-border) !important;
   }
 }
+
+
+.todo-list__label:has(input[type="checkbox"]:checked) .todo-list__label__description {
+  text-decoration: line-through;
+}
