@@ -165,7 +165,7 @@ export const EditNote = () => {
           <div className="checkmark-cleanup-controls">
             <button className={ `my-button checkmark-cleanup-button` } onClick={ handleCleanupCheckedItems }>
               <img
-                src="/broom.svg"
+                src="/clear-all.svg"
                 alt="cleanup checked items"/>
             </button>
           </div>
