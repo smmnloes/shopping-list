@@ -37,11 +37,6 @@ function App() {
           </Link>
           <span>Files</span>
         </div>
-        <div className="navElement">
-          <Link to="https://particles.mloesch.it"><img src="/particles.svg" alt="particles"/>
-          </Link>
-          <span>Particles</span>
-        </div>
       </div>
     </>
   )
