@@ -13,22 +13,28 @@ const BabyNames = () => {
     (async () => {
       await getNewName()
     })()
-  }, [gender])
+  }, [ gender ])
 
   const getNewName = async () => {
-    getRandomName(gender).then(name => setCurrentName(name)).catch( e => {
+    getRandomName(gender).then(name => setCurrentName(name)).catch(e => {
       if (isAxiosError(e) && e.status === 404) {
         setCurrentName(null)
       }
     })
   }
 
-  const handleVote = async (voteVerdict: VoteVerdict): Promise<void> => {
+  const handleVote = async (voteVerdict: VoteVerdict, e: React.MouseEvent<HTMLImageElement>): Promise<void> => {
     if (!currentName) {
       return
     }
     await postVote(currentName.id, voteVerdict)
-    await getNewName()
+
+    const img = e.target as HTMLImageElement
+    img.classList.add('animate')
+    setTimeout(() => {
+      img.classList.remove('animate')
+      getNewName()
+    }, 600)
   }
 
   return (
@@ -52,11 +58,12 @@ const BabyNames = () => {
         </div>
         <div className="name-display">
           { currentName?.name ?? 'Kein Name verfügbar' }
+          <div className="next-name" onClick={ () => getNewName() }><img src="/refresh.svg" alt="refresh name"/></div>
         </div>
         <div className="voting-buttons">
-          <div><img onClick={ () => handleVote('YES') } src="/thumbs-up.svg" alt="vote_yes"/></div>
-          <div><img onClick={ () => handleVote('MAYBE') } src="/shrugging.svg" alt="vote_maybe"/></div>
-          <div><img onClick={ () => handleVote('NO') } src="/thumbs-down.svg" alt="vote_no"/></div>
+          <div><img onClick={ (e) => handleVote('YES', e) } src="/thumbs-up.svg" alt="vote_yes"/></div>
+          <div><img onClick={ (e) => handleVote('MAYBE', e) } src="/shrugging.svg" alt="vote_maybe"/></div>
+          <div><img onClick={ (e) => handleVote('NO', e) } src="/thumbs-down.svg" alt="vote_no"/></div>
         </div>
       </div>
     </>

@@ -20,6 +20,12 @@
     font-size: 60px;
     font-weight: bold;
     margin: 140px 0;
+
+    .next-name img {
+      margin-top: 20px;
+      width: 60px;
+      height: 60px;
+    }
   }
 
   .voting-buttons {
@@ -31,7 +37,22 @@
       height: 50px;
       width: 50px;
       filter: drop-shadow(3px 3px 3px rgba(0,0,0,0.5));
+      transition: none;
 
+      &.animate {
+        animation: growFade 0.3s alternate 3 ;
+      }
+
+      @keyframes growFade {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(5);
+          opacity: 1;
+        }
+      }
     }
   }
 }
