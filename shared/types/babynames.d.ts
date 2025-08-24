@@ -6,3 +6,5 @@ export type Vote = {
 }
 
 export type Gender = 'BOY' | 'GIRL'
+
+export type BabyNameFrontendView = { name: string, id: number }

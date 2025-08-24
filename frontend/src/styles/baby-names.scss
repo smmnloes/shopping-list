@@ -1,0 +1,37 @@
+.genderToggle {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+
+  img {
+    height: 50px;
+    width: 50px;
+    margin: 0 20px;
+  }
+}
+
+
+.baby-names-content {
+  display: flex;
+  flex-direction: column;
+  margin: 100px 0;
+
+  .name-display {
+    font-size: 60px;
+    font-weight: bold;
+    margin: 140px 0;
+  }
+
+  .voting-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    img {
+      height: 50px;
+      width: 50px;
+      filter: drop-shadow(3px 3px 3px rgba(0,0,0,0.5));
+
+    }
+  }
+}

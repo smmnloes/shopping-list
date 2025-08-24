@@ -1,11 +1,11 @@
-import { Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common'
+import { Controller, Get, NotFoundException, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { User } from '../data/entities/user'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { BabyName } from '../data/entities/baby-name'
-import { Gender, VoteVerdict } from '../../../shared/types/babynames'
+import { BabyNameFrontendView, Gender, VoteVerdict } from '../../../shared/types/babynames'
 
 
 @Controller('api')
@@ -19,14 +19,16 @@ export class BabyNamesApiController {
 
   @UseGuards(JwtAuthGuard)
   @Get('babynames/:gender')
-  async getRandomName(@Param('gender') gender: Gender, @Request() req: ExtendedJWTGuardRequest<{}>): Promise<{
-    randomName: string
-  }> {
+  async getRandomName(@Param('gender') gender: Gender, @Request() req: ExtendedJWTGuardRequest<{}>): Promise<BabyNameFrontendView> {
     const allNames = await this.babyNamesRepository.find({ where: { gender } })
-      .then(result => result.filter(entry => !entry.votes.some(vote => vote.userId === req.user.id))
-        .map(entry => entry.name))
+      .then(result => result.filter(entry => !entry.votes.some(vote => vote.userId === req.user.id)))
 
-    return { randomName: allNames[Math.floor(allNames.length * Math.random())] }
+    if (allNames.length === 0) {
+      throw new NotFoundException('No names left')
+    }
+
+    const { name, id } = allNames[Math.floor(allNames.length * Math.random())]
+    return { name, id }
   }
 
 
@@ -36,6 +38,10 @@ export class BabyNamesApiController {
     vote: VoteVerdict
   }>): Promise<void> {
     const entry = await this.babyNamesRepository.findOneOrFail({ where: { id: nameId } })
+    if (entry.votes.some(vote => vote.userId === req.user.id)) {
+      console.log('Already voted')
+      return
+    }
     entry.votes.push({ userId: req.user.id, vote: req.body.vote, createdAt: new Date() })
     await this.babyNamesRepository.save(entry)
   }

@@ -20,6 +20,7 @@ import Shares from './pages/shares.tsx'
 import EditShare from './pages/edit-share.tsx'
 import SharesPublic from './pages/shares-public.tsx'
 import InsultView from './pages/insult-view.tsx'
+import BabyNames from './pages/baby-names.tsx'
 
 
 const router = createBrowserRouter(
@@ -95,6 +96,11 @@ const router = createBrowserRouter(
           <SharesPublic/>
         </RootWrapper>
       }/>,
+    <Route path="/baby-names" element={
+      <RootWrapper privateRoute={ true }>
+        <BabyNames/>
+      </RootWrapper>
+    }/>
     ]
   )
 )

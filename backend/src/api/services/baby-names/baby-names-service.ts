@@ -22,7 +22,7 @@ export class BabyNamesService implements OnModuleInit {
     console.log('Initializing baby name DB')
     console.time('NameDBInit')
     await Promise.all([ this.babyNameRepository.save(names.boys.map(name => new BabyName(name, 'BOY'))),
-      this.babyNameRepository.save(names.boys.map(name => new BabyName(name, 'BOY'))) ])
+      this.babyNameRepository.save(names.girls.map(name => new BabyName(name, 'GIRL'))) ])
     console.timeEnd('NameDBInit')
   }
 

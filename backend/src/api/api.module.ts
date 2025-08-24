@@ -25,7 +25,7 @@ import { FileSharesApiController } from './file-shares-api-controller'
 import { ArchiveService } from './services/archive-service'
 import { InsultApiController } from './insult.api.controller'
 import { BabyName } from '../data/entities/baby-name'
-import { BabyNamesService } from './services/names/baby-names-service'
+import { BabyNamesService } from './services/baby-names/baby-names-service'
 import { BabyNamesApiController } from './baby-names.api.controller'
 
 @Module({
