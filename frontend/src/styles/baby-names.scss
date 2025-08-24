@@ -40,7 +40,7 @@
       transition: none;
 
       &.animate {
-        animation: growFade 0.3s alternate 3 ;
+        animation: growFade 0.3s alternate 2;
       }
 
       @keyframes growFade {
