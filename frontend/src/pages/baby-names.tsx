@@ -3,11 +3,14 @@ import { BabyNameFrontendView, Gender, VoteVerdict } from '../../../shared/types
 import '../styles/baby-names.scss'
 import { getRandomName, postVote } from '../api/baby-names.ts'
 import { isAxiosError } from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const BabyNames = () => {
 
-  const [ currentName, setCurrentName ] = useState<BabyNameFrontendView | null>(null)
+  const [ currentName, setCurrentName ] = useState<BabyNameFrontendView | null>()
   const [ gender, setGender ] = useState<Gender>('GIRL')
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     (async () => {
@@ -57,7 +60,7 @@ const BabyNames = () => {
           <img src="/male.svg" alt="male"/>
         </div>
         <div className="name-display">
-          { currentName?.name ?? 'Kein Name verfügbar' }
+          { currentName?.name === null ? 'Kein Name verfügbar' : (currentName?.name || '') }
           <div className="next-name" onClick={ () => getNewName() }><img src="/refresh.svg" alt="refresh name"/></div>
         </div>
         <div className="voting-buttons">
@@ -65,6 +68,9 @@ const BabyNames = () => {
           <div><img onClick={ (e) => handleVote('MAYBE', e) } src="/shrugging.svg" alt="vote_maybe"/></div>
           <div><img onClick={ (e) => handleVote('NO', e) } src="/thumbs-down.svg" alt="vote_no"/></div>
         </div>
+        <button className="my-button matches-button" onClick={ () => navigate('/baby-names/matches') }>Matches
+          anzeigen
+        </button>
       </div>
     </>
   )

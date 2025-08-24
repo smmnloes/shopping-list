@@ -55,4 +55,24 @@
       }
     }
   }
+
+  button.matches-button {
+    margin: 100px auto;
+    font-size: 20px;
+  }
+}
+
+.matches-container {
+  display: flex;
+  flex-direction: column;
+  margin: 80px auto;
+
+  .match-element {
+    margin-bottom: 30px;
+  }
+
+  .match-name {
+    font-size: 25px;
+    font-weight: bold;
+  }
 }

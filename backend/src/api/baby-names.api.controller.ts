@@ -5,7 +5,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { User } from '../data/entities/user'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { BabyName } from '../data/entities/baby-name'
-import { BabyNameFrontendView, Gender, VoteVerdict } from '../../../shared/types/babynames'
+import { BabyNameFrontendView, BabyNameMatch, Gender, VoteVerdict } from '../../../shared/types/babynames'
 
 
 @Controller('api')
@@ -18,7 +18,7 @@ export class BabyNamesApiController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('babynames/:gender')
+  @Get('babynames/randomname:gender')
   async getRandomName(@Param('gender') gender: Gender, @Request() req: ExtendedJWTGuardRequest<{}>): Promise<BabyNameFrontendView> {
     const allNames = await this.babyNamesRepository.find({ where: { gender } })
       .then(result => result.filter(entry => !entry.votes.some(vote => vote.userId === req.user.id)))
@@ -44,6 +44,30 @@ export class BabyNamesApiController {
     }
     entry.votes.push({ userId: req.user.id, vote: req.body.vote, createdAt: new Date() })
     await this.babyNamesRepository.save(entry)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('babynames/matches')
+  async getMatches(): Promise<{
+    matches: BabyNameMatch[]
+  }> {
+    const allNames = await this.babyNamesRepository.find()
+    const allUserNames = await this.userRepository.find().then(result => result.map(user => ({
+      userId: user.id,
+      userName: user.name
+    })))
+    const matches: BabyNameMatch[] = allNames.filter(name => {
+      const positiveVotes = name.votes.filter(vote => vote.vote === 'YES' || vote.vote === 'MAYBE')
+      return positiveVotes.length > 1 && positiveVotes[0].userId !== positiveVotes[1].userId
+    }).map(nameEntry => ({
+      name: nameEntry.name,
+      votes: nameEntry.votes.map(vote => ({
+        userName: allUserNames.find(userName => userName.userId === vote.userId).userName,
+        vote: vote.vote
+      }))
+    }))
+
+    return { matches }
   }
 
 }

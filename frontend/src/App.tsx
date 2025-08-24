@@ -40,7 +40,7 @@ function App() {
         <div className="navElement last">
           <Link to="/baby-names"><img src="/baby.svg" alt="files"/>
           </Link>
-          <span>Baby names</span>
+          <span>Babynamen</span>
         </div>
       </div>
     </>

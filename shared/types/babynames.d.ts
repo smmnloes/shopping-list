@@ -8,3 +8,5 @@ export type Vote = {
 export type Gender = 'BOY' | 'GIRL'
 
 export type BabyNameFrontendView = { name: string, id: number }
+
+export type BabyNameMatch = { name: string, votes: { userName: string, vote: VoteVerdict }[] }

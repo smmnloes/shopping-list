@@ -21,6 +21,7 @@ import EditShare from './pages/edit-share.tsx'
 import SharesPublic from './pages/shares-public.tsx'
 import InsultView from './pages/insult-view.tsx'
 import BabyNames from './pages/baby-names.tsx'
+import BabyNamesMatches from './pages/baby-names-matches.tsx'
 
 
 const router = createBrowserRouter(
@@ -99,6 +100,11 @@ const router = createBrowserRouter(
     <Route path="/baby-names" element={
       <RootWrapper privateRoute={ true }>
         <BabyNames/>
+      </RootWrapper>
+    }/>,
+    <Route path="/baby-names/matches" element={
+      <RootWrapper privateRoute={ true }>
+        <BabyNamesMatches/>
       </RootWrapper>
     }/>
     ]
