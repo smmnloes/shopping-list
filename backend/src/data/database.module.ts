@@ -11,8 +11,9 @@ import { UserKeyService } from './crypto/user-key-service'
 import { TakeoutPayment } from './entities/takeout-payment'
 import { NotificationSubscription } from './entities/notification-subscription'
 import { FileShare } from './entities/file-share'
+import { BabyName } from './entities/baby-name'
 
-export const entities = [ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription, FileShare ]
+export const entities = [ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription, FileShare, BabyName ]
 
 @Module({
   imports: [ TypeOrmModule.forRootAsync({

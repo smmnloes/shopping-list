@@ -24,13 +24,16 @@ import { PassphraseGenerator } from './services/passphrase-generator/passphrase-
 import { FileSharesApiController } from './file-shares-api-controller'
 import { ArchiveService } from './services/archive-service'
 import { InsultApiController } from './insult.api.controller'
+import { BabyName } from '../data/entities/baby-name'
+import { BabyNamesService } from './services/names/baby-names-service'
+import { BabyNamesApiController } from './baby-names.api.controller'
 
 @Module({
-  imports: [ AuthModule, TypeOrmModule.forFeature([ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription, FileShare ]) ],
+  imports: [ AuthModule, TypeOrmModule.forFeature([ ShoppingList, ListItem, MealPlan, Note, User, Location, TakeoutPayment, NotificationSubscription, FileShare, BabyName ]) ],
   controllers: [
-    ApiController, MealApiController, ShoppingApiController, NotesApiController, LocationsApiController, TakeoutApiController, NotificationsApiController, FileSharesApiController, InsultApiController
+    ApiController, MealApiController, ShoppingApiController, NotesApiController, LocationsApiController, TakeoutApiController, NotificationsApiController, FileSharesApiController, InsultApiController, BabyNamesApiController
   ],
-  providers: [ UserKeyService, SuggestionsService, NotificationService, PassphraseGenerator, ArchiveService ],
+  providers: [ UserKeyService, SuggestionsService, NotificationService, PassphraseGenerator, ArchiveService, BabyNamesService ],
   exports: []
 })
 export class ApiModule {
