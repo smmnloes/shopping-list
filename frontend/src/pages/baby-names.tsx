@@ -68,8 +68,7 @@ const BabyNames = () => {
           <div><img onClick={ (e) => handleVote('MAYBE', e) } src="/shrugging.svg" alt="vote_maybe"/></div>
           <div><img onClick={ (e) => handleVote('NO', e) } src="/thumbs-down.svg" alt="vote_no"/></div>
         </div>
-        <button className="my-button matches-button" onClick={ () => navigate('/baby-names/matches') }>Matches
-          anzeigen
+        <button className="my-button matches-button" onClick={ () => navigate('/baby-names/matches') }>Resultate
         </button>
       </div>
     </>

@@ -5,7 +5,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { User } from '../data/entities/user'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { BabyName } from '../data/entities/baby-name'
-import { BabyNameFrontendView, BabyNameMatch, Gender, VoteVerdict } from '../../../shared/types/babynames'
+import { BabyNameFrontendView, BabyNameResult, Gender, VoteVerdict } from '../../../shared/types/babynames'
 
 
 @Controller('api')
@@ -47,19 +47,18 @@ export class BabyNamesApiController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('babynames/matches')
-  async getMatches(): Promise<{
-    matches: BabyNameMatch[]
+  @Get('babynames/results')
+  async getResults(): Promise<{
+    results: BabyNameResult[]
   }> {
     const allNames = await this.babyNamesRepository.find()
     const allUserNames = await this.userRepository.find().then(result => result.map(user => ({
       userId: user.id,
       userName: user.name
     })))
-    const matches: BabyNameMatch[] = allNames.filter(name => {
-      const positiveVotes = name.votes.filter(vote => vote.vote === 'YES' || vote.vote === 'MAYBE')
-      return positiveVotes.length > 1 && positiveVotes[0].userId !== positiveVotes[1].userId
-    }).map(nameEntry => ({
+    const matches: BabyNameResult[] = allNames.filter(name =>
+      name.votes.filter(vote => vote.vote === 'YES' || vote.vote === 'MAYBE')
+    ).map(nameEntry => ({
       name: nameEntry.name,
       votes: nameEntry.votes.map(vote => ({
         userName: allUserNames.find(userName => userName.userId === vote.userId).userName,
@@ -67,7 +66,7 @@ export class BabyNamesApiController {
       }))
     }))
 
-    return { matches }
+    return { results: matches }
   }
 
 }

@@ -14,12 +14,12 @@
 .baby-names-content {
   display: flex;
   flex-direction: column;
-  margin: 100px 0;
+  margin: 80px 0;
 
   .name-display {
     font-size: 60px;
     font-weight: bold;
-    margin: 140px 0;
+    margin: 100px 0;
 
     .next-name img {
       margin-top: 20px;
@@ -65,14 +65,35 @@
 .matches-container {
   display: flex;
   flex-direction: column;
-  margin: 80px auto;
+  margin:  0 auto 100px auto;
 
   .match-element {
-    margin-bottom: 30px;
   }
 
   .match-name {
     font-size: 25px;
-    font-weight: bold;
+  }
+}
+
+.positive-votes-container {
+  margin: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: start;
+
+  .user-column {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    h3 {
+      text-align: center;
+      grid-column: 1 / span 2;
+    }
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
   }
 }

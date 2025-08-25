@@ -1,5 +1,5 @@
 import { axiosInstance, backendHost } from './api.ts'
-import { BabyNameFrontendView, BabyNameMatch, Gender, VoteVerdict } from '../../../shared/types/babynames'
+import { BabyNameFrontendView, BabyNameResult, Gender, VoteVerdict } from '../../../shared/types/babynames'
 
 
 export const postVote = async (nameId: number, vote: VoteVerdict): Promise<void> => {
@@ -10,6 +10,6 @@ export const getRandomName = async (gender: Gender): Promise<BabyNameFrontendVie
   return axiosInstance.get(`${ backendHost }/api/babynames/randomname${ gender }`).then(response => response.data)
 }
 
-export const getMatches = async (): Promise<{matches: BabyNameMatch[]}> => {
-  return axiosInstance.get(`${ backendHost }/api/babynames/matches`).then(response => response.data)
+export const getResults = async (): Promise<{results: BabyNameResult[]}> => {
+  return axiosInstance.get(`${ backendHost }/api/babynames/results`).then(response => response.data)
 }
