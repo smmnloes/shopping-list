@@ -29,7 +29,7 @@ const BabyNamesMatches = () => {
     if (!results) {
       return []
     }
-    return results.filter(result => result.votes.length > 1 && result.votes[0].userName !== result.votes[1].userName)
+    return results.filter(result => result.votes.length > 1 && result.votes[0].userName !== result.votes[1].userName && result.votes.every(vote => [ 'YES', 'MAYBE' ].includes(vote.vote)))
   }
 
   const getUsers = (results?: BabyNameResult[]): string[] => {
