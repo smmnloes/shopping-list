@@ -5,6 +5,13 @@ import { getRandomName, postVote } from '../api/baby-names.ts'
 import { isAxiosError } from 'axios'
 import { useNavigate } from 'react-router-dom'
 
+
+export const voteToImageUrl = {
+  'YES': '/thumbs-up.svg',
+  'NO': '/thumbs-down.svg',
+  'MAYBE': '/shrugging.svg'
+}
+
 const BabyNames = () => {
 
   const [ currentName, setCurrentName ] = useState<BabyNameFrontendView | null>()
@@ -64,9 +71,9 @@ const BabyNames = () => {
           <div className="next-name" onClick={ () => getNewName() }><img src="/refresh.svg" alt="refresh name"/></div>
         </div>
         <div className="voting-buttons">
-          <div><img onClick={ (e) => handleVote('YES', e) } src="/thumbs-up.svg" alt="vote_yes"/></div>
-          <div><img onClick={ (e) => handleVote('MAYBE', e) } src="/shrugging.svg" alt="vote_maybe"/></div>
-          <div><img onClick={ (e) => handleVote('NO', e) } src="/thumbs-down.svg" alt="vote_no"/></div>
+          <div><img onClick={ (e) => handleVote('YES', e) } src={voteToImageUrl['YES']} alt="vote_yes"/></div>
+          <div><img onClick={ (e) => handleVote('MAYBE', e) } src={voteToImageUrl['MAYBE']} alt="vote_maybe"/></div>
+          <div><img onClick={ (e) => handleVote('NO', e) } src={voteToImageUrl['NO']} alt="vote_no"/></div>
         </div>
         <button className="my-button matches-button" onClick={ () => navigate('/baby-names/matches') }>Resultate
         </button>

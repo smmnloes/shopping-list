@@ -5,7 +5,14 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guard'
 import { User } from '../data/entities/user'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { BabyName } from '../data/entities/baby-name'
-import { BabyNameFrontendView, BabyNameResult, Gender, VoteVerdict } from '../../../shared/types/babynames'
+import {
+  BabyNameFrontendView,
+  BabyNameResult,
+  Gender,
+  Vote,
+  VoteMatchResult,
+  VoteVerdict
+} from '../../../shared/types/babynames'
 
 
 @Controller('api')
@@ -36,7 +43,7 @@ export class BabyNamesApiController {
   @Post('babynames/vote/:nameId')
   async voteOnName(@Param('nameId', ParseIntPipe) nameId: number, @Request() req: ExtendedJWTGuardRequest<{
     vote: VoteVerdict
-  }>): Promise<void> {
+  }>): Promise<VoteMatchResult> {
     const entry = await this.babyNamesRepository.findOneOrFail({ where: { id: nameId } })
     if (entry.votes.some(vote => vote.userId === req.user.id)) {
       console.log('Already voted')
@@ -44,8 +51,12 @@ export class BabyNamesApiController {
     }
     entry.votes.push({ userId: req.user.id, vote: req.body.vote, createdAt: new Date() })
     await this.babyNamesRepository.save(entry)
+    return { match: entry.votes.some(vote => vote.userId !== req.user.id && this.isPositiveVote(vote)) }
   }
 
+  /**
+   * Returns only names with at least 1 positive vote, only positive votes for name
+   */
   @UseGuards(JwtAuthGuard)
   @Get('babynames/results')
   async getResults(): Promise<{
@@ -57,10 +68,10 @@ export class BabyNamesApiController {
       userName: user.name
     })))
     const matches: BabyNameResult[] = allNames.filter(name =>
-      name.votes.filter(vote => vote.vote === 'YES' || vote.vote === 'MAYBE')
+      name.votes.some(this.isPositiveVote)
     ).map(nameEntry => ({
       name: nameEntry.name,
-      votes: nameEntry.votes.map(vote => ({
+      votes: nameEntry.votes.filter(this.isPositiveVote).map(vote => ({
         userName: allUserNames.find(userName => userName.userId === vote.userId).userName,
         vote: vote.vote
       }))
@@ -69,6 +80,9 @@ export class BabyNamesApiController {
     return { results: matches }
   }
 
+  private isPositiveVote(vote: Vote): boolean {
+    return [ 'YES', 'MAYBE' ].includes(vote.vote)
+  }
 }
 
 

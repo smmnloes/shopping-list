@@ -10,3 +10,5 @@ export type Gender = 'BOY' | 'GIRL'
 export type BabyNameFrontendView = { name: string, id: number }
 
 export type BabyNameResult = { name: string, votes: { userName: string, vote: VoteVerdict }[] }
+
+export type VoteMatchResult = { match: boolean }

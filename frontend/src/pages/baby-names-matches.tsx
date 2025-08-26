@@ -2,12 +2,8 @@ import { useEffect, useState } from 'react'
 import { BabyNameResult, VoteVerdict } from '../../../shared/types/babynames'
 import '../styles/baby-names.scss'
 import { getResults } from '../api/baby-names.ts'
+import { voteToImageUrl } from './baby-names.tsx'
 
-const voteToImageUrl = {
-  'YES': '/thumbs-up.svg',
-  'NO': '/thumbs-down.svg',
-  'MAYBE': '/shrugging.svg'
-}
 
 const BabyNamesMatches = () => {
 
@@ -29,7 +25,7 @@ const BabyNamesMatches = () => {
     if (!results) {
       return []
     }
-    return results.filter(result => result.votes.length > 1 && result.votes[0].userName !== result.votes[1].userName && result.votes.every(vote => [ 'YES', 'MAYBE' ].includes(vote.vote)))
+    return results.filter(result => result.votes.length > 1)
   }
 
   const getUsers = (results?: BabyNameResult[]): string[] => {
@@ -45,7 +41,7 @@ const BabyNamesMatches = () => {
     }
     return results.reduce((acc: { name: string, verdict: VoteVerdict }[], current) => {
       const voteFromUser = current.votes.find(v => v.userName === user)
-      if (voteFromUser && [ 'YES', 'MAYBE' ].includes(voteFromUser.vote)) {
+      if (voteFromUser) {
         acc.push({ name: current.name, verdict: voteFromUser.vote })
       }
       return acc
