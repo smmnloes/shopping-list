@@ -37,14 +37,26 @@ const BabyNames = () => {
     if (!currentName) {
       return
     }
-    await postVote(currentName.id, voteVerdict)
+
+    const matchResult = await postVote(currentName.id, voteVerdict)
+
+    const animationDetails = matchResult.match ?
+      {
+        duration: 1200,
+        className: 'animate-match'
+      } :
+      {
+        duration: 600,
+        className: 'animate-no-match'
+      }
+
 
     const img = e.target as HTMLImageElement
-    img.classList.add('animate')
+    img.classList.add(animationDetails.className)
     setTimeout(() => {
-      img.classList.remove('animate')
+      img.classList.remove(animationDetails.className)
       getNewName()
-    }, 600)
+    }, animationDetails.duration)
   }
 
   return (
@@ -71,9 +83,9 @@ const BabyNames = () => {
           <div className="next-name" onClick={ () => getNewName() }><img src="/refresh.svg" alt="refresh name"/></div>
         </div>
         <div className="voting-buttons">
-          <div><img onClick={ (e) => handleVote('YES', e) } src={voteToImageUrl['YES']} alt="vote_yes"/></div>
-          <div><img onClick={ (e) => handleVote('MAYBE', e) } src={voteToImageUrl['MAYBE']} alt="vote_maybe"/></div>
-          <div><img onClick={ (e) => handleVote('NO', e) } src={voteToImageUrl['NO']} alt="vote_no"/></div>
+          <div><img onClick={ (e) => handleVote('YES', e) } src={ voteToImageUrl['YES'] } alt="vote_yes"/></div>
+          <div><img onClick={ (e) => handleVote('MAYBE', e) } src={ voteToImageUrl['MAYBE'] } alt="vote_maybe"/></div>
+          <div><img onClick={ (e) => handleVote('NO', e) } src={ voteToImageUrl['NO'] } alt="vote_no"/></div>
         </div>
         <button className="my-button matches-button" onClick={ () => navigate('/baby-names/matches') }>Resultate
         </button>

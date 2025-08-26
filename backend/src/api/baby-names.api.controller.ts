@@ -51,7 +51,8 @@ export class BabyNamesApiController {
     }
     entry.votes.push({ userId: req.user.id, vote: req.body.vote, createdAt: new Date() })
     await this.babyNamesRepository.save(entry)
-    return { match: entry.votes.some(vote => vote.userId !== req.user.id && this.isPositiveVote(vote)) }
+    const positiveVotesForName = entry.votes.filter(this.isPositiveVote)
+    return { match: positiveVotesForName.some(vote => vote.userId !== req.user.id) && positiveVotesForName.length > 1 }
   }
 
   /**
