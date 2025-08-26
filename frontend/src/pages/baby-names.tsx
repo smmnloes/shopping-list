@@ -78,15 +78,17 @@ const BabyNames = () => {
           </label>
           <img src="/male.svg" alt="male"/>
         </div>
-        <div className="name-display">
-          { currentName?.name === null ? 'Kein Name verfügbar' : (currentName?.name || '') }
-          <div className="next-name" onClick={ () => getNewName() }><img src="/refresh.svg" alt="refresh name"/></div>
-        </div>
-        <div className="voting-buttons">
-          <div><img onClick={ (e) => handleVote('YES', e) } src={ voteToImageUrl['YES'] } alt="vote_yes"/></div>
-          <div><img onClick={ (e) => handleVote('MAYBE', e) } src={ voteToImageUrl['MAYBE'] } alt="vote_maybe"/></div>
-          <div><img onClick={ (e) => handleVote('NO', e) } src={ voteToImageUrl['NO'] } alt="vote_no"/></div>
-        </div>
+        { currentName !== null ? (<>
+          <div className="name-display">
+            { currentName?.name ?? '' }
+            <div className="next-name" onClick={ () => getNewName() }><img src="/refresh.svg" alt="refresh name"/></div>
+          </div>
+          <div className="voting-buttons">
+            <div><img onClick={ (e) => handleVote('YES', e) } src={ voteToImageUrl['YES'] } alt="vote_yes"/></div>
+            <div><img onClick={ (e) => handleVote('MAYBE', e) } src={ voteToImageUrl['MAYBE'] } alt="vote_maybe"/></div>
+            <div><img onClick={ (e) => handleVote('NO', e) } src={ voteToImageUrl['NO'] } alt="vote_no"/></div>
+          </div>
+        </>) : 'Keine Namen mehr übrig :)' }
         <button className="my-button matches-button" onClick={ () => navigate('/baby-names/matches') }>Resultate
         </button>
       </div>
