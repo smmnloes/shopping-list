@@ -36,7 +36,7 @@
     img {
       height: 50px;
       width: 50px;
-      filter: drop-shadow(3px 3px 3px rgba(0,0,0,0.5));
+      filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.5));
       transition: none;
 
       &.animate-no-match {
@@ -59,7 +59,7 @@
       @keyframes spinGreen {
         0% {
           transform: rotate(0) scale(1);
-          filter: invert(0) sepia(0) hue-rotate(50deg) saturate(0)  ;
+          filter: invert(0) sepia(0) hue-rotate(50deg) saturate(0);
         }
         100% {
           transform: rotate(720deg) scale(5);
@@ -69,17 +69,12 @@
 
     }
   }
-
-  button.matches-button {
-    margin: 100px auto;
-    font-size: 20px;
-  }
 }
 
 .matches-container {
   display: flex;
   flex-direction: column;
-  margin:  0 auto 100px auto;
+  margin: 0 auto 100px auto;
 
   .match-element {
   }
@@ -111,3 +106,46 @@
     }
   }
 }
+
+.no-more-names {
+  margin: 100px 0 0;
+}
+
+.bottom-button-wrapper {
+  display: flex;
+  flex-direction: row;
+  margin: 100px auto;
+
+  button {
+    font-size: 20px;
+    margin: 0 20px;
+  }
+}
+
+.new-baby-name-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  & > * {
+    margin: 30px;
+  }
+
+
+  button {
+    margin: auto;
+
+    .add-name-wrapper {
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      img {
+        margin-left: 10px;
+        width: 25px;
+        height: 25px;
+      }
+    }
+  }
+}
+

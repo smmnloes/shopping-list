@@ -13,8 +13,12 @@ export const postVote = async (nameId: number, vote: VoteVerdict): Promise<VoteM
   return axiosInstance.post(`${ backendHost }/api/babynames/vote/${ nameId }`, { vote }).then(response => response.data)
 }
 
+export const addName = async (name: string, gender: Gender): Promise<void> => {
+  await axiosInstance.put(`${ backendHost }/api/babynames`, { name, gender })
+}
+
 export const getRandomName = async (gender: Gender): Promise<BabyNameFrontendView | null> => {
-  return axiosInstance.get(`${ backendHost }/api/babynames/randomname${ gender }`).then(response => response.data).catch(e => {
+  return axiosInstance.get(`${ backendHost }/api/babynames/randomname/${ gender }`).then(response => response.data).catch(e => {
     if (isAxiosError(e) && e.status === 404) {
       return null
     }

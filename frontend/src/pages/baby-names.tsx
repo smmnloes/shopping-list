@@ -4,6 +4,7 @@ import '../styles/baby-names.scss'
 import { getRandomName, postVote } from '../api/baby-names.ts'
 import { isAxiosError } from 'axios'
 import { useNavigate } from 'react-router-dom'
+import BabyNameNewNameModal from './baby-name-new-name-modal.tsx'
 
 
 export const voteToImageUrl = {
@@ -88,9 +89,12 @@ const BabyNames = () => {
             <div><img onClick={ (e) => handleVote('MAYBE', e) } src={ voteToImageUrl['MAYBE'] } alt="vote_maybe"/></div>
             <div><img onClick={ (e) => handleVote('NO', e) } src={ voteToImageUrl['NO'] } alt="vote_no"/></div>
           </div>
-        </>) : 'Keine Namen mehr übrig :)' }
-        <button className="my-button matches-button" onClick={ () => navigate('/baby-names/matches') }>Resultate
-        </button>
+        </>) : <div className="no-more-names">Keine Namen mehr übrig :)</div> }
+        <div className="bottom-button-wrapper">
+          <BabyNameNewNameModal selectedGender={gender}/>
+          <button className="my-button matches-button" onClick={ () => navigate('/baby-names/matches') }>Resultate
+          </button>
+        </div>
       </div>
     </>
   )

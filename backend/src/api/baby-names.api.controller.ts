@@ -1,4 +1,4 @@
-import { Controller, Get, NotFoundException, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common'
+import { Controller, Get, NotFoundException, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { JwtAuthGuard } from '../auth/guards/jwt.guard'
@@ -25,7 +25,7 @@ export class BabyNamesApiController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('babynames/randomname:gender')
+  @Get('babynames/randomname/:gender')
   async getRandomName(@Param('gender') gender: Gender, @Request() req: ExtendedJWTGuardRequest<{}>): Promise<BabyNameFrontendView> {
     const allNames = await this.babyNamesRepository.find({ where: { gender } })
       .then(result => result.filter(entry => !entry.votes.some(vote => vote.userId === req.user.id)))
@@ -53,6 +53,18 @@ export class BabyNamesApiController {
     await this.babyNamesRepository.save(entry)
     const positiveVotesForName = entry.votes.filter(this.isPositiveVote)
     return { match: positiveVotesForName.some(vote => vote.userId !== req.user.id) && positiveVotesForName.length > 1 }
+  }
+
+
+  @UseGuards(JwtAuthGuard)
+  @Put('babynames')
+  async putNewName(@Request() req: ExtendedJWTGuardRequest<{
+    name: string,
+    gender: Gender
+  }>): Promise<void> {
+    const newEntry: BabyName = new BabyName(req.body.name, req.body.gender)
+    newEntry.votes.push({ createdAt: new Date(), userId: req.user.id, vote: 'YES' })
+    await this.babyNamesRepository.save(newEntry)
   }
 
   /**
