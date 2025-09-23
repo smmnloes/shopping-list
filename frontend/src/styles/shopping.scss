@@ -230,3 +230,18 @@
      margin-right: 15px;
    }
 }
+
+.unit-selectors div {
+  display: flex;
+}
+
+.quantity-wrapper {
+  display: flex;
+  margin-bottom: 20px;
+
+  &>input {
+    width: 75px;
+    margin: auto 20px auto auto;
+    text-align: right;
+  }
+}

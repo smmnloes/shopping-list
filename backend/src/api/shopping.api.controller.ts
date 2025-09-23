@@ -17,7 +17,7 @@ import { ShoppingList } from '../data/entities/shopping-list'
 import { ListItem } from '../data/entities/list-item'
 import { ExtendedJWTGuardRequest } from '../util/request-types'
 import { InjectRepository } from '@nestjs/typeorm'
-import type { ListItemFrontend, SavedListItem, ShopCategory } from '../../../shared/types/shopping'
+import type { ListItemFrontend, QuantityUnit, SavedListItem, ShopCategory } from '../../../shared/types/shopping'
 import { SuggestionsService } from './services/suggestions-service'
 
 @Controller('api')
@@ -60,7 +60,14 @@ export class ShoppingApiController {
   async getItemsForCategory(@Param('category') category: ShopCategory): Promise<{ items: ListItemFrontend[] }> {
     const shoppingList = await this.getOrCreateListForCategory(category)
     const sortedByLastAdded = [ ...shoppingList.items ].sort((itemA, itemB) => (itemA.lastAddedAt?.getTime() ?? 0) - (itemB.lastAddedAt?.getTime() ?? 0))
-    return { items: sortedByLastAdded.map(({ id, name }) => ({ id, name })) }
+    return {
+      items: sortedByLastAdded.map(({ id, name, quantity, quantityUnit }) => ({
+        id,
+        name,
+        quantity: quantity ?? undefined,
+        quantityUnit: quantityUnit ?? undefined
+      }))
+    }
   }
 
   @UseGuards(JwtAuthGuard)
@@ -68,6 +75,15 @@ export class ShoppingApiController {
   async deleteItemsFromCategoryBulk(@Param('category') category: ShopCategory, @Request() req: ExtendedJWTGuardRequest<{
     ids: number[]
   }>) {
+    // reset quantity
+    const items = await Promise.all(req.body.ids.map(id => this.listItemRepository.findOne({ where: { id } }))).then(results => results.filter(res => res !== null))
+    for (const item of items) {
+      item.quantityUnit = null
+      item.quantity = null
+    }
+    await this.listItemRepository.save(items)
+
+    // remove from list
     const shoppingList = await this.getOrCreateListForCategory(category)
 
     shoppingList.items = shoppingList.items.filter(item => !req.body.ids.includes(item.id))
@@ -131,6 +147,19 @@ export class ShoppingApiController {
           id,
           name,
         })))
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('shopping-lists/quantity')
+  async setQuantity(@Request() { body: { id, quantity, quantityUnit } }: ExtendedJWTGuardRequest<{
+    id: number,
+    quantity: number,
+    quantityUnit: QuantityUnit
+  }>): Promise<void> {
+    const item = await this.listItemRepository.findOneOrFail({ where: { id } })
+    item.quantity = quantity
+    item.quantityUnit = quantityUnit
+    await this.listItemRepository.save(item)
   }
 
   @UseGuards(JwtAuthGuard)

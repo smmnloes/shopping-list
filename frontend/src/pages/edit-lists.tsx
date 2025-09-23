@@ -7,11 +7,12 @@ import {
   getSuggestions as getSuggestionsApi,
   switchItemsToNextCategory
 } from '../api/shopping.ts'
-import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
+import type { ListItemFrontend, QuantityUnit, ShopCategory } from '../../../shared/types/shopping.ts'
 import useLocalStorageState from '../hooks/use-local-storage-state.ts'
 import { useOnlineStatus } from '../providers/online-status-provider.tsx'
 import '../styles/shopping.scss'
 import CleanupItemsModal from './cleanup-items-modal.tsx'
+import QuantityModal from './quantity-modal.tsx'
 
 export type CheckedItem = { id: number, category: ShopCategory }
 export const CHECKED_ITEMS_KEY = 'checkedItems'
@@ -21,20 +22,23 @@ const configForCategory = {
   DRUG_STORE: { iconPath: '/dm_logo.svg' }
 }
 
+const quantityLabelsShort: { [K in QuantityUnit]: string } = {
+  PCS: 'x',
+  G: 'g',
+  ML: 'ml'
+}
 
 const SUGGESTION_DELAY_MS = 500
 
 const EditLists = () => {
   const [ selectedCategory, setSelectedCategory ] = useState<ShopCategory>('GROCERY')
-
   const [ listItems, setListItems ] = useState<ListItemFrontend[]>([])
   const [ checkedItems, setCheckedItems ] = useLocalStorageState<CheckedItem[]>(CHECKED_ITEMS_KEY, [])
-
   const [ newItemName, setNewItemName ] = useState<string>('')
-
   const [ suggestions, setSuggestions ] = useState<ListItemFrontend[]>([])
-
   const isOnline = useOnlineStatus()
+  const [ quantityModalOpen, setIsQuantityModalOpen ] = useState(false)
+  const [ quantityItem, setQuantityItem ] = useState<ListItemFrontend>()
 
 
   const suggestionTimeoutId = useRef<number | undefined>()
@@ -133,7 +137,12 @@ const EditLists = () => {
                                                  checked={ isItemChecked(item.id) }
                                                  onChange={ (event) => handleCheckedItemsOnChange(event, item.id) }/>
         </div>
-        <div className='label'>{ item.name }</div>
+        <div className="label" onClick={ () => {
+          setQuantityItem(item)
+          setIsQuantityModalOpen(true)
+        } }>{ item.name }</div>
+        <div
+          className="quantitylabel">{ item.quantity && item.quantityUnit ? `${ item.quantity }${ quantityLabelsShort[item.quantityUnit] }` : '  ' }</div>
       </div>
     )
   }
@@ -180,6 +189,11 @@ const EditLists = () => {
             ) }
           </div>)
         }
+        <QuantityModal item={ quantityItem } modalOpen={ quantityModalOpen }
+                       closeModal={ () => {
+                         refreshItems(selectedCategory)
+                         setIsQuantityModalOpen(false)
+                       } }></QuantityModal>
         <form className="addItemForm lessMarginTop" onSubmit={ handleSubmit }>
 
           <div className="inputAndButton">

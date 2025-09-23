@@ -1,4 +1,4 @@
-import type { ListItemFrontend, ShopCategory } from '../../../shared/types/shopping.ts'
+import type { ListItemFrontend, QuantityUnit, ShopCategory } from '../../../shared/types/shopping.ts'
 import { axiosInstance, backendHost } from './api.ts'
 import { SavedListItem } from '../../../shared/types/shopping'
 
@@ -41,4 +41,8 @@ export const deleteSavedItem = async (itemId: number): Promise<void> => {
 
 export const switchItemsToNextCategory = async (ids: number[], category: ShopCategory): Promise<void> => {
   return axiosInstance.patch(`${ backendHost }/api/shopping-lists/${ category }/items`, { ids })
+}
+
+export const setQuantity = async(id: number, quantity: number, quantityUnit: QuantityUnit): Promise<void> => {
+  return axiosInstance.post(`${ backendHost }/api/shopping-lists/quantity`, {id, quantity, quantityUnit})
 }

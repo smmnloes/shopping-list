@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { ShoppingList } from './shopping-list'
-import type { ShopCategory } from '../../../../shared/types/shopping'
+import type { QuantityUnit, ShopCategory } from '../../../../shared/types/shopping'
 
 @Entity()
 export class ListItem {
@@ -18,6 +18,10 @@ export class ListItem {
   addedCounter: number
   @Column({ default: null })
   lastAddedAt: Date | null
+  @Column({nullable: true})
+  quantity: number | null
+  @Column({nullable: true})
+  quantityUnit: QuantityUnit
 
   constructor(name: string, category: ShopCategory) {
     this.createdAt = new Date()
@@ -26,3 +30,4 @@ export class ListItem {
     this.lastAddedAt = new Date()
   }
 }
+

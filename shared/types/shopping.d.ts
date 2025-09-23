@@ -1,6 +1,8 @@
 export type ListItemFrontend = {
   name: string,
   id: number,
+  quantity?: number,
+  quantityUnit?: QuantityUnit
 }
 
 export type SavedListItem = ListItemFrontend & {
@@ -8,3 +10,5 @@ export type SavedListItem = ListItemFrontend & {
 }
 
 export type ShopCategory = 'GROCERY' | 'DRUG_STORE'
+
+export type QuantityUnit = 'ML' | 'G' | 'PCS'
