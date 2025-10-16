@@ -6,7 +6,7 @@ export const getItemsForCategory = async (category: ShopCategory): Promise<{ ite
   return axiosInstance.get(`${ backendHost }/api/shopping-lists/${ category }`).then(response => response.data)
 }
 
-export const createNewItem = async (name: string, category: ShopCategory) => {
+export const createNewItem = async (name: string, category: ShopCategory): Promise<ListItemFrontend> => {
   return axiosInstance.post(`${ backendHost }/api/shopping-lists/${ category }/items`, {
     item: {
       name,

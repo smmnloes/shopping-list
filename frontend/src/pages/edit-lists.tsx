@@ -65,9 +65,18 @@ const EditLists = () => {
       return
     }
     try {
-      const trimmed = newItemName.trim()
-      const { id } = await createNewItem(trimmed, selectedCategory)
-      await addExistingItemsToList([ id ], selectedCategory)
+      let trimmed = newItemName.trim()
+      const identicalFromSuggestions = suggestions.find(s => s.name.toLowerCase() === trimmed.toLowerCase())
+
+      let newItemId: number
+      if (identicalFromSuggestions) {
+        newItemId = identicalFromSuggestions.id
+      } else {
+        const created = await createNewItem(trimmed, selectedCategory)
+        newItemId = created.id
+      }
+
+      await addExistingItemsToList([ newItemId ], selectedCategory)
       await refreshItems(selectedCategory)
       setNewItemName('')
       event.target.reset()
