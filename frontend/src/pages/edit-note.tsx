@@ -7,6 +7,7 @@ import {
   Bold,
   ClassicEditor,
   Editor,
+  EditorConfig,
   Essentials,
   EventInfo,
   Heading,
@@ -26,6 +27,7 @@ import '../styles/ckeditor-additional.scss'
 import PreventNavigation from '../elements/prevent-navigation.tsx'
 import ChoiceModal, { ChoiceModalHandler } from '../elements/choice-modal.tsx'
 import '../styles/notes.scss'
+import { SaveButton } from '../ckeditor-plugins/save-button.ts'
 
 enum SAVE_STATE {
   SAVED,
@@ -92,6 +94,9 @@ export const EditNote = () => {
       setSaveState(SAVE_STATE.UNSAVED)
     }
   }
+
+  const saveNoteRef = useRef<() => Promise<void>>()
+  saveNoteRef.current = handleSaveNote
 
   const handleDeleteNote = async () => {
     await deleteNote(noteId)
@@ -189,13 +194,14 @@ export const EditNote = () => {
           editor={ ClassicEditor }
           config={ {
             licenseKey: 'GPL',
-            plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, List, TodoList, Heading, Indent, IndentBlock, Image ],
+            plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, List, TodoList, Heading, Indent, IndentBlock, Image, SaveButton ],
             toolbar: {
-              items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'numberedList', 'bulletedList', 'todoList', '|', 'outdent', 'indent' ],
+              items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'numberedList', 'bulletedList', 'todoList', '|', 'outdent', 'indent', '|', 'saveButton' ],
               shouldNotGroupWhenFull: true
             },
+            saveButton: () => saveNoteRef.current ? saveNoteRef.current() : void(0),
             initialData: noteContent,
-          } }
+          } as EditorConfig }
           onChange={ handleOnChange }
           onReady={ handleOnReady }
         />
