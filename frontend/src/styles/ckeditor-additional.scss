@@ -47,3 +47,21 @@
 .todo-list__label:has(input[type="checkbox"]:checked) .todo-list__label__description {
   text-decoration: line-through;
 }
+
+.save-button-toolbar {
+  &.success {
+    animation: success-anim 1.5s ease-out;
+  }
+
+  &.fail {
+    animation: fail-anim 1.5s ease-out;
+  }
+}
+
+@keyframes success-anim {
+  from { background-color: var(--color-green-ok); }
+}
+
+@keyframes fail-anim {
+  from { background-color: var(--color-error); }
+}

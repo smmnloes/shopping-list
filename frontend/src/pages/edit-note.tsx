@@ -199,7 +199,7 @@ export const EditNote = () => {
               items: [ 'undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'numberedList', 'bulletedList', 'todoList', '|', 'outdent', 'indent', '|', 'saveButton' ],
               shouldNotGroupWhenFull: true
             },
-            saveButton: () => saveNoteRef.current ? saveNoteRef.current() : void(0),
+            saveButton: { saveNoteFunction: () => saveNoteRef.current ? saveNoteRef.current() : void(0) },
             initialData: noteContent,
           } as EditorConfig }
           onChange={ handleOnChange }
